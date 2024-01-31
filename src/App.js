@@ -4,6 +4,7 @@ import Register from "./components/accounts/register";
 import Welcome from "./components/layouts/Welcome";
 import Header from "./components/layouts/header";
 import Profile from "./components/accounts/profile";
+import Project from "./components/layouts/project";
 import React from "react";
 import { AuthProvider } from "./context/AuthProvider";
 
@@ -18,6 +19,7 @@ function App() {
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/welcome" element={<Welcome />} />
             <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/projects/:id" element={<Project />} />
           </Routes>
         </Router>
       </AuthProvider>

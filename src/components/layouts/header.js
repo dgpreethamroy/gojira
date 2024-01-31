@@ -12,12 +12,14 @@ export default function Header() {
   const handletoggleSidebar = () => {
     const sidebar = document.getElementById("default-sidebar");
     const main = document.getElementById("main");
-    if (main?.classList?.contains("sm:ml-64")) {
-      main.classList.remove("sm:ml-64");
-      sidebar.classList.remove("sm:translate-x-0");
-    } else {
-      main?.classList?.add("sm:ml-64");
-      sidebar?.classList?.add("sm:translate-x-0");
+    if (sidebar) {
+      if (main?.classList?.contains("sm:ml-64")) {
+        sidebar.classList.remove("sm:translate-x-0");
+        main.classList.remove("sm:ml-64");
+      } else {
+        main?.classList?.add("sm:ml-64");
+        sidebar?.classList?.add("sm:translate-x-0");
+      }
     }
   };
   console.log("Header");
@@ -26,7 +28,7 @@ export default function Header() {
   }, []);
   return (
     <>
-      <nav className=" fixed top-0 w-full  px-2 sm:px-4 py-2.5 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-900 text-sm rounded border dark:text-white">
+      <nav className=" fixed top-0 w-full  px-2 sm:px-4 py-1 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-900 text-sm rounded border dark:text-white">
         <div className=" mx-0 flex flex-wrap items-center justify-between">
           <div className="w-10">
             <button

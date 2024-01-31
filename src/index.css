@@ -16,3 +16,8 @@ h1 {
     @apply bg-white dark:bg-gray-900;
   }
 }
+.issue-wrap[data-v-bf5f2b94] {
+  touch-action: manipulation;
+  cursor: grab;
+  margin-bottom: 5px;
+}

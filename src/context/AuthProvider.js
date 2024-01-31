@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { login, logout } from "../config/Authentication";
-
+import axios from "../api/axios";
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   console.log("AuthProvider");
@@ -11,9 +11,22 @@ export const AuthProvider = ({ children }) => {
     console.log("AuthProvider useEffect");
     const local_auth = localStorage.getItem("auth");
     if (local_auth) {
-      console.log("AuthProvider useEffect local_auth");
-      setAuth(JSON.parse(local_auth));
-      setCurrentUser(JSON.parse(local_auth).info.id);
+      async function verifytoken() {
+        try {
+          const result = await axios.get("/ping", {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(local_auth).accessToken}`,
+            },
+          });
+          console.log(result.data.message);
+          setAuth(JSON.parse(local_auth));
+          setCurrentUser(JSON.parse(local_auth).info.id);
+        } catch (err) {
+          logout();
+        }
+      }
+
+      verifytoken();
     }
   }, []);
   return (

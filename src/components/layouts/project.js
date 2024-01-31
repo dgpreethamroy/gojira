@@ -1,18 +1,43 @@
-import React from "react";
-import { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Card from "./Card";
+import { useParams, Link } from "react-router-dom";
+import axios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
-
-import CreateProject from "../project/createProject";
-export default function Welcome() {
-  console.log("Welcome");
-  const { auth, setAuth } = useContext(AuthContext);
-  const [modal, setModal] = useState(false);
-  const user_name = auth?.info?.username ? auth.info.username : null;
-  return (
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+export default function Project(props) {
+  const [todos, setTodos] = React.useState({});
+  const { auth, currentUser } = React.useContext(AuthContext);
+  const arr = [1, 2, 3, 4];
+  const [drags, setDrags] = useState(arr);
+  const handleOnDragEnd = (result) => {
+    const items = Array.from(drags);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    if (result.destination) {
+      items.splice(result.destination.index, 0, reorderedItem);
+      setDrags(items);
+    }
+  };
+  const id = useParams();
+  useEffect(() => {
+    const getProjects = async () => {
+      if (currentUser) {
+        try {
+          const response = await axios.get(`/projects/${id.id}`, {
+            headers: { Authorization: `Bearer ${auth.accessToken}` },
+          });
+          setTodos(response.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getProjects();
+  }, [currentUser]);
+  return currentUser ? (
     <div className=" pt-20 bg-white-800">
       <aside
         id="default-sidebar"
-        className="fixed left-0  w-64 h-screen  delay-75 transition-transform -translate-x-full sm:translate-x-0"
+        className="fixed left-0  w-64 h-screen sm:translate-x-0 delay-75 transition-transform -translate-x-full "
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -154,144 +179,82 @@ export default function Welcome() {
           </ul>
         </div>
       </aside>
-
-      <div id="main" className="p-4 sm:ml-64 ">
+      <div id="main" className="p-4 sm:ml-64">
         <div className="flow-root">
-          {" "}
-          <p className=" text-3xl float-left  tracking-tight font-light dark:text-white">
-            Welcome {user_name}{" "}
-          </p>
-          <button
-            type="button"
-            className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => setModal(true)}
-          >
-            Create Project
-          </button>
-          {modal && <CreateProject modal={modal} setModal={setModal} />}
-        </div>
-
-        <div className="p-4 shadow-2xl border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
-            </div>
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
-            </div>
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-            <p className="text-2xl text-gray-400 dark:text-gray-500">
-              <svg
-                className="w-3.5 h-3.5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 18"
+          <ol>
+            <li className="inline-block">
+              <a
+                href="/"
+                className="after:content-['/'] after:px-2 dark:text-white"
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
-            </div>
-            <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
+                <span>Projects</span>
+              </a>
+            </li>
+            <li className="inline-block">
+              <a href={`/projects/${id.id}`} className="dark:text-white">
+                <span>{todos.projectname}</span>
+              </a>
+            </li>{" "}
+          </ol>
+          <h2 className="py-2 text-2xl dark:text-white font-semibold">
+            SCRUM SPRINT 1
+          </h2>
+          <div
+            id="projectsdisplay"
+            className="p-4  border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
+          >
+            <div className="grid grid-cols-4 gap-4  mb-4">
+              <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="tasks">
+                  {(provided) => (
+                    <ul {...provided.droppableProps} ref={provided.innerRef}>
+                      {drags.map((item, index) => {
+                        return (
+                          <Draggable
+                            key={item}
+                            draggableId={item.toString()}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <li
+                                {...provided.draggableProps}
+                                ref={provided.innerRef}
+                                {...provided.dragHandleProps}
+                              >
+                                <div id="card1">
+                                  {
+                                    <Card
+                                      head={"TO DO" + item}
+                                      key={todos._id}
+                                      projectname={todos.projectname}
+                                      projectdescription={
+                                        todos.projectdescription
+                                      }
+                                    />
+                                  }
+                                </div>
+                              </li>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div>
+      <Link to="/">
+        <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
+          Please Login
+        </h2>
+      </Link>
     </div>
   );
 }
