@@ -19,7 +19,7 @@ export default function Welcome() {
     let id = e.target.parentElement.id;
     navigate(`/projects/${id}`);
   };
-  const PAGESIZE = 5;
+  const PAGESIZE = 1;
   const [CURRENTPAGE, setCurrentPage] = useState(1);
   const handleSearch = (e) => {
     setInputSearch(e.target.value);
