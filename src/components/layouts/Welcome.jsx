@@ -3,13 +3,17 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 import axios from "../../api/axios";
 import CreateProject from "../project/createProject";
+import { logout } from "../../config/Authentication";
 const PROJECT_URL = "/users";
+
 export default function Welcome() {
   console.log("Welcome");
-  const { auth, currentUser } = useContext(AuthContext);
+  const { auth, currentUser, setAuth, setCurrentUser } =
+    useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
   const [projects, setProjects] = useState([]);
+  const [sort, setSort] = useState("");
   const navigate = useNavigate();
   const handleOpenproject = (e) => {
     let id = e.target.parentElement.id;
@@ -19,6 +23,34 @@ export default function Welcome() {
   const [CURRENTPAGE, setCurrentPage] = useState(1);
   const handleSearch = (e) => {
     setInputSearch(e.target.value);
+    console.log(inputSearch);
+  };
+  const handleSort = (e) => {
+    if (e.target.innerText === "Name") {
+      console.log("Name");
+      if (sort === "asec") setSort("desc");
+      else if (sort === "desc") setSort("aesc");
+      else setSort("asec");
+    } else if (e.target.innerText === "Key") {
+      console.log("Key");
+    }
+  };
+  const sortProjects = () => {
+    if (sort === "asec") {
+      console.log("asec");
+      const sorted = filteredProjects.sort((a, b) => {
+        return a.projectname.localeCompare(b.projectname);
+      });
+      return sorted;
+    } else if (sort === "desc") {
+      console.log("desc");
+      const sorted = filteredProjects.sort((a, b) => {
+        return b.projectname.localeCompare(a.projectname);
+      });
+      return sorted;
+    } else {
+      return filteredProjects;
+    }
   };
   const resultProjects = projects.filter((project) => {
     return project.projectname
@@ -44,6 +76,12 @@ export default function Welcome() {
       } catch (e) {
         console.log(e);
         alert("Session Timed Out, Please Login Again");
+        await logout();
+        setAuth({});
+        setCurrentUser(false);
+        setModal(false);
+
+        navigate("/");
       }
     };
     fetchData();
@@ -95,14 +133,19 @@ export default function Welcome() {
                 <table className="w-full text-sm divide-y-2 ">
                   <thead>
                     <tr key="head">
-                      <td className="px-4 py-2 dark:text-slate-50">Name</td>
+                      <td
+                        onClick={handleSort}
+                        className="px-4 py-2 dark:text-slate-50"
+                      >
+                        Name
+                      </td>
                       <td className="px-4 py-2 dark:text-slate-50">Key</td>
                       <td className="px-4 py-2 dark:text-slate-50">Type</td>
                       <td className="px-4 py-2 dark:text-slate-50">Lead</td>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProjects.map((project) => (
+                    {sortProjects().map((project) => (
                       <tr
                         key={project._id}
                         id={project._id}
