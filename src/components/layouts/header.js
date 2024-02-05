@@ -52,7 +52,7 @@ export default function Header() {
           </div>
           <div>
             <Link to="/" className="flex">
-              <span className="self-center text-lg font-semibold whitespace-nowrap text-gray-900 dark:text-white">
+              <span className="self-center  text-lg font-semibold whitespace-nowrap text-gray-900 dark:text-white">
                 GodZilla
               </span>
             </Link>
