@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import { useState,Fragment } from 'react'
+
 export default function CreateProject({ modal, setModal }) {
   const [isOpen, setIsOpen] = useState(false);
   const [project, setProject] = useState("");
@@ -27,7 +27,7 @@ export default function CreateProject({ modal, setModal }) {
               {/*content*/}
               <div className="border-0  rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
-                <div className="flex  items-start justify-between pt-40 p-5 border-b border-solid border-blueGray-200 rounded-t">
+                <div className="flex  items-start justify-between pt-10 p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-3xl font-semibold">Create Project</h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -39,13 +39,12 @@ export default function CreateProject({ modal, setModal }) {
                   </button>
                 </div>
                 {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
-                    Required fields are marked with an asterisk *
-                  </p>
+                
+                <div className="relative p-3 flex-auto">
+                 
 
-                  <div className="relative inline text-left  ">
-                    <button
+                  <div className="relative inline text-left ">
+                    {/* <button
                       type="button"
                       className="inline-flex justify-center w-1/3 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                       id="options-menu"
@@ -63,21 +62,21 @@ export default function CreateProject({ modal, setModal }) {
                           aria-labelledby="options-menu"
                         >
                           <a
-                            href="#"
+                            href="/"
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             role="menuitem"
                           >
                             Scrum
                           </a>
                           <a
-                            href="#"
+                            href="/"
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             role="menuitem"
                           >
                             Bug-Tracking
                           </a>
                           <a
-                            href="#"
+                            href="/"
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             role="menuitem"
                           >
@@ -101,7 +100,7 @@ export default function CreateProject({ modal, setModal }) {
                       onClick={toggleDropdown}
                     >
                       Lead
-                    </button>
+                    </button> */}
                     <div className="max-w-xl mx-auto mt-8 p-4 border border-gray-300 rounded-md">
                       <h2 className="text-2xl font-bold mb-4">
                         Please fill the Details
@@ -174,6 +173,7 @@ export default function CreateProject({ modal, setModal }) {
                     </div>
                   </div>
                 </div>
+
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button

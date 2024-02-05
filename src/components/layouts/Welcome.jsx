@@ -2,18 +2,26 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 import axios from "../../api/axios";
-import CreateProject from "../project/createProject";
 import { logout } from "../../config/Authentication";
+import CreateProject from "../project/createProject";
 const PROJECT_URL = "/users";
 
 export default function Welcome() {
   console.log("Welcome");
+  const projectsTD = ["Name", "Key", "Type", "Lead"];
+  const projectobj = {
+    'Name':'projectname',
+    'Key':'projectkey',
+    'Type':'projecttype',
+    'Lead':'projectlead'
+  }
+  const [value,setValue] = useState("projectname")
   const { auth, currentUser, setAuth, setCurrentUser } =
     useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
   const [projects, setProjects] = useState([]);
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("asec");
   const navigate = useNavigate();
   const handleOpenproject = (e) => {
     let id = e.target.parentElement.id;
@@ -25,32 +33,14 @@ export default function Welcome() {
     setInputSearch(e.target.value);
     console.log(inputSearch);
   };
-  const handleSort = (e) => {
-    if (e.target.innerText === "Name") {
-      console.log("Name");
-      if (sort === "asec") setSort("desc");
-      else if (sort === "desc") setSort("aesc");
-      else setSort("asec");
-    } else if (e.target.innerText === "Key") {
-      console.log("Key");
+  const handleSort = (td) => {
+    if(sort==='asec'){
+      setSort('desc')
     }
-  };
-  const sortProjects = () => {
-    if (sort === "asec") {
-      console.log("asec");
-      const sorted = filteredProjects.sort((a, b) => {
-        return a.projectname.localeCompare(b.projectname);
-      });
-      return sorted;
-    } else if (sort === "desc") {
-      console.log("desc");
-      const sorted = filteredProjects.sort((a, b) => {
-        return b.projectname.localeCompare(a.projectname);
-      });
-      return sorted;
-    } else {
-      return filteredProjects;
+    else{
+      setSort('asec')
     }
+    setValue(projectobj[td])
   };
   const resultProjects = projects.filter((project) => {
     return project.projectname
@@ -62,6 +52,21 @@ export default function Welcome() {
     (CURRENTPAGE - 1) * PAGESIZE,
     CURRENTPAGE * PAGESIZE
   );
+  const sortProjects = () => {
+    if (sort === "asec") {
+      console.log("asec");
+      const sorted = filteredProjects.sort((a, b) => {
+        return a[value].localeCompare(b[value]);
+      });
+      return sorted;
+    } else {
+      console.log("desc");
+      const sorted = filteredProjects.sort((a, b) => {
+        return b[value].localeCompare(a[value]);
+      });
+      return sorted;
+    } 
+  };
   useEffect(() => {
     console.log("Welcome useEffect");
 
@@ -80,12 +85,12 @@ export default function Welcome() {
         setAuth({});
         setCurrentUser(false);
         setModal(false);
-
         navigate("/");
       }
     };
     fetchData();
   }, [currentUser]);
+
   return (
     <div className=" pt-20 bg-white-800">
       <div id="main" className="px-4">
@@ -132,16 +137,114 @@ export default function Welcome() {
               <div className="mt-2">
                 <table className="w-full text-sm divide-y-2 ">
                   <thead>
-                    <tr key="head">
-                      <td
-                        onClick={handleSort}
-                        className="px-4 py-2 dark:text-slate-50"
-                      >
-                        Name
-                      </td>
-                      <td className="px-4 py-2 dark:text-slate-50">Key</td>
-                      <td className="px-4 py-2 dark:text-slate-50">Type</td>
-                      <td className="px-4 py-2 dark:text-slate-50">Lead</td>
+                    {/* <tr key="head">
+                <td
+                  onClick={handleSort}
+                  className="px-4 py-2 dark:text-slate-50"
+                >
+                  <div className=" inline-flex items-center px-1 py-1.5 cursor-pointer rounded hover:border-blue-600 group">
+                  <span>
+                    Name
+                  </span>
+                  <span className="px-1">
+                    {
+                    sort==='asec'?
+                    <svg 
+                    className=" opacity-0 group-hover:opacity-50"
+                    width="20" height="20" viewBox="0 0 22 22" role="presentation"><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    :
+                    <svg 
+                    className=" opacity-0 group-hover:opacity-50 rotate-180"
+                    width="20" height="20" viewBox="0 0 22 22" role="presentation" ><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    
+                  }
+                  </span>
+                  </div>                           
+                </td>
+                <td onClick={handleSort} className="px-4 py-2 dark:text-slate-50">
+                <div className=" inline-flex items-center px-1 py-1.5 border-2 cursor-pointer rounded group">
+                  <span>
+                    Key
+                  </span>
+                  <span className="px-1">
+                    {
+                    sort==='asec'?
+                    <svg
+                    
+                    width="20" height="20" className="opacity-0 group-hover:opacity-100 duration-100 " viewBox="0 0 22 22" role="presentation"><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    :
+                    <svg width="20" height="20" viewBox="0 0 22 22" role="presentation" className=" rotate-180 "><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    
+                  }
+                  </span>
+                  </div>       
+                </td>
+                <td className="px-4 py-2 dark:text-slate-50">
+                <div className=" inline-flex items-center px-1 py-1.5 border-2 cursor-pointer rounded hover:border-blue-600">
+                  <span>
+                    Type
+                  </span>
+                  </div>       
+                </td>
+                <td onClick={handleSort} className="px-4 py-2 dark:text-slate-50">
+                <div className=" inline-flex items-center px-1 py-1.5 border-2 cursor-pointer rounded hover:border-blue-600">
+                  <span>
+                    Lead
+                  </span>
+                  <span className="px-1">
+                    {
+                    sort==='asec'?
+                    <svg width="20" height="20" viewBox="0 0 22 22" role="presentation"><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    :
+                    <svg width="20" height="20" viewBox="0 0 22 22" role="presentation" className=" rotate-180 "><path d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z" fill="currentColor" ></path></svg>
+                    
+                  }
+                  </span>
+                  </div>       
+                  
+                </td>
+              </tr> */}
+                    <tr>
+                      {projectsTD.map((TD) => (
+                        <td
+                          className="px-4 py-2 dark:text-slate-50"
+                        >
+                          <div 
+                            onClick={()=>handleSort(TD)}
+                          className=" inline-flex items-center px-1 py-1.5 cursor-pointer rounded border-2 border-opacity-0 hover:border-blue-600 group">
+                            <span  >{TD}</span>
+                            <span className="px-1">
+                              {sort === "asec" ? (
+                                <svg
+                                  className={`${projectobj[TD]===value ? 'opacity-100':'opacity-0'} hover:opacity-100 `}
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 22 22"
+                                  role="presentation"
+                                >
+                                  <path
+                                    d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z"
+                                    fill="currentColor"
+                                  ></path>
+                                </svg>
+                              ) : (
+                                <svg
+                                  className={`${projectobj[TD]===value ? 'opacity-100':'opacity-0'} hover:opacity-100 rotate-180`}
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 22 22"
+                                  role="presentation"
+                                >
+                                  <path
+                                    d="M11 6v9.586l-3.793-3.793a.999.999 0 00-1.414 0c-.39.39-.39 1.024 0 1.415l5.5 5.499A.993.993 0 0012 19a.993.993 0 00.707-.293l5.5-5.499a1 1 0 10-1.414-1.415L13 15.586V6a1 1 0 00-2 0z"
+                                    fill="currentColor"
+                                  ></path>
+                                </svg>
+                              )}
+                            </span>
+                          </div>
+                        </td>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
