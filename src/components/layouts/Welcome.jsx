@@ -83,7 +83,6 @@ export default function Welcome() {
         await logout();
         setAuth({});
         setCurrentUser(false);
-        setModal(false);
         navigate("/");
       }
     };
