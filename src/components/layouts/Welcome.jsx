@@ -18,7 +18,6 @@ export default function Welcome() {
   const [value,setValue] = useState("projectname")
   const { auth, currentUser, setAuth, setCurrentUser } =
     useContext(AuthContext);
-  const [modal, setModal] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
   const [projects, setProjects] = useState([]);
   const [sort, setSort] = useState("asec");
@@ -96,17 +95,9 @@ export default function Welcome() {
       <div id="main" className="px-4">
         <div className="flow-root p-5">
           {" "}
-          <p className=" text-2xl font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
+          <p className=" text-2xl text-black font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
             Projects
           </p>
-          <button
-            type="button"
-            className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => setModal(true)}
-          >
-            Create Project
-          </button>
-          {modal && <CreateProject modal={modal} setModal={setModal} />}
         </div>
         <div
           id="projectsdisplay"

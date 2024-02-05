@@ -4,6 +4,7 @@
 h1 {
   @apply text-3xl font-bold;
 }
+
 .search-input {
   @apply h-8 w-full box-border outline-none rounded-md text-sm leading-5 shadow-none bg-white text-black;
 
@@ -20,4 +21,12 @@ h1 {
   touch-action: manipulation;
   cursor: grab;
   margin-bottom: 5px;
+}
+@layer utilities {
+  .w-300 {
+    width: 300px;
+  }
+  .h-475 {
+    height: 475px;
+  }
 }

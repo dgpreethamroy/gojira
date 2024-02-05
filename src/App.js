@@ -4,8 +4,9 @@ import Register from "./components/accounts/register";
 import Welcome from "./components/layouts/Welcome";
 import Header from "./components/layouts/header";
 import Profile from "./components/accounts/profile";
-import Project from "./components/layouts/project";
+import Project from "./components/layouts/projectNew";
 import React from "react";
+
 import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
