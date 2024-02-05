@@ -2,7 +2,6 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 import axios from "../../api/axios";
-import CreateProject from "../project/createProject";
 import { logout } from "../../config/Authentication";
 const PROJECT_URL = "/users";
 
@@ -10,16 +9,15 @@ export default function Welcome() {
   console.log("Welcome");
   const { auth, currentUser, setAuth, setCurrentUser } =
     useContext(AuthContext);
-  const [modal, setModal] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
   const [projects, setProjects] = useState([]);
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("asec");
   const navigate = useNavigate();
   const handleOpenproject = (e) => {
     let id = e.target.parentElement.id;
     navigate(`/projects/${id}`);
   };
-  const PAGESIZE = 1;
+  const PAGESIZE = 5;
   const [CURRENTPAGE, setCurrentPage] = useState(1);
   const handleSearch = (e) => {
     setInputSearch(e.target.value);
@@ -29,8 +27,7 @@ export default function Welcome() {
     if (e.target.innerText === "Name") {
       console.log("Name");
       if (sort === "asec") setSort("desc");
-      else if (sort === "desc") setSort("aesc");
-      else setSort("asec");
+      else if (sort === "desc") setSort("asec");
     } else if (e.target.innerText === "Key") {
       console.log("Key");
     }
@@ -48,8 +45,6 @@ export default function Welcome() {
         return b.projectname.localeCompare(a.projectname);
       });
       return sorted;
-    } else {
-      return filteredProjects;
     }
   };
   const resultProjects = projects.filter((project) => {
@@ -79,7 +74,6 @@ export default function Welcome() {
         await logout();
         setAuth({});
         setCurrentUser(false);
-        setModal(false);
 
         navigate("/");
       }
@@ -91,17 +85,9 @@ export default function Welcome() {
       <div id="main" className="px-4">
         <div className="flow-root p-5">
           {" "}
-          <p className=" text-2xl font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
+          <p className=" text-2xl text-black font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
             Projects
           </p>
-          <button
-            type="button"
-            className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => setModal(true)}
-          >
-            Create Project
-          </button>
-          {modal && <CreateProject modal={modal} setModal={setModal} />}
         </div>
         <div
           id="projectsdisplay"
