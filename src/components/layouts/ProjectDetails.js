@@ -7,7 +7,7 @@ import CreateIssue from "../issue/createIssue";
 import { Sidebar } from "./sidebar";
 import "rsuite/dist/rsuite.min.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-export default function Project(props) {
+export default function ProjectDetails(props) {
   const [todos, setTodos] = React.useState({});
   const { auth, currentUser } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
@@ -47,9 +47,7 @@ export default function Project(props) {
     const getProjects = async () => {
       if (currentUser) {
         try {
-          const response = await axios.get(`/projects/${id.id}`, {
-            headers: { Authorization: `Bearer ${auth.accessToken}` },
-          });
+          const response = await axios.get(`/projects/${id.id}`);
           setTodos(response.data);
         } catch (error) {
           console.log(error);
@@ -106,7 +104,6 @@ export default function Project(props) {
               setModal={setModal}
               projectinfo={todos}
               user={auth.info}
-              token={auth.accessToken}
             />
           )}
 

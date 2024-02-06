@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <>
       <nav className=" fixed top-0 w-full  px-2 sm:px-4 py-1 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-900 text-sm rounded border dark:text-white">
-        <div className=" mx-0 flex flex-wrap items-center justify-between">
+        <div className=" mx-0 flex flex-wrap justify-between items-center   ">
           <div className="w-10">
             <button
               onClick={(e) => {
@@ -52,7 +52,7 @@ export default function Header() {
           </div>
           <div>
             <Link to="/" className="flex">
-              <span className="self-center  text-lg font-semibold whitespace-nowrap text-gray-900 dark:text-white">
+              <span className="text-lg font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
                 GodZilla
               </span>
             </Link>
@@ -65,7 +65,8 @@ export default function Header() {
               className="search-input "
             />
           </div> */}
-          <div className="flex md:order-2">
+          {/* <div className="w-4/5"></div> */}
+          <div className="flex   md:order-2">
             <ThemeToggler />
 
             {currentUser && (

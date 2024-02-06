@@ -3,14 +3,8 @@ import { Modal, Button, SelectPicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import CloseIcon from "@rsuite/icons/Close";
 import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
-import axios from "../../api/axios";
-export default function CreateIssue({
-  modal,
-  setModal,
-  projectinfo,
-  user,
-  token,
-}) {
+import customAxios from "../../api/axios";
+export default function CreateIssue({ modal, setModal, projectinfo, user }) {
   console.log("Create Issue");
   console.log(projectinfo);
   const assignee = projectinfo.projectmembers.map((member) => {
@@ -43,22 +37,16 @@ export default function CreateIssue({
       return;
     }
     try {
-      const response = await axios.post(
-        URL,
-        {
-          project_id: projectinfo._id,
+      const response = await customAxios.post(URL, {
+        project_id: projectinfo._id,
 
-          issuetype: issuetype,
-          status: status,
-          summary: document.getElementById("summary").value,
-          description: document.getElementById("description").value,
-          assignee: Assignee,
-          labels: labels,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+        issuetype: issuetype,
+        status: status,
+        summary: document.getElementById("summary").value,
+        description: document.getElementById("description").value,
+        assignee: Assignee,
+        labels: labels,
+      });
       console.log(response);
     } catch (error) {
       console.log(error);

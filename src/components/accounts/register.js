@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import React from "react";
-import axios from "../../api/axios";
+import customAxios from "../../api/axios";
 export default function Register() {
   const navigate = useNavigate();
 
@@ -27,9 +27,9 @@ export default function Register() {
     }
 
     try {
-      const respose = axios.post(
+      const respose = customAxios.post(
         REGISTER_URL,
-        JSON.stringify({ email, password }),
+        JSON.stringify({ username: email, password: password }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -38,8 +38,9 @@ export default function Register() {
         }
       );
       console.log(JSON.stringify(respose));
-      setError("");
+
       setLoading(true);
+      navigate("/");
     } catch (e) {
       setError("Failed to register");
     }

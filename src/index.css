@@ -30,3 +30,10 @@ h1 {
     height: 475px;
   }
 }
+a {
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: none !important;
+}

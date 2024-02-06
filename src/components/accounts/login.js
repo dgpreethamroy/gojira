@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
   console.log("Login Component");
   useEffect(() => {
     console.log("Login useEffect");
@@ -33,15 +34,17 @@ export default function Login() {
         return null;
       }
     }
-    setSuccess(true);
-    setAuth(response.data);
-    setCurrentUser(response.data.info.id);
+    if (response) {
+      setSuccess(true);
+      setAuth(response.data);
+      setCurrentUser(response.data.info.id);
+    }
   }
 
   return (
     <>
       {success ? (
-        <Welcome />
+        navigate("/dashboard")
       ) : (
         <div className="min-h-full mt-16 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
