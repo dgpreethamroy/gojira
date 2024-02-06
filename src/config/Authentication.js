@@ -1,9 +1,9 @@
-import axios from "../api/axios";
+import customAxios from "../api/axios";
 const login = async (user, pwd) => {
   const LOGIN_URL = "/auth";
   console.log("Logging In");
   try {
-    const response = await axios.post(
+    const response = await customAxios.post(
       LOGIN_URL,
       JSON.stringify({ username: user, password: pwd }),
       {
@@ -21,7 +21,7 @@ const login = async (user, pwd) => {
 const logout = async () => {
   const LOGOUT_URL = "/logout";
   console.log("Logging Out");
-  const response = await axios.get(LOGOUT_URL);
+  const response = await customAxios.get(LOGOUT_URL);
   localStorage.removeItem("auth");
   return response;
 };

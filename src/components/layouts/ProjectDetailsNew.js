@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "../../api/axios";
+import customAxios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
 import CreateIssue from "../issue/createIssue";
 import { Sidebar } from "./sidebar";
 import "rsuite/dist/rsuite.min.css";
 import Dnd from "./dnd";
-import { set } from "rsuite/esm/utils/dateUtils";
-export default function Project(props) {
+export default function ProjectDetails(props) {
   const [todos, setTodos] = React.useState({});
   const { auth, currentUser } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
@@ -50,9 +49,7 @@ export default function Project(props) {
     const getProjects = async () => {
       if (currentUser) {
         try {
-          const response = await axios.get(`/projects/${id.id}`, {
-            headers: { Authorization: `Bearer ${auth.accessToken}` },
-          });
+          const response = await customAxios.get(`/projects/${id.id}`);
           setTodos(response.data);
         } catch (error) {
           console.log(error);
@@ -109,7 +106,6 @@ export default function Project(props) {
               setModal={setModal}
               projectinfo={todos}
               user={auth.info}
-              token={auth.accessToken}
             />
           )}
 
@@ -124,7 +120,6 @@ export default function Project(props) {
                 done={done}
                 projectinfo={todos}
                 user={auth.info}
-                token={auth.accessToken}
               />
             )}
           </div>

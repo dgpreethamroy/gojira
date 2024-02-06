@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { login, logout } from "../config/Authentication";
-import axios from "../api/axios";
+import customAxios from "../api/axios";
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   console.log("AuthProvider");
@@ -13,11 +13,7 @@ export const AuthProvider = ({ children }) => {
     if (local_auth) {
       async function verifytoken() {
         try {
-          const result = await axios.get("/ping", {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(local_auth).accessToken}`,
-            },
-          });
+          const result = await customAxios.get("/ping");
           console.log(result.data.message);
           setAuth(JSON.parse(local_auth));
           setCurrentUser(JSON.parse(local_auth).info.id);
