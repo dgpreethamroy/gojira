@@ -5,44 +5,26 @@ import AuthContext from "../../context/AuthProvider";
 import CreateIssue from "../issue/createIssue";
 import { Sidebar } from "./sidebar";
 import "rsuite/dist/rsuite.min.css";
-import Dnd from "./dnd";
+import Dnd from "../../dnd/dnd";
 export default function ProjectDetails(props) {
   const [todos, setTodos] = React.useState({});
   const { auth, currentUser } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
-  const [td, setTd] = useState([]);
-  const [inprogress, setInprogress] = useState([]);
-  const [done, setDone] = useState([]);
   const [ready, setReady] = useState(false);
-  const groupBy = (keys) => (array) =>
-    array.reduce((objectsByKeyValue, obj) => {
-      const value = keys.map((key) => obj[key]).join("-");
-      objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-      return objectsByKeyValue;
-    }, {});
-
-  if (todos.projectissues) {
-    if (todos.projectissues.length) {
-      const groupByStatus = groupBy(["status"]);
-      let todolist = groupByStatus(todos.projectissues)["To Do"];
-      let inprogresslist = groupByStatus(todos.projectissues)["In Progress"];
-      let donelist = groupByStatus(todos.projectissues)["Done"];
-      if (td.length === 0 && todolist) {
-        setTd(todolist);
-        setReady(true);
-      }
-      if (inprogress.length === 0 && inprogresslist) {
-        setInprogress(inprogresslist);
-        setReady(true);
-      }
-      if (done.length === 0 && donelist) {
-        setDone(donelist);
-        setReady(true);
-      }
-
-      console.log("ISSUES", groupByStatus(todos.projectissues));
-    }
-  }
+  const [issuecreated, setIssuecreated] = useState(false);
+  const emptydata = {
+    tasks: {},
+    columns: {
+      "column-1": { id: "column-1", title: "To Do", taskIds: [] },
+      "column-2": { id: "column-2", title: "In Progress", taskIds: [] },
+      "column-3": { id: "column-3", title: "Done", taskIds: [] },
+    },
+    columnOrder: ["column-1", "column-2", "column-3"],
+  };
+  // if (todos.projectissues && !ready ) {
+  //   setFinalData(todos.projectissues);
+  //   setReady(true);
+  // }
 
   const id = useParams();
   useEffect(() => {
@@ -51,13 +33,18 @@ export default function ProjectDetails(props) {
         try {
           const response = await customAxios.get(`/projects/${id.id}`);
           setTodos(response.data);
+          if (response.data.projectissues.columnOrder.length > 0) {
+            if (!ready) {
+              setReady(true);
+            }
+          }
         } catch (error) {
           console.log(error);
         }
       }
     };
     getProjects();
-  }, [currentUser]);
+  }, [currentUser, issuecreated]);
   return currentUser ? (
     <div className=" pt-20 bg-white-800">
       <aside
@@ -106,6 +93,7 @@ export default function ProjectDetails(props) {
               setModal={setModal}
               projectinfo={todos}
               user={auth.info}
+              setIssuecreated={setIssuecreated}
             />
           )}
 
@@ -113,14 +101,10 @@ export default function ProjectDetails(props) {
             id="projectsdisplay"
             className="p-4  border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
           >
-            {ready && (
-              <Dnd
-                td={td}
-                inprogress={inprogress}
-                done={done}
-                projectinfo={todos}
-                user={auth.info}
-              />
+            {ready ? (
+              <Dnd data={todos.projectissues} />
+            ) : (
+              <Dnd data={emptydata}></Dnd>
             )}
           </div>
         </div>
