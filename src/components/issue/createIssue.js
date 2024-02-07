@@ -4,7 +4,13 @@ import "rsuite/dist/rsuite.min.css";
 import CloseIcon from "@rsuite/icons/Close";
 import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
-export default function CreateIssue({ modal, setModal, projectinfo, user }) {
+export default function CreateIssue({
+  modal,
+  setModal,
+  projectinfo,
+  user,
+  setIssuecreated,
+}) {
   console.log("Create Issue");
   console.log(projectinfo);
   const assignee = projectinfo.projectmembers.map((member) => {
@@ -53,6 +59,7 @@ export default function CreateIssue({ modal, setModal, projectinfo, user }) {
     }
 
     setModal(false);
+    setIssuecreated((prev) => !prev);
   };
   const handleWarning = () => {
     return (
