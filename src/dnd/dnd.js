@@ -14,9 +14,12 @@ const Dnd = ({ data }) => {
     setState(data);
   }, [data]);
   const [state, setState] = useState(data);
-  const onDragStart = () => {
-    document.body.style.color = "orange";
-    document.body.style.transition = "background-color 0.2s ease";
+
+  const onDragStart = (event) => {
+    //document.body.style.color = "orange";
+    //document.body.style.transition = "background-color 0.2s ease";
+    //console.log(event.draggableId)
+    //let x=document.getElementById(event.draggableId)
   };
 
   const onDragUpdate = (update) => {
@@ -25,6 +28,8 @@ const Dnd = ({ data }) => {
       ? destination.index / Object.keys(state.tasks).length
       : 0;
     document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+    //document.body.style.backgroundColor= '#EAE6FF'
+    //document.body.style.color = "orange";
   };
 
   const onDragEnd = (result) => {
@@ -98,13 +103,15 @@ const Dnd = ({ data }) => {
 
   return (
     <DragDropContext
+      
       onDragEnd={onDragEnd}
-      onDragStart={onDragStart}
+      onDragStart={(e)=>onDragStart(e)}
       onDragUpdate={onDragUpdate}
     >
       <Droppable droppableId="sfdaf" direction="horizantal" type="column">
         {(provided) => (
-          <Container {...provided.droppableProps} ref={provided.innerRef}>
+          <Container 
+          {...provided.droppableProps} ref={provided.innerRef}>
             {state.columnOrder.map((columnId, index) => {
               const column = state.columns[columnId];
               const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);

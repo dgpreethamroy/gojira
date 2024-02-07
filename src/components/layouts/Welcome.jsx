@@ -10,9 +10,20 @@ const projectobj = {
   Type: "projecttype",
   Lead: "projectlead",
 };
+
 const PAGESIZE = 5;
 
+const LabelContainer = {
+  display: 'flex',
+  justifyContent: "center",
+  alignItems: "center",
+  
+};
+
+
 export default function Welcome() {
+
+
   console.log("Welcome");
   const [value, setValue] = useState("projectname");
   const { auth, currentUser } = useContext(AuthContext);
@@ -102,7 +113,10 @@ export default function Welcome() {
         </div>
         {projects.length > 0 ? (
           <div
-            id="projectsdisplay"
+            style={{
+              overflowY:"auto",
+              maxHeight:300
+            }}
             className="px-5  rounded-lg dark:border-gray-700 dark:bg-gray-800"
           >
             <div className="w-full mx-auto text-black">

@@ -37,3 +37,54 @@ a {
 a:hover {
   text-decoration: none !important;
 }
+
+.shake:hover {
+  animation: tilt-shaking 0.5s ;
+}
+
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(0eg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+
+/* 
+.scrollbar1::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+.scrollbar1::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #FFF;
+	background-image: -webkit-gradient(linear,
+									   40% 0%,
+									   75% 84%,
+									   from(#42526E),
+									   to(#42526E),
+									   color-stop(.6,#8b98ae))
+}
+
+
+.scrollbar2::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+.scrollbar2::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #FFF;
+	background-image: -webkit-gradient(linear,
+									   40% 0%,
+									   75% 84%,
+									   from(#0052CC),
+									   to(#0052CC),
+									   color-stop(.6,#6d92ca))
+} */
