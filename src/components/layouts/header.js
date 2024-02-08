@@ -53,8 +53,9 @@ export default function Header() {
           </div>
           <div>
             <Link to="/" className="flex">
-              <span className="text-lg font-[fantasy] font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
-                GODZILLA
+              <span className="text-5xl font-[fantasy] text-shadow-custom font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
+                {" "}
+                GOJIRA
               </span>
             </Link>
           </div>

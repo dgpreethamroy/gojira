@@ -30,6 +30,9 @@ h1 {
   .h-475 {
     height: 475px;
   }
+  .text-shadow-custom {
+    text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
+  }
 }
 a {
   text-decoration: none !important;
@@ -108,5 +111,4 @@ a:hover {
   padding-top: 102px;
 }
 [contenteditable="true"] {
-  
 }
