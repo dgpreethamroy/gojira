@@ -54,7 +54,10 @@ export default function ProjectDetails(props) {
       >
         <Sidebar />
       </aside>
-      <div id="main" className= " h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF]">
+      <div
+        id="main"
+        className=" h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF]"
+      >
         <div className="flow-root">
           <ol>
             <li className="inline-block">
@@ -102,7 +105,7 @@ export default function ProjectDetails(props) {
             className="p-4 border-2 overflow-y-auto max-h-[500px]  border-gray-200 border-dashed rounded-lg dark:border-gray-700"
           >
             {ready ? (
-              <Dnd data={todos.projectissues} />
+              <Dnd data={todos.projectissues} project_id={id} />
             ) : (
               <Dnd data={emptydata}></Dnd>
             )}

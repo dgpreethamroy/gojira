@@ -15,6 +15,7 @@ h1 {
 @layer base {
   body {
     @apply bg-white dark:bg-gray-900;
+    @apply overflow-hidden;
   }
 }
 .issue-wrap[data-v-bf5f2b94] {
@@ -39,17 +40,26 @@ a:hover {
 }
 
 .shake:hover {
-  animation: tilt-shaking 0.5s ;
+  animation: tilt-shaking 0.5s;
 }
 
 @keyframes tilt-shaking {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(5deg); }
-  50% { transform: rotate(0eg); }
-  75% { transform: rotate(-5deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
-
 
 /* 
 .scrollbar1::-webkit-scrollbar
@@ -88,3 +98,15 @@ a:hover {
 									   to(#0052CC),
 									   color-stop(.6,#6d92ca))
 } */
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.sticky + .content {
+  padding-top: 102px;
+}
+[contenteditable="true"] {
+  
+}
