@@ -3,20 +3,23 @@ import Column from "./column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useState } from "react";
 import styled from "styled-components";
-
+import axios from "../api/axios";
 const Container = styled.div`
   display: flex;
 `;
 
-const Dnd = ({ data }) => {
+const Dnd = ({ data, project_id }) => {
   useEffect(() => {
     console.log("Dnd");
     setState(data);
   }, [data]);
   const [state, setState] = useState(data);
-  const onDragStart = () => {
-    document.body.style.color = "orange";
-    document.body.style.transition = "background-color 0.2s ease";
+
+  const onDragStart = (event) => {
+    //document.body.style.color = "orange";
+    //document.body.style.transition = "background-color 0.2s ease";
+    //console.log(event.draggableId)
+    //let x=document.getElementById(event.draggableId)
   };
 
   const onDragUpdate = (update) => {
@@ -25,8 +28,22 @@ const Dnd = ({ data }) => {
       ? destination.index / Object.keys(state.tasks).length
       : 0;
     document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+    //document.body.style.backgroundColor= '#EAE6FF'
+    //document.body.style.color = "orange";
   };
 
+  const handlenewState = async (newState) => {
+    console.log("newState", newState);
+    try {
+      const response = await axios.put("/projects", {
+        project_id: project_id.id,
+        issues: newState,
+      });
+      console.log("response", response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const onDragEnd = (result) => {
     document.body.style.color = "inherit";
     document.body.style.backgroundColor = "inherit";
@@ -70,9 +87,8 @@ const Dnd = ({ data }) => {
         },
       };
       setState(newState);
-      return;
+      handlenewState(newState);
     }
-
     const startTaskIds = Array.from(start.taskIds);
     startTaskIds.splice(source.index, 1);
     const newStart = {
@@ -94,12 +110,13 @@ const Dnd = ({ data }) => {
       },
     };
     setState(newState);
+    handlenewState(newState);
   };
 
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
-      onDragStart={onDragStart}
+      onDragStart={(e) => onDragStart(e)}
       onDragUpdate={onDragUpdate}
     >
       <Droppable droppableId="sfdaf" direction="horizantal" type="column">

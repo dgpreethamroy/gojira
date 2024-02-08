@@ -5,6 +5,7 @@ import React from "react";
 import AuthContext from "../../context/AuthProvider";
 import Logout from "../accounts/logout";
 import ThemeToggler from "./ThemeToggler";
+import Avatar from "react-avatar";
 
 export default function Header() {
   const { auth, setAuth, currentUser } = React.useContext(AuthContext);
@@ -52,8 +53,9 @@ export default function Header() {
           </div>
           <div>
             <Link to="/" className="flex">
-              <span className="text-lg font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
-                GodZilla
+              <span className="text-5xl font-[fantasy] text-shadow-custom font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
+                {" "}
+                GOJIRA
               </span>
             </Link>
           </div>
@@ -82,11 +84,7 @@ export default function Header() {
                   to="/profile"
                   className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-full text-sm p-2.5"
                 >
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://source.unsplash.com/random/200x200?sig=1"
-                    alt=""
-                  />
+                  <Avatar size="30" round name={auth?.info?.name} />
                 </Link>
               </>
             )}

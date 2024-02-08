@@ -46,7 +46,7 @@ export default function ProjectDetails(props) {
     getProjects();
   }, [currentUser, issuecreated]);
   return currentUser ? (
-    <div className=" pt-20 bg-white-800">
+    <div className="pt-[60px] bg-white-800">
       <aside
         id="default-sidebar"
         className="fixed left-0  w-64 h-screen sm:translate-x-0 delay-75 transition-transform -translate-x-full "
@@ -54,7 +54,10 @@ export default function ProjectDetails(props) {
       >
         <Sidebar />
       </aside>
-      <div id="main" className="p-4 sm:ml-64">
+      <div
+        id="main"
+        className=" h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF]"
+      >
         <div className="flow-root">
           <ol>
             <li className="inline-block">
@@ -98,11 +101,11 @@ export default function ProjectDetails(props) {
           )}
 
           <div
-            id="projectsdisplay"
-            className="p-4  border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
+            id="DnDParent"
+            className="p-4 border-2 overflow-y-auto max-h-[500px]  border-gray-200 border-dashed rounded-lg dark:border-gray-700"
           >
             {ready ? (
-              <Dnd data={todos.projectissues} />
+              <Dnd data={todos.projectissues} project_id={id} />
             ) : (
               <Dnd data={emptydata}></Dnd>
             )}
