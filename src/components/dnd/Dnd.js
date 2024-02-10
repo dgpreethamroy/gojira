@@ -19,7 +19,7 @@ const Dnd = ({ state, setState, project_id }) => {
     const opacity = destination
       ? destination.index / Object.keys(state.tasks).length
       : 0;
-    document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+    //document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
     //document.body.style.backgroundColor= '#EAE6FF'
     //document.body.style.color = "orange";
   };

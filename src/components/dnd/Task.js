@@ -7,7 +7,7 @@ const Container = styled.div`
   border-radius: 12px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${(props) => (props.isDragging ? "#EAE6FF" : "white")};
+  background-color: ${(props) => (props.isDragging ? "inherit" : "white")};
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.02);
   &:hover {
     background-color: #eae6ff;

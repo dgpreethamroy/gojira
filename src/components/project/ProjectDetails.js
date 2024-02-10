@@ -70,7 +70,7 @@ export default function ProjectDetails() {
       </aside>
       <div
         id="main"
-        className=" h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF]"
+        className=" h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF] dark:bg-gray-900"
       >
         <div className="flow-root">
           <ol>
