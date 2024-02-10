@@ -13,25 +13,15 @@ const projectobj = {
 
 const PAGESIZE = 5;
 
-const LabelContainer = {
-  display: 'flex',
-  justifyContent: "center",
-  alignItems: "center",
-  
-};
-
-
-export default function Welcome() {
-
-
-  console.log("Welcome");
-  const [value, setValue] = useState("projectname");
+export default function ProjectTable() {
+  console.log("ProjectTable Component");
   const { auth, currentUser } = useContext(AuthContext);
+  const [value, setValue] = useState("projectname");
   const [inputSearch, setInputSearch] = useState("");
   const [projects, setProjects] = useState([]);
   const [sort, setSort] = useState("asec");
-  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   const handleMouseOver = () => {
     setIsHovered(true);
@@ -85,7 +75,7 @@ export default function Welcome() {
     }
   };
   useEffect(() => {
-    console.log("Welcome useEffect");
+    console.log("ProjectTable useEffect");
 
     const fetchData = async () => {
       if (currentUser) {
@@ -102,23 +92,30 @@ export default function Welcome() {
     fetchData();
   }, [currentUser]);
 
-  return currentUser ? (
+  if (!currentUser)
+    return (
+      <div>
+        <Link to="/">
+          <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
+            Please Login
+          </h2>
+        </Link>
+      </div>
+    );
+  return (
     <div className=" pt-20 bg-white-800">
       <div id="main" className="px-4">
         <div className="flow-root p-5">
-          {" "}
           <p className=" text-2xl text-black font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
             Projects
           </p>
+          <button className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+            Create New Project
+          </button>
         </div>
+
         {projects.length > 0 ? (
-          <div
-            style={{
-              overflowY:"auto",
-              maxHeight:300
-            }}
-            className="px-5  rounded-lg dark:border-gray-700 dark:bg-gray-800"
-          >
+          <div className="px-5 overflow-y-auto max-h-80 rounded-lg dark:border-gray-700 dark:bg-gray-800">
             <div className="w-full mx-auto text-black">
               <div className="w-full divide-y-2 ">
                 <div className="flex py-2 w-[20%] rounded-md h-10 justify-center border-2 border-gray-300 items-center">
@@ -274,14 +271,6 @@ export default function Welcome() {
           <p>NO PROJECTS</p>
         )}
       </div>
-    </div>
-  ) : (
-    <div>
-      <Link to="/">
-        <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
-          Please Login
-        </h2>
-      </Link>
     </div>
   );
 }

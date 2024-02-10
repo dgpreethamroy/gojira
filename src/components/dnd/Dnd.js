@@ -1,25 +1,17 @@
-import React, { useEffect } from "react";
-import Column from "./column";
+import React from "react";
+import Column from "./Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { useState } from "react";
 import styled from "styled-components";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 const Container = styled.div`
   display: flex;
 `;
 
-const Dnd = ({ data, project_id }) => {
-  useEffect(() => {
-    console.log("Dnd");
-    setState(data);
-  }, [data]);
-  const [state, setState] = useState(data);
+const Dnd = ({ state, setState, project_id }) => {
+  console.log("Dnd Component");
 
   const onDragStart = (event) => {
-    //document.body.style.color = "orange";
-    //document.body.style.transition = "background-color 0.2s ease";
-    //console.log(event.draggableId)
-    //let x=document.getElementById(event.draggableId)
+    // console.log("onDragStart", event);
   };
 
   const onDragUpdate = (update) => {
@@ -66,6 +58,7 @@ const Dnd = ({ data, project_id }) => {
         columnOrder: newColumnOrder,
       };
       setState(newState);
+      handlenewState(newState);
       return;
     }
 

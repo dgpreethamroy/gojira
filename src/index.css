@@ -110,5 +110,17 @@ a:hover {
 .sticky + .content {
   padding-top: 102px;
 }
-[contenteditable="true"] {
+.rs-picker-toggle-label::after {
+  content: "" !important;
+  margin: 0 4px 0 2px;
+}
+.rs-btn-bgwhite {
+  background-color: #ffffff !important;
+}
+.sb-avatar__text {
+  background-color: rgb(
+    47,
+    47,
+    143
+  ) !important; /* Your desired background color */
 }
