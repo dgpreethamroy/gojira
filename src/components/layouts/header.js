@@ -8,7 +8,7 @@ import ThemeToggler from "./ThemeToggler";
 import Avatar from "react-avatar";
 
 export default function Header() {
-  const { auth, setAuth, currentUser } = React.useContext(AuthContext);
+  const { auth, currentUser } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const handletoggleSidebar = () => {
     const sidebar = document.getElementById("default-sidebar");
@@ -84,7 +84,12 @@ export default function Header() {
                   to="/profile"
                   className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-full text-sm p-2.5"
                 >
-                  <Avatar size="30" round name={auth?.info?.name} />
+                  <Avatar
+                    size="30"
+                    textSizeRatio={2}
+                    round
+                    name={auth?.info?.name}
+                  />
                 </Link>
               </>
             )}

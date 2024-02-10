@@ -1,14 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import React from "react";
-import Welcome from "../layouts/Welcome";
 import AuthContext from "../../context/AuthProvider";
 export default function Login() {
   const { setAuth, login, currentUser, setCurrentUser } =
     useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   console.log("Login Component");
@@ -83,7 +81,6 @@ export default function Login() {
               <div>
                 <button
                   type="submit"
-                  disabled={loading}
                   className=" w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-sky-800 hover:bg-sky-900"
                 >
                   Login

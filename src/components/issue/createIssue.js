@@ -1,27 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, SelectPicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
-import CloseIcon from "@rsuite/icons/Close";
 import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
+import Avatar from "react-avatar";
 export default function CreateIssue({
   modal,
   setModal,
   projectinfo,
   user,
   setIssuecreated,
+  setIsMinimized,
 }) {
+  const handleClose = () => setModal(false);
   console.log("Create Issue");
-  console.log(projectinfo);
-  const assignee = projectinfo.projectmembers.map((member) => {
-    return { label: member, value: member };
+  console.log(status_data);
+  const assignee = projectinfo?.projectmembers?.map((member) => {
+    return { label: member.name, value: member.id, email: member.email };
   });
   const [warn, setWarn] = useState(false);
-  const [status, setStatus] = useState("Select an option");
+  const [status, setStatus] = useState(" Select an option ");
   const [issuetype, setIssuetype] = useState("Select an option");
-  const [Assignee, setAssignee] = useState("Select an option");
+  const [Assignee, setAssignee] = useState("UnAssigned");
   const [labels, setLabels] = useState("Select an option");
+  const [icon, setIcon] = useState("UnAssigned");
+  const [issueIcon, setIssueIcon] = useState(Issuedata[0].icon);
+  const defaultvalues = {
+    issuetype: "Bug",
+    status: "To Do",
+    summary: "TADA",
+    description: "Only Lights",
+  };
   const URL = "/issues/";
+
   const renderMenuItem = (label, item) => {
     return (
       <div className="inline-flex items-center ">
@@ -31,7 +42,6 @@ export default function CreateIssue({
     );
   };
   const handleCreateIssue = async () => {
-    console.log("Issue Created");
     if (
       status === "Select an option" ||
       issuetype === "Select an option" ||
@@ -45,7 +55,6 @@ export default function CreateIssue({
     try {
       const response = await customAxios.post(URL, {
         project_id: projectinfo._id,
-
         issuetype: issuetype,
         status: status,
         summary: document.getElementById("summary").value,
@@ -57,13 +66,13 @@ export default function CreateIssue({
     } catch (error) {
       console.log(error);
     }
-
     setModal(false);
     setIssuecreated((prev) => !prev);
+    console.log("Issue Created");
   };
   const handleWarning = () => {
     return (
-      <Modal backdrop="static" open={true}>
+      <Modal backdrop="static" open={warn}>
         <Modal.Title>Your Changes won't be saved</Modal.Title>
         <Modal.Body>
           We won’t be able to save your data if you move away from this page.
@@ -81,28 +90,47 @@ export default function CreateIssue({
           </Button>
           <Button
             onClick={() => {
+              setWarn(false);
               setModal(false);
             }}
           >
             Discard issue
-          </Button>{" "}
+          </Button>
         </Modal.Footer>
       </Modal>
     );
   };
 
   return (
-    <Modal backdrop="static" open={true} size="55rem">
-      <Modal.Header as="h3" closeButton={false}>
-        Create Issue
+    <Modal backdrop="static" open={modal} size="55rem">
+      <Modal.Header as="h3" className="text-black" closeButton={false}>
+        Create issue
         <Button
-          className="float-right"
-          appearance="primary"
+          className="float-right rs-btn-bgwhite"
           onClick={() => {
-            setModal(!modal);
+            setModal(false);
           }}
         >
-          <CloseIcon />
+          <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+            <path
+              d="M12 10.586L6.707 5.293a1 1 0 00-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414L12 10.586z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </Button>
+        <Button
+          onClick={() => {
+            setIsMinimized((prev) => !prev);
+            handleClose();
+          }}
+          className="float-right rs-btn-bgwhite"
+        >
+          <img
+            width="24"
+            height="24"
+            src="https://img.icons8.com/ios-filled/50/minus-math.png"
+            alt="minus-math"
+          />
         </Button>
       </Modal.Header>
       <hr />
@@ -123,6 +151,10 @@ export default function CreateIssue({
             value={issuetype}
             onChange={setIssuetype}
             style={{ width: 280 }}
+            label={issueIcon}
+            onSelect={(value, item) => {
+              setIssueIcon(item.icon);
+            }}
             renderMenu={(menu) => <div>{menu}</div>}
             renderMenuItem={(label, item) => renderMenuItem(label, item)}
           />
@@ -141,6 +173,7 @@ export default function CreateIssue({
             data={status_data}
             value={status}
             onChange={setStatus}
+            placeholder="To Do"
             style={{ width: 280 }}
           />
           <span className="text-xs">
@@ -184,19 +217,42 @@ export default function CreateIssue({
             Assignee{" "}
           </label>
           <SelectPicker
-            searchable={false}
+            searchable={true}
             data={assignee}
             value={Assignee}
-            placeholder="Select an option"
+            placeholder={Assignee}
             onChange={setAssignee}
+            onSelect={(value, item) => {
+              setIcon(item.label);
+            }}
             style={{ width: 280 }}
+            label={
+              <Avatar textSizeRatio={2} name={icon} size="30" round={true} />
+            }
+            renderMenu={(menu) => <div>{menu}</div>}
+            renderMenuItem={(label, props) => (
+              <div className="inline-flex items-center ">
+                <div className="pr-5">
+                  <Avatar
+                    textSizeRatio={2}
+                    name={label}
+                    size="30"
+                    round={true}
+                  />
+                </div>
+                <div>
+                  <p className="font-semibold">{label}</p>
+                  <p className="text-xs mt-0">{props.email}</p>
+                </div>
+              </div>
+            )}
           />
-
           <span
             onClick={() => {
-              setAssignee(user.username);
+              setIcon(user.name);
+              setAssignee(user.name);
             }}
-            className="font-bold w-[12%] text-base text-blue-600 hover:underline hover:cursor-pointer"
+            className="font-bold w-[14%] text-base text-blue-600 hover:underline hover:cursor-pointer"
           >
             Assign to me
           </span>
@@ -215,14 +271,12 @@ export default function CreateIssue({
           ></SelectPicker>
         </div>
         <br />
-
         <div></div>
       </Modal.Body>
       <Modal.Footer>
         <Button
           onClick={() => {
             setWarn(true);
-
             document.getElementsByClassName(
               "rs-modal-wrapper"
             )[0].style.zIndex = "999";
@@ -230,13 +284,8 @@ export default function CreateIssue({
         >
           Cancel
         </Button>
-        {warn && handleWarning()}
-        <Button
-          onClick={() => {
-            handleCreateIssue();
-          }}
-          appearance="primary"
-        >
+        {handleWarning()}
+        <Button onClick={handleCreateIssue} appearance="primary">
           Create
         </Button>
       </Modal.Footer>

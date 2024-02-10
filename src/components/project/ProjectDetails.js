@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import customAxios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
-import CreateIssue from "../issue/createIssue";
-import { Sidebar } from "./sidebar";
+import CreateIssue from "../issue/CreateIssue";
+import { Sidebar } from "../layouts/Sidebar";
+import Dnd from "../dnd/Dnd";
 import "rsuite/dist/rsuite.min.css";
-import Dnd from "../../dnd/dnd";
-export default function ProjectDetails(props) {
-  const [todos, setTodos] = React.useState({});
-  const { auth, currentUser } = React.useContext(AuthContext);
+import { Issuedata } from "../../assets/CommonData";
+
+export default function ProjectDetails() {
+  const { auth, currentUser } = useContext(AuthContext);
+  const [todos, setTodos] = useState({});
   const [modal, setModal] = useState(false);
   const [ready, setReady] = useState(false);
   const [issuecreated, setIssuecreated] = useState(false);
-  const emptydata = {
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [state, setState] = useState({
     tasks: {},
     columns: {
       "column-1": { id: "column-1", title: "To Do", taskIds: [] },
@@ -20,19 +23,18 @@ export default function ProjectDetails(props) {
       "column-3": { id: "column-3", title: "Done", taskIds: [] },
     },
     columnOrder: ["column-1", "column-2", "column-3"],
-  };
-  // if (todos.projectissues && !ready ) {
-  //   setFinalData(todos.projectissues);
-  //   setReady(true);
-  // }
+  });
 
   const id = useParams();
   useEffect(() => {
     const getProjects = async () => {
       if (currentUser) {
+        console.log("Fetching project details for project id:", id.id);
         try {
           const response = await customAxios.get(`/projects/${id.id}`);
           setTodos(response.data);
+          if (response.data.projectissues.tasks)
+            setState(response.data.projectissues);
           if (response.data.projectissues.columnOrder.length > 0) {
             if (!ready) {
               setReady(true);
@@ -44,8 +46,20 @@ export default function ProjectDetails(props) {
       }
     };
     getProjects();
-  }, [currentUser, issuecreated]);
-  return currentUser ? (
+  }, [currentUser, issuecreated, id.id]);
+
+  if (!currentUser)
+    return (
+      <div>
+        <Link to="/">
+          <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
+            Please Login
+          </h2>
+        </Link>
+      </div>
+    );
+
+  return (
     <div className="pt-[60px] bg-white-800">
       <aside
         id="default-sidebar"
@@ -62,7 +76,7 @@ export default function ProjectDetails(props) {
           <ol>
             <li className="inline-block">
               <a
-                href="/"
+                href="/projects"
                 className="after:content-['/'] after:px-2 text-black dark:text-white"
               >
                 <span>Projects</span>
@@ -84,42 +98,51 @@ export default function ProjectDetails(props) {
             <button
               type="button"
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              onClick={() => setModal(true)}
+              onClick={() => {
+                if (!isMinimized) setModal(true);
+                else {
+                  setIsMinimized(false);
+                  setModal(true);
+                }
+              }}
             >
               Create Issue
             </button>
           </div>
 
-          {modal && (
+          {
             <CreateIssue
               modal={modal}
               setModal={setModal}
               projectinfo={todos}
               user={auth.info}
               setIssuecreated={setIssuecreated}
+              setIsMinimized={setIsMinimized}
             />
-          )}
+          }
 
           <div
             id="DnDParent"
             className="p-4 border-2 overflow-y-auto max-h-[500px]  border-gray-200 border-dashed rounded-lg dark:border-gray-700"
           >
-            {ready ? (
-              <Dnd data={todos.projectissues} project_id={id} />
-            ) : (
-              <Dnd data={emptydata}></Dnd>
-            )}
+            {<Dnd state={state} setState={setState} project_id={id} />}
           </div>
         </div>
+        {isMinimized && (
+          <div
+            onClick={() => {
+              setModal(true);
+              setIsMinimized(false);
+            }}
+            className=" bg-white hover:cursor-pointer border-2 shadow-2xl items-center fixed bottom-9  rounded-md right-12 w-[20%] h-12 flex "
+          >
+            <div className="inline-block px-4  ">{Issuedata[0].icon}</div>
+            <span className="inline-block  bg-white  text-black font-bold rounded">
+              New task
+            </span>
+          </div>
+        )}
       </div>
-    </div>
-  ) : (
-    <div>
-      <Link to="/">
-        <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
-          Please Login
-        </h2>
-      </Link>
     </div>
   );
 }

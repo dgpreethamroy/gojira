@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import Task from "./task";
+import Task from "./Task";
 const Container = styled.div`
   margin: 8px;
   border-radius: 7px;
@@ -13,18 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-// const Container = ({ children, ...props }) => {
-//   return (
-//     <div
-//       {...props}
-//       className="m-2 border border-gray-300 rounded w-80 flex flex-col bg-white"
-//     >
-//       {children}
-//     </div>
-//   );
-// };
 
-console.log("CC", Container);
 const Title = styled.h5`
   background-color: white;
   border-radius: 2px;
@@ -42,10 +31,7 @@ const TaskList = styled.div`
   min-height: 100px;
 `;
 
-// background-color: ${(props) =>
-//   props.isDraggingOver ? "lightgrey" : "inherit"};
-
-const column = (props) => {
+const Column = (props) => {
   return (
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
@@ -68,7 +54,6 @@ const column = (props) => {
             }`}
             >
               <p id={props.column.id}>
-                {" "}
                 {props.tasks.length ? ` ${props.tasks.length} - ` : ""}
               </p>
               <span
@@ -111,4 +96,4 @@ const column = (props) => {
   );
 };
 
-export default column;
+export default Column;
