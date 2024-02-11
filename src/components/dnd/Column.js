@@ -84,7 +84,13 @@ const Column = (props) => {
                 isDraggingOver={snapshot.isDraggingOver}
               >
                 {props.tasks.map((task, index) => (
-                  <Task key={task.id} task={task} index={index} />
+                  <Task
+                    key={task.id}
+                    task={task}
+                    index={index}
+                    parenttitle={props.column.title}
+                    projectmembers={props.projectmembers}
+                  />
                 ))}
                 {provided.placeholder}
               </TaskList>

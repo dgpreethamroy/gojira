@@ -31,15 +31,13 @@ export default function ProjectDetails() {
       if (currentUser) {
         console.log("Fetching project details for project id:", id.id);
         try {
+          // Get Project Details
           const response = await customAxios.get(`/projects/${id.id}`);
           setTodos(response.data);
           if (response.data.projectissues.tasks)
             setState(response.data.projectissues);
-          if (response.data.projectissues.columnOrder.length > 0) {
-            if (!ready) {
-              setReady(true);
-            }
-          }
+          if (!ready) setReady(true);
+          //
         } catch (error) {
           console.log(error);
         }
@@ -123,9 +121,10 @@ export default function ProjectDetails() {
 
           <div
             id="DnDParent"
-            className="p-4 border-2 overflow-y-auto max-h-[500px]  border-gray-200 border-dashed rounded-lg dark:border-gray-700"
+            style={{ maxHeight: window.innerHeight - 260 }}
+            className={`p-4 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
           >
-            {<Dnd state={state} setState={setState} project_id={id} />}
+            {<Dnd state={state} setState={setState} projectmembers={todos.projectmembers} project_id={id} />}
           </div>
         </div>
         {isMinimized && (

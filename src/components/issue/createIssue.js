@@ -25,12 +25,13 @@ export default function CreateIssue({
   const [labels, setLabels] = useState("Select an option");
   const [icon, setIcon] = useState("UnAssigned");
   const [issueIcon, setIssueIcon] = useState(Issuedata[0].icon);
-  const defaultvalues = {
-    issuetype: "Bug",
-    status: "To Do",
-    summary: "TADA",
-    description: "Only Lights",
-  };
+  //  Implement Later
+  // const defaultvalues = {
+  //   issuetype: "Bug",
+  //   status: "To Do",
+  //   summary: "TADA",
+  //   description: "Only Lights",
+  // };
   const URL = "/issues/";
 
   const renderMenuItem = (label, item) => {
@@ -60,7 +61,7 @@ export default function CreateIssue({
         summary: document.getElementById("summary").value,
         description: document.getElementById("description").value,
         assignee: Assignee,
-        labels: labels,
+        labels: [labels],
       });
       console.log(response);
     } catch (error) {

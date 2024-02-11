@@ -7,7 +7,7 @@ const Container = styled.div`
   display: flex;
 `;
 
-const Dnd = ({ state, setState, project_id }) => {
+const Dnd = ({ state, setState, project_id, projectmembers }) => {
   console.log("Dnd Component");
 
   const onDragStart = (event) => {
@@ -120,6 +120,7 @@ const Dnd = ({ state, setState, project_id }) => {
               const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
               return (
                 <Column
+                  projectmembers={projectmembers}
                   key={column.id}
                   column={column}
                   index={index}
