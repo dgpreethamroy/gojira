@@ -251,7 +251,7 @@ export default function CreateIssue({
           <span
             onClick={() => {
               setIcon(user.name);
-              setAssignee(user.name);
+              setAssignee(user.id);
             }}
             className="font-bold w-[14%] text-base text-blue-600 hover:underline hover:cursor-pointer"
           >

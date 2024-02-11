@@ -44,8 +44,22 @@ a:hover {
 
 .shake:hover {
   animation: tilt-shaking 0.5s;
+  .hidenow {
+    opacity: 1;
+  }
 }
-
+.hover-div:hover + .hide-div {
+  opacity: 1;
+}
+.hide-div {
+  opacity: 0;
+}
+.hidenow {
+  opacity: 0;
+}
+/* .hidenow:hover {
+  opacity: 1;
+} */
 @keyframes tilt-shaking {
   0% {
     transform: rotate(0deg);
@@ -105,6 +119,9 @@ a:hover {
   position: fixed;
   top: 0;
   width: 100%;
+}
+.rs-icon {
+  padding: 0;
 }
 
 .sticky + .content {
