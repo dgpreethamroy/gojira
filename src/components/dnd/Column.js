@@ -21,7 +21,7 @@ const Title = styled.h5`
   background-color: #f2f2f2;
   border-radius: 2px;
   padding-left: 10px;
-  padding-top: 10px;
+  // padding-top: 10px;
   padding-bottom: 10px;
 `;
 const TaskList = styled.div`
@@ -33,10 +33,10 @@ const TaskList = styled.div`
   align-items: center;
   min-height: 100px;
 `;
-const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
-  Math.random() * 256
-)},${Math.floor(Math.random() * 256)})`;
-const lightrandomColor = randomColor.replace(")", ", 0.25)").replace("b", "ba");
+// const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
+//   Math.random() * 256
+// )},${Math.floor(Math.random() * 256)})`;
+// const lightrandomColor = randomColor.replace(")", ", 0.25)").replace("b", "ba");
 
 const renderIconButton = (props, ref) => {
   return (
@@ -58,16 +58,22 @@ const renderIconButton = (props, ref) => {
 };
 
 const Column = (props) => {
+  const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
+    Math.random() * 256
+  )},${Math.floor(Math.random() * 256)})`;
+  const lightrandomColor = randomColor
+    .replace(")", ", 0.25)")
+    .replace("b", "ba");
   return (
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
         <Container
-          className="hover-crap px-4"
+          className="hover-crap"
           {...provided.draggableProps}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
-          <Title>
+          <Title className="flex justify-between items-center border-b-2 border-gray-400">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${
@@ -97,8 +103,12 @@ const Column = (props) => {
                   document.getElementById(props.column.id).style.display =
                     "none";
                   e.target.children[0].style.width =
-                    e.target.parentElement.parentElement.offsetWidth + "px";
-                  e.target.children[0].style.padding = "8px";
+                    e.target.parentElement.parentElement.offsetWidth * 0.65 +
+                    "px";
+                  e.target.children[0].style.paddingLeft = "8px";
+                  e.target.children[0].style.paddingRight = "8px";
+                  e.target.children[0].style.paddingTop = "5px";
+                  e.target.children[0].style.paddingBottom = "5px";
                 }}
                 onBlur={(e) => {
                   document.getElementById(props.column.id).style.display =
@@ -111,9 +121,10 @@ const Column = (props) => {
                 <p className="hover:cursor-pointer">{props.column.title}</p>
               </span>
             </div>
-            <div className="float-right z-10 hide-now">
+
+            <div className=" z-10 hide-now px-4">
               <Dropdown renderToggle={renderIconButton}>
-                <Dropdown.Item onClick={props.handleDelete}>
+                <Dropdown.Item onClick={props.handleColumnDelete}>
                   Delete
                 </Dropdown.Item>
               </Dropdown>

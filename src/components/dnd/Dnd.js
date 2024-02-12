@@ -23,7 +23,7 @@ const handleCancelEdit = (e) => {
   document.getElementById("createColumnDiv").style.display = "none";
 };
 const Dnd = ({ state, setState, project_id, projectmembers }) => {
-  const handleDelete = (e) => {
+  const handleColumnDelete = (e) => {
     debugger;
     let deletecolumn =
       e.target.parentElement.parentElement.parentElement.previousSibling
@@ -37,7 +37,7 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
     };
     setState(NewState);
     handlenewState(NewState);
-    window.location.reload();
+    //window.location.reload();
   };
 
   console.log("Dnd Component");
@@ -171,7 +171,7 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
               const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
               return (
                 <Column
-                  handleDelete={handleDelete}
+                  handleColumnDelete={handleColumnDelete}
                   projectmembers={projectmembers}
                   key={column.id}
                   column={column}
