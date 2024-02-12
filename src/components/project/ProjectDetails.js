@@ -121,10 +121,17 @@ export default function ProjectDetails() {
 
           <div
             id="DnDParent"
-            style={{ maxHeight: window.innerHeight - 260 }}
+            //style={{ maxHeight: window.innerHeight - 260 }}
             className={`p-4 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
           >
-            {<Dnd state={state} setState={setState} projectmembers={todos.projectmembers} project_id={id} />}
+            {
+              <Dnd
+                state={state}
+                setState={setState}
+                projectmembers={todos.projectmembers}
+                project_id={id}
+              />
+            }
           </div>
         </div>
         {isMinimized && (
@@ -133,7 +140,7 @@ export default function ProjectDetails() {
               setModal(true);
               setIsMinimized(false);
             }}
-            className=" bg-white hover:cursor-pointer border-2 shadow-2xl items-center fixed bottom-9  rounded-md right-12 w-[20%] h-12 flex "
+            className=" bg-white hover:cursor-pointer border-2 shadow-2xl items-center fixed top-[102px]  rounded-md right-52 w-[20%] h-12 flex "
           >
             <div className="inline-block px-4  ">{Issuedata[0].icon}</div>
             <span className="inline-block  bg-white  text-black font-bold rounded">

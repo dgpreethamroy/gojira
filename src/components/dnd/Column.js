@@ -2,20 +2,23 @@ import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import Task from "./Task";
+import { Dropdown, IconButton } from "rsuite";
+import MoreIcon from "@rsuite/icons/More";
+
 const Container = styled.div`
   margin: 8px;
   border-radius: 7px;
-  background-color: white;
+  background-color: #f2f2f2;
   border: 2px solid lightgrey;
   padding-top: 10px;
-  min-height: 320px;
-  width: 320px;
+  min-height: 420px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
 `;
 
 const Title = styled.h5`
-  background-color: white;
+  background-color: #f2f2f2;
   border-radius: 2px;
   padding-left: 10px;
   padding-top: 10px;
@@ -26,23 +29,47 @@ const TaskList = styled.div`
   border-radius: 7px;
   transition: background-color 0.2s ease;
   flex-grow: 1;
-  background-color: white;
+  background-color: #f2f2f2;
   align-items: center;
   min-height: 100px;
 `;
+const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
+  Math.random() * 256
+)},${Math.floor(Math.random() * 256)})`;
+const lightrandomColor = randomColor.replace(")", ", 0.25)").replace("b", "ba");
+
+const renderIconButton = (props, ref) => {
+  return (
+    <IconButton
+      style={{ padding: "0em" }}
+      {...props}
+      ref={ref}
+      icon={
+        <MoreIcon
+          style={{
+            fontSize: "2.5em",
+            color: "rgb(0, 0, 0)",
+            background: "#f2f2f2",
+          }}
+        />
+      }
+    />
+  );
+};
 
 const Column = (props) => {
   return (
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
         <Container
+          className="hover-crap px-4"
           {...provided.draggableProps}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
           <Title>
             <div
-              className={`inline-flex px-2 rounded whitespace-pre-wrap
+              className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${
               (props.column.title === "To Do" &&
                 "text-[#42526E]  bg-[#EAE6FF]") ||
@@ -50,8 +77,17 @@ const Column = (props) => {
                 "text-[#0052CC] bg-[#e3efff]") ||
               (props.column.title === "In Review" &&
                 "text-[#A22E24] bg-[#f4d1ce]") ||
-              (props.column.title === "Done" && "text-[#006644] bg-[#d2fbd0]")
+              (props.column.title === "Done" &&
+                "text-[#006644] bg-[#d2fbd0]") ||
+              `text-[#006644]`
             }`}
+              style={
+                !["To Do", "In Progress", "In Review", "Done"].includes(
+                  props.column.title
+                )
+                  ? { backgroundColor: lightrandomColor, color: randomColor }
+                  : null
+              }
             >
               <p id={props.column.id}>
                 {props.tasks.length ? ` ${props.tasks.length} - ` : ""}
@@ -75,7 +111,15 @@ const Column = (props) => {
                 <p className="hover:cursor-pointer">{props.column.title}</p>
               </span>
             </div>
+            <div className="float-right z-10 hide-now">
+              <Dropdown renderToggle={renderIconButton}>
+                <Dropdown.Item onClick={props.handleDelete}>
+                  Delete
+                </Dropdown.Item>
+              </Dropdown>
+            </div>
           </Title>
+
           <Droppable droppableId={props.column.id} type="task">
             {(provided, snapshot) => (
               <TaskList

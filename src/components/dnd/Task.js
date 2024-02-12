@@ -12,10 +12,11 @@ const Container = styled.div`
   border-radius: 7px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${(props) => (props.isDragging ? "inherit" : "white")};
+  background-color: ${(props) =>
+    props.isDragging ? "#b3ffb3" : "rgb(250,250,250)"};
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.02);
   &:hover {
-    background-color: #eae6ff;
+    background-color: #99ccff;
   }
 `;
 const renderIconButton = (props, ref) => {
@@ -43,6 +44,9 @@ const Task = (props) => {
   )[0].name;
   const Icon = Issuedata.filter((obj) => obj.label === props.task.issuetype)[0]
     .icon;
+
+  // handle Delete Event
+
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
@@ -53,6 +57,9 @@ const Task = (props) => {
     } catch (error) {
       console.log(error);
     }
+    window.location.reload();
+    e.preventDefault();
+    return false; // prevent the default form submission behavior
   };
 
   return (
@@ -60,21 +67,19 @@ const Task = (props) => {
       {(provided, snapshot) => (
         <Container
           className="shake"
-          // onClick={() => setShowIssue(!showIssue)}
+          onClick={(e) =>
+            !e.target.classList.contains("rs-icon") &&
+            !e.target.classList.contains("rs-dropdown-item") &&
+            setShowIssue(!showIssue)
+          }
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-          <div className="float-right hidenow">
+          <div className="float-right z-10 hidenow">
             <Dropdown renderToggle={renderIconButton}>
-              <Dropdown.Item
-                onClick={(e) => {
-                  handleDelete(e);
-                }}
-              >
-                Delete
-              </Dropdown.Item>
+              <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
             </Dropdown>
           </div>
           <p className="text-black font-semibold py-2">{props.task.summary}</p>

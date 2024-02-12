@@ -70,6 +70,8 @@ export default function CreateIssue({
     setModal(false);
     setIssuecreated((prev) => !prev);
     console.log("Issue Created");
+    window.location.reload();
+    return false; // prevent the default form submission behavior
   };
   const handleWarning = () => {
     return (
@@ -121,7 +123,9 @@ export default function CreateIssue({
         </Button>
         <Button
           onClick={() => {
-            setIsMinimized((prev) => !prev);
+            setTimeout(() => {
+              setIsMinimized((prev) => !prev);
+            }, 500);
             handleClose();
           }}
           className="float-right rs-btn-bgwhite"

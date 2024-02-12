@@ -15,7 +15,7 @@ h1 {
 @layer base {
   body {
     @apply bg-white dark:bg-gray-900;
-    @apply overflow-hidden;
+    @apply overflow-y-hidden;
   }
 }
 .issue-wrap[data-v-bf5f2b94] {
@@ -48,6 +48,9 @@ a:hover {
     opacity: 1;
   }
 }
+.hover-crap:hover .hide-now {
+  opacity: 1;
+}
 .hover-div:hover + .hide-div {
   opacity: 1;
 }
@@ -55,6 +58,9 @@ a:hover {
   opacity: 0;
 }
 .hidenow {
+  opacity: 0;
+}
+.hide-now {
   opacity: 0;
 }
 /* .hidenow:hover {
