@@ -25,12 +25,13 @@ export default function CreateIssue({
   const [labels, setLabels] = useState("Select an option");
   const [icon, setIcon] = useState("UnAssigned");
   const [issueIcon, setIssueIcon] = useState(Issuedata[0].icon);
-  const defaultvalues = {
-    issuetype: "Bug",
-    status: "To Do",
-    summary: "TADA",
-    description: "Only Lights",
-  };
+  //  Implement Later
+  // const defaultvalues = {
+  //   issuetype: "Bug",
+  //   status: "To Do",
+  //   summary: "TADA",
+  //   description: "Only Lights",
+  // };
   const URL = "/issues/";
 
   const renderMenuItem = (label, item) => {
@@ -60,7 +61,7 @@ export default function CreateIssue({
         summary: document.getElementById("summary").value,
         description: document.getElementById("description").value,
         assignee: Assignee,
-        labels: labels,
+        labels: [labels],
       });
       console.log(response);
     } catch (error) {
@@ -69,6 +70,8 @@ export default function CreateIssue({
     setModal(false);
     setIssuecreated((prev) => !prev);
     console.log("Issue Created");
+    window.location.reload();
+    return false; // prevent the default form submission behavior
   };
   const handleWarning = () => {
     return (
@@ -120,7 +123,9 @@ export default function CreateIssue({
         </Button>
         <Button
           onClick={() => {
-            setIsMinimized((prev) => !prev);
+            setTimeout(() => {
+              setIsMinimized((prev) => !prev);
+            }, 500);
             handleClose();
           }}
           className="float-right rs-btn-bgwhite"
@@ -250,7 +255,7 @@ export default function CreateIssue({
           <span
             onClick={() => {
               setIcon(user.name);
-              setAssignee(user.name);
+              setAssignee(user.id);
             }}
             className="font-bold w-[14%] text-base text-blue-600 hover:underline hover:cursor-pointer"
           >

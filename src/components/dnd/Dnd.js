@@ -3,22 +3,73 @@ import Column from "./Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import axios from "../../api/axios";
+import PlusIcon from "@rsuite/icons/Plus";
+import { XIcon, CheckIcon } from "@heroicons/react/solid";
+
 const Container = styled.div`
   display: flex;
 `;
+const handleToggleNew = (e) => {
+  console.log("handleToggleNew");
+  document.getElementById("createColumn").style.display = "none";
+  document.getElementById("createColumnDiv").style.display = "block";
+  document.getElementById("DnDParent").scrollLeft =
+    document.getElementById("DnDParent").scrollWidth;
+  document.getElementById("createColumnInput").focus();
+};
 
-const Dnd = ({ state, setState, project_id }) => {
+const handleCancelEdit = (e) => {
+  document.getElementById("createColumn").style.display = "block";
+  document.getElementById("createColumnDiv").style.display = "none";
+};
+const Dnd = ({ state, setState, project_id, projectmembers }) => {
+  const handleDelete = (e) => {
+    debugger;
+    let deletecolumn =
+      e.target.parentElement.parentElement.parentElement.previousSibling
+        .children[0].id;
+    let NewState = {
+      ...state,
+      columnOrder: state.columnOrder.filter(
+        (column) => column !== deletecolumn
+      ),
+      columns: { ...state.columns, [deletecolumn]: undefined },
+    };
+    setState(NewState);
+    handlenewState(NewState);
+    window.location.reload();
+  };
+
   console.log("Dnd Component");
-
+  const handleSaveChanges = (e) => {
+    console.log("handleSaveChanges");
+    const columnTitle = document.getElementById("createColumnInput").value;
+    const columnId = `column-${Object.keys(state.columns).length + 1}`;
+    const newColumn = {
+      id: columnId,
+      title: columnTitle,
+      taskIds: [],
+    };
+    const newState = {
+      ...state,
+      columns: { ...state.columns, [columnId]: newColumn },
+      columnOrder: [...state.columnOrder, columnId],
+    };
+    debugger;
+    setState(newState);
+    handlenewState(newState);
+    document.getElementById("createColumn").style.display = "block";
+    document.getElementById("createColumnDiv").style.display = "none";
+  };
   const onDragStart = (event) => {
     // console.log("onDragStart", event);
   };
 
   const onDragUpdate = (update) => {
-    const { destination } = update;
-    const opacity = destination
-      ? destination.index / Object.keys(state.tasks).length
-      : 0;
+    /// const { destination } = update;
+    // const opacity = destination
+    //   ? destination.index / Object.keys(state.tasks).length
+    //   : 0;
     //document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
     //document.body.style.backgroundColor= '#EAE6FF'
     //document.body.style.color = "orange";
@@ -120,6 +171,8 @@ const Dnd = ({ state, setState, project_id }) => {
               const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
               return (
                 <Column
+                  handleDelete={handleDelete}
+                  projectmembers={projectmembers}
                   key={column.id}
                   column={column}
                   index={index}
@@ -127,6 +180,40 @@ const Dnd = ({ state, setState, project_id }) => {
                 />
               );
             })}
+            <div className="py-2 ">
+              <button
+                onClick={handleToggleNew}
+                id="createColumn"
+                className="border-2 border-gray-300  rounded-md"
+              >
+                <PlusIcon
+                  style={{
+                    borderRadius: "6px",
+                    fontSize: "2em",
+                    color: "rgb(50, 50, 50)",
+                    background: "rgb(240, 240, 240)",
+                  }}
+                />
+              </button>
+              <div id="createColumnDiv" className="hidden ">
+                <input
+                  id="createColumnInput"
+                  className="mt-1 mb-1 px-2 h-14 border font-semibold text-lg border-gray-300 rounded-md w-[300px] "
+                />
+                <button
+                  onClick={handleCancelEdit}
+                  className="ml-2 p-2 text-red-600 hover:text-red-700 focus:outline-none bg-white"
+                >
+                  <XIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={handleSaveChanges}
+                  className="ml-2 p-2 text-green-600 hover:text-green-700 focus:outline-none bg-white"
+                >
+                  <CheckIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
           </Container>
         )}
       </Droppable>
