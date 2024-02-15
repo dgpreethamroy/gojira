@@ -114,11 +114,8 @@ export default function CreateIssue({
             setModal(false);
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
-            <path
-              d="M12 10.586L6.707 5.293a1 1 0 00-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414L12 10.586z"
-              fill="currentColor"
-            ></path>
+          <svg x="0px" y="0px" width="24" height="24" viewBox="0 0 50 50">
+            <path d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z"></path>
           </svg>
         </Button>
         <Button

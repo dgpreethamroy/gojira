@@ -7,7 +7,7 @@ import { Sidebar } from "../layouts/Sidebar";
 import Dnd from "../dnd/Dnd";
 import "rsuite/dist/rsuite.min.css";
 import { Issuedata } from "../../assets/CommonData";
-
+import Modal from "../ui/modal/Modal";
 export default function ProjectDetails() {
   const { auth, currentUser } = useContext(AuthContext);
   const [todos, setTodos] = useState({});
@@ -93,7 +93,7 @@ export default function ProjectDetails() {
             <h2 className="py-2 text-2xl dark:text-white font-semibold">
               SCRUM SPRINT 1
             </h2>
-            <button
+            {/* <button
               type="button"
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               onClick={() => {
@@ -105,7 +105,14 @@ export default function ProjectDetails() {
               }}
             >
               Create Issue
-            </button>
+            </button> */}
+            <Modal className="ml-auto">
+              <Modal.Header close={true} minimize={true}>
+                headlessui modal
+              </Modal.Header>
+              This is Modal Body
+              <Modal.Footer close={true} />
+            </Modal>
           </div>
 
           {

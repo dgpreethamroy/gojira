@@ -147,3 +147,25 @@ a:hover {
     143
   ) !important; /* Your desired background color */
 }
+.hello {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+.custombg {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  font-family: sans-serif;
+  font-size: 1.5rem;
+  background: linear-gradient(
+    to right,
+    #ef5350,
+    #f48fb1,
+    #7e57c2,
+    #2196f3,
+    #26c6da,
+    #43a047,    #f9a825,
+    #ff5722
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
