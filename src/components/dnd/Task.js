@@ -67,7 +67,7 @@ const Task = (props) => {
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container
-          className="" //shake here
+          className="shake hover-crap" //shake here
           onClick={(e) =>
             !e.target.classList.contains("rs-icon") &&
             !e.target.classList.contains("rs-dropdown-item") &&
@@ -78,12 +78,15 @@ const Task = (props) => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-          <div className="float-right z-10 hidenow">
+          <div className="flex items-center justify-between">
+
+          <p className="text-black font-semibold py-2">{props.task.summary}</p>
+          <div className="z-10 hidenow">
             <Dropdown renderToggle={renderIconButton}>
               <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
             </Dropdown>
           </div>
-          <p className="text-black font-semibold py-2">{props.task.summary}</p>
+          </div>
 
           <div className="py-2">
             {props.task.labels.map(
