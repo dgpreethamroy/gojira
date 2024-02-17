@@ -93,7 +93,7 @@ export default function ProjectDetails() {
             <h2 className="py-2 text-2xl dark:text-white font-semibold">
               SCRUM SPRINT 1
             </h2>
-            {/* <button
+            <button
               type="button"
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               onClick={() => {
@@ -105,14 +105,18 @@ export default function ProjectDetails() {
               }}
             >
               Create Issue
-            </button> */}
-            <Modal className="ml-auto">
+            </button>
+            {/* <Modal className="ml-auto  " name="Create Issue">
               <Modal.Header close={true} minimize={true}>
-                headlessui modal
+                Create issue
               </Modal.Header>
-              This is Modal Body
+              <p>This is Modal Body</p>
+              <p>This is Modal Body</p>
+              <p>This is Modal Body</p>
+              <p>This is Modal Body</p>
+              <p>This is Modal Body</p>
               <Modal.Footer close={true} />
-            </Modal>
+            </Modal> */}
           </div>
 
           {
@@ -128,8 +132,8 @@ export default function ProjectDetails() {
 
           <div
             id="DnDParent"
-            //style={{ maxHeight: window.innerHeight - 260 }}
-            className={`p-4 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
+            style={{ maxHeight: window.innerHeight - 234 }}
+            className={`px-4 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
           >
             {
               <Dnd

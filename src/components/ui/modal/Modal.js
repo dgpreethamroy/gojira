@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import ModalFooter from "./ModalFooter";
 import ModalHeader from "./ModalHeader";
 // Modal component
-const Modal = ({ className, children }) => {
+const Modal = ({ className, children, z = 10, name }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -11,17 +11,18 @@ const Modal = ({ className, children }) => {
     <div className={className}>
       <button
         onClick={() => {
-          if (!isMinimized) setIsOpen(true);
-          else {
+          if (!isMinimized) {
+            setIsOpen(true);
+          } else {
             setIsMinimized(false);
             setTimeout(() => {
               isOpen(true);
             }, 200);
           }
         }}
-        className=" custombg"
+        className="text-xl font-extrabold italic text-black dark:text-gray-500"
       >
-        Create Issue
+        {name ? name : "open Modal"}
       </button>
       {isMinimized && (
         <div
@@ -31,14 +32,22 @@ const Modal = ({ className, children }) => {
           }}
           className=" bg-white hover:cursor-pointer border-2 shadow-2xl items-center fixed bottom-10  rounded-md right-52 w-[20%] h-12 flex "
         >
-          <span className="inline-block  bg-white  text-black font-bold rounded">
+          <span className="inline-block px-2 bg-white  text-black font-bold rounded">
             New task
           </span>
         </div>
       )}
       <Transition show={isOpen} as={Fragment}>
-        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />{" "}
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          className="relative"
+        >
+          <Dialog.Overlay
+            className={`fixed inset-0 bg-black opacity-30 ${
+              z !== "10" && "z-" + z
+            }  `}
+          />
           <Transition.Child
             as={Fragment}
             enter="transition-transform duration-300"
@@ -63,11 +72,12 @@ const Modal = ({ className, children }) => {
                             />
                           );
                       })
-                    : children.type === "Modal.Header" && (
+                    : children.type === "ModalHeader" && (
                         <ModalHeader
-                          setIsOpen={setIsOpen}
                           setIsMinimized={setIsMinimized}
-                          children={children}
+                          setIsOpen={setIsOpen}
+                          {...children.props}
+                          children={children.props.children}
                         />
                       )}
                 </div>

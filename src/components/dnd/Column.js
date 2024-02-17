@@ -10,7 +10,6 @@ const Container = styled.div`
   border-radius: 7px;
   background-color: #f2f2f2;
   border: 2px solid lightgrey;
-  padding-top: 10px;
   min-height: 420px;
   min-width: 300px;
   display: flex;
@@ -21,7 +20,7 @@ const Title = styled.h5`
   background-color: #f2f2f2;
   border-radius: 2px;
   padding-left: 10px;
-  // padding-top: 10px;
+  padding-top: 10px;
   padding-bottom: 10px;
 `;
 const TaskList = styled.div`
@@ -73,7 +72,7 @@ const Column = (props) => {
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
-          <Title className="flex justify-between items-center border-b-2 border-gray-400">
+          <Title className="flex justify-between items-center border-b-2 z-50 sticky top-0 border-gray-400">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${

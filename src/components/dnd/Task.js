@@ -13,10 +13,11 @@ const Container = styled.div`
   padding: 8px;
   margin-bottom: 8px;
   background-color: ${(props) =>
-    props.isDragging ? "#b3ffb3" : "rgb(250,250,250)"};
+    props.isDragging ? "#e8e9e8" : "rgb(250,250,250)"};
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.02);
   &:hover {
-    background-color: #99ccff;
+    // background-color: #99ccff; & set isDragging color to b3ffb3
+    background-color: #e8e9e8;
   }
 `;
 const renderIconButton = (props, ref) => {
@@ -66,7 +67,7 @@ const Task = (props) => {
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container
-          className="shake"
+          // className="shake"
           onClick={(e) =>
             !e.target.classList.contains("rs-icon") &&
             !e.target.classList.contains("rs-dropdown-item") &&
@@ -77,12 +78,16 @@ const Task = (props) => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-          <div className="float-right z-10 hidenow">
-            <Dropdown renderToggle={renderIconButton}>
-              <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
-            </Dropdown>
+          <div className="flex w-full">
+            <p className="text-black font-semibold py-2 truncate block overflow-hidden whitespace-no-wrap  w-11/12">
+              {props.task.summary}
+            </p>
+            <div className="text-right z-10 hidenow ">
+              <Dropdown renderToggle={renderIconButton}>
+                <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
+              </Dropdown>
+            </div>
           </div>
-          <p className="text-black font-semibold py-2">{props.task.summary}</p>
 
           <div className="py-2">
             {props.task.labels.map(
@@ -114,7 +119,7 @@ const Task = (props) => {
               round={true}
             />
 
-            <div className="hide-div float-right text-black italic font-bold">
+            <div className="hide-div float-right py-6 text-black italic font-bold">
               Assignee: {assignee_name}
             </div>
           </div>

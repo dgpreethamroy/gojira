@@ -48,7 +48,7 @@ a:hover {
     opacity: 1;
   }
 }
-.hover-crap:hover .hide-now {
+.hover-crap:hover .hidenow {
   opacity: 1;
 }
 .hover-div:hover + .hide-div {
@@ -121,11 +121,11 @@ a:hover {
 									   to(#0052CC),
 									   color-stop(.6,#6d92ca))
 } */
-.sticky {
+/* .sticky {
   position: fixed;
   top: 0;
   width: 100%;
-}
+} */
 .rs-icon {
   padding: 0;
 }
@@ -163,7 +163,8 @@ a:hover {
     #7e57c2,
     #2196f3,
     #26c6da,
-    #43a047,    #f9a825,
+    #43a047,
+    #f9a825,
     #ff5722
   );
   -webkit-background-clip: text;

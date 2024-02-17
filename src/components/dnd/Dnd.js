@@ -132,6 +132,7 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
       };
       setState(newState);
       handlenewState(newState);
+      return;
     }
     const startTaskIds = Array.from(start.taskIds);
     startTaskIds.splice(source.index, 1);

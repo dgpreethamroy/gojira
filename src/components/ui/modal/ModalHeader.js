@@ -7,6 +7,8 @@ const ModalHeader = ({
   minimize,
   children,
 }) => {
+  const NestedModal = document.getElementsByClassName("inset-0").length;
+  if (NestedModal) minimize = false;
   return (
     <div className="flex">
       <div className="text-lg font-bold mb-2 w-4/5">{children}</div>
