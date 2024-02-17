@@ -11,6 +11,7 @@ const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 7px;
   padding: 8px;
+  padding-bottom:0px;
   margin-bottom: 8px;
   background-color: ${(props) =>
     props.isDragging ? "#b3ffb3" : "rgb(250,250,250)"};
@@ -66,7 +67,7 @@ const Task = (props) => {
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container
-          className="shake"
+          className="" //shake here
           onClick={(e) =>
             !e.target.classList.contains("rs-icon") &&
             !e.target.classList.contains("rs-dropdown-item") &&
@@ -97,27 +98,37 @@ const Task = (props) => {
                 )
             )}
           </div>
-          <div className="py-2 ">
+          <div className="pt-2 flex justify-between items-start">
+            <div className="flex items-center">
+
             {Icon}
             <span
               className={`font-semibold text-black ${
                 props.parenttitle === "Done" && "line-through"
               }`}
-            >
+              >
               {props.task.issuetype.toUpperCase()}
             </span>
+            </div>
+           
+            <div className="flex flex-col items-end justify-end" >
+       
             <Avatar
-              className="float-right hover-div"
+              className="hover-div"
               name={assignee_name}
               textSizeRatio={2}
               size="28"
               round={true}
-            />
-
-            <div className="hide-div float-right text-black italic font-bold">
-              Assignee: {assignee_name}
-            </div>
+              />
+            <span className=" hide-div text-black italic font-bold">
+                Assignee: {assignee_name}
+            </span>    
+            </div>     
+            
           </div>
+      
+          
+         
           {showIssue && (
             <IssueDetails
               details={props}
