@@ -2,9 +2,8 @@ import { Fragment, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
-export default function Dropdown({ data, selected, setSelected }) {
-  // const [selected, setSelected] = useState(data[0]);
-
+export default function Dropdown({ data, drop, setDrop, label }) {
+  //const [selected, setSelected] = useState(data[0]);
   const [query, setQuery] = useState("");
   const filtereddata =
     query === ""
@@ -18,11 +17,11 @@ export default function Dropdown({ data, selected, setSelected }) {
 
   return (
     <div className="fixed top-16 w-72">
-      <Combobox value={selected} onChange={setSelected}>
+      <Combobox value={drop} onChange={setDrop}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
-              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 rounded-lg"
               displayValue={(item) => item.option}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -50,7 +49,7 @@ export default function Dropdown({ data, selected, setSelected }) {
                   <Combobox.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 pl-10 pr-4   ${
                         active ? "bg-teal-600 text-white" : "text-gray-900"
                       }`
                     }
@@ -63,9 +62,14 @@ export default function Dropdown({ data, selected, setSelected }) {
                             selected ? "font-medium" : "font-normal"
                           }`}
                         >
-                          {item.option}
+                          <div className="flex justify-start items-center">
+                            {label && (
+                              <span className="px-2">{item.label}</span>
+                            )}
+                            <span>{item.option}</span>
+                          </div>
                         </span>
-                        {selected ? (
+                        {selected || item.option === drop.option ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                               active ? "text-white" : "text-teal-600"

@@ -18,6 +18,6 @@ root.render(
   //   />
   // </div>
 
-  <Test />
-  //<App />
+  //<Test />
+  <App />
 );
