@@ -2,8 +2,10 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import Table from "./components/ui/Table";
-import Modal from "./components/ui/modal/Modal";
+import { useState } from "react";
+import { Test } from "./components/ui/Test";
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   // <div>
   //   <Table
@@ -15,33 +17,7 @@ root.render(
   //     sort={true}
   //   />
   // </div>
-  // <Modal>
-  //   <Modal.Header close={true} minimize={true}>
-  //     This is Header
-  //   </Modal.Header>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <p>This is Modal Body</p>
-  //   <Modal.Footer close={true} />
-  // </Modal>
 
-  <App />
+  <Test />
+  //<App />
 );
