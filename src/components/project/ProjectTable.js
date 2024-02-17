@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 import customAxios from "../../api/axios";
+import CreateProject from './CreateProject'
 const PROJECT_URL = "/users";
 const projectsTD = ["Name", "Key", "Type", "Lead"];
 const projectobj = {
@@ -9,7 +10,7 @@ const projectobj = {
   Key: "projectkey",
   Type: "projecttype",
   Lead: "projectlead",
-};
+};  
 
 const PAGESIZE = 5;
 
@@ -109,9 +110,10 @@ export default function ProjectTable() {
           <p className=" text-2xl text-black font-medium float-left hover:cursor-pointer tracking-tight  dark:text-white">
             Projects
           </p>
-          <button className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+          {/* <button className="text-white bg-blue-700 float-right  hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
             Create New Project
-          </button>
+          </button> */}
+          {/* <CreateProject /> */}
         </div>
 
         {projects.length > 0 ? (
