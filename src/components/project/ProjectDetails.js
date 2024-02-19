@@ -121,8 +121,8 @@ export default function ProjectDetails() {
 
           <div
             id="DnDParent"
-            //style={{ maxHeight: window.innerHeight - 260 }}
-            className={`p-4 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
+            style={{ maxHeight: window.innerHeight - 200 }}
+            className={`p-4 pt-0 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
           >
             {
               <Dnd

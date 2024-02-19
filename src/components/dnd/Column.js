@@ -6,11 +6,10 @@ import { Dropdown, IconButton } from "rsuite";
 import MoreIcon from "@rsuite/icons/More";
 
 const Container = styled.div`
-  margin: 8px;
   border-radius: 7px;
   background-color: #f2f2f2;
-  border: 2px solid lightgrey;
-  padding-top: 10px;
+  border:2px solid lightgrey;
+  border-top:0px;
   min-height: 420px;
   min-width: 300px;
   display: flex;
@@ -19,9 +18,9 @@ const Container = styled.div`
 
 const Title = styled.h5`
   background-color: #f2f2f2;
-  border-radius: 2px;
+  border-top:2px solid lightgrey;
   padding-left: 10px;
-  // padding-top: 10px;
+  padding-top: 10px;
   padding-bottom: 10px;
 `;
 const TaskList = styled.div`
@@ -68,12 +67,12 @@ const Column = (props) => {
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
         <Container
-          className="hover-crap"
+          className="hover-crap mx-2"
           {...provided.draggableProps}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
-          <Title className="flex justify-between items-center border-b-2 border-gray-400">
+          <Title className="flex justify-between items-center border-b-2 border-gray-400 z-50 sticky top-[-2px]  ">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${

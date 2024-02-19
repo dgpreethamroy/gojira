@@ -121,11 +121,12 @@ a:hover {
 									   to(#0052CC),
 									   color-stop(.6,#6d92ca))
 } */
-.sticky {
+
+/* .sticky {
   position: fixed;
   top: 0;
   width: 100%;
-}
+} */
 .rs-icon {
   padding: 0;
 }
