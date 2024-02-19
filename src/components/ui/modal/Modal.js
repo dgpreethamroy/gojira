@@ -44,9 +44,8 @@ const Modal = ({ className, children, z = 10, name }) => {
           className="relative"
         >
           <Dialog.Overlay
-            className={`fixed inset-0 bg-black opacity-30 ${
-              z !== "10" && "z-" + z
-            }  `}
+            className={`fixed inset-0 opacity-70 ${z !== "10" && "z-" + z}  `}
+            style={{ backgroundColor: " rgba(9, 30, 66, 0.54)" }}
           />
           <Transition.Child
             as={Fragment}

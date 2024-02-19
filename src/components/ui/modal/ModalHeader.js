@@ -11,7 +11,7 @@ const ModalHeader = ({
   if (NestedModal) minimize = false;
   return (
     <div className="flex">
-      <div className="text-lg font-bold mb-2 w-4/5">{children}</div>
+      <div className="text-lg text-black font-bold mb-2 w-4/5">{children}</div>
       <div className="text-right w-1/5">
         {minimize && (
           <button

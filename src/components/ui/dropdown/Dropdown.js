@@ -2,8 +2,13 @@ import { Fragment, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
-export default function Dropdown({ data, drop, setDrop, label }) {
-  //const [selected, setSelected] = useState(data[0]);
+export default function Dropdown({
+  data,
+  drop,
+  setDrop,
+  label,
+  multiple = null,
+}) {
   const [query, setQuery] = useState("");
   const filtereddata =
     query === ""
@@ -16,15 +21,31 @@ export default function Dropdown({ data, drop, setDrop, label }) {
         );
 
   return (
-    <div className="fixed top-16 w-72">
-      <Combobox value={drop} onChange={setDrop}>
+    <div className="w-1/2 min-w-[300px] ] rounded-lg">
+      <Combobox value={drop} onChange={setDrop} multiple>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-            <Combobox.Input
-              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 rounded-lg"
-              displayValue={(item) => item.option}
-              onChange={(event) => setQuery(event.target.value)}
-            />
+            {multiple ? (
+              drop.length > 0 ? (
+                <>
+                  <ul>
+                    {drop.map((item, index) => (
+                      <li key={index}>{item.option}</li>
+                    ))}
+                  </ul>
+                  <Combobox.Input />
+                </>
+              ) : (
+                <Combobox.Input />
+              )
+            ) : (
+              <Combobox.Input
+                className="w-full border py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 rounded-lg"
+                displayValue={(item) => item.option}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            )}
+
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronDownIcon
                 className="h-5 w-5 text-gray-400"
@@ -69,7 +90,7 @@ export default function Dropdown({ data, drop, setDrop, label }) {
                             <span>{item.option}</span>
                           </div>
                         </span>
-                        {selected || item.option === drop.option ? (
+                        {/* {selected || item.option === drop.option ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                               active ? "text-white" : "text-teal-600"
@@ -77,7 +98,7 @@ export default function Dropdown({ data, drop, setDrop, label }) {
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
-                        ) : null}
+                        ) : null} */}
                       </>
                     )}
                   </Combobox.Option>

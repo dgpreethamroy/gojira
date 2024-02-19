@@ -1,7 +1,187 @@
 import React, { useEffect, useState } from "react";
 import Dropdown from "./dropdown/Dropdown";
-
+import Table from "./table/Table";
+import Modal from "./modal/Modal";
 export const Test = () => {
+  const table_data = [
+    {
+      projectissues: {
+        tasks: {
+          "task-18": {
+            id: "task-18",
+            summary: "TEst 22",
+            description: "fsvbdsiuvbdjksvdu",
+            issuetype: "Story",
+            assignee: "65b3adff112f8c8b512da4f5",
+            labels: ["research"],
+          },
+          "task-19": {
+            id: "task-19",
+            summary: "ffds",
+            description: "ewdfdsdfdsdfdw",
+            issuetype: "Bug",
+            assignee: "65b3adff112f8c8b512da4f5",
+            labels: ["content"],
+          },
+          "task-20": {
+            id: "task-20",
+            summary: "dfg",
+            description: "egfgdfgfdgfdg",
+            issuetype: "Bug",
+            assignee: "65b3adff112f8c8b512da4f5",
+            labels: ["customer-access"],
+          },
+          "task-21": {
+            id: "task-21",
+            summary: "vdsfds",
+            description: "qdgfgfg",
+            issuetype: "Bug",
+            assignee: "65b3adff112f8c8b512da4f5",
+            labels: ["design"],
+          },
+        },
+        columns: {
+          "column-1": {
+            id: "column-1",
+            title: "To Do",
+            taskIds: ["task-21", "task-18", "task-19", "task-20"],
+            _id: "65d0836286b40c3299c45f19",
+          },
+          "column-2": {
+            id: "column-2",
+            title: "In Progress",
+            taskIds: [],
+            _id: "65d0cc9acc02d9fb3b6260c8",
+          },
+          "column-3": {
+            id: "column-3",
+            title: "Done",
+            taskIds: [],
+            _id: "65d0421b76deee9240cb7ff1",
+          },
+          "column-4": {
+            id: "column-4",
+            title: "In Review",
+            taskIds: [],
+            _id: "65d0986f6d6d83e2adb413af",
+          },
+          "column-6": {
+            id: "column-6",
+            title: "take later",
+            taskIds: [],
+            _id: "65d091e26d6d83e2adb41245",
+          },
+        },
+        columnOrder: [
+          "column-1",
+          "column-2",
+          "column-3",
+          "column-4",
+          "column-6",
+        ],
+      },
+      _id: "65b7c7978a75e6506833da80",
+      projectname: "Fronx",
+      projectdescription: "Modify the real axle to support extra weight",
+      __v: 55,
+      projectkey: "SCRUM",
+      projecttype: "Team-managed software",
+      projectlead: "Preetham Roy",
+      projecttasks: [],
+      projectmembers: [
+        {
+          id: "65b3adff112f8c8b512da4f5",
+          name: "Preetham Roy",
+          _id: "65c631200a7cdaa55ae92ecf",
+          email: "preetham.roy2@gmail.com",
+        },
+        {
+          id: "65c12653308c67170f17e2e0",
+          name: "Pavan Mandala",
+          _id: "65c63264643ee4d1c26fd86a",
+          email: "pavankalyanm23@gmail.com",
+        },
+      ],
+      projecttemplate: "SCRUM",
+    },
+    {
+      projectissues: {
+        tasks: {},
+        columns: {
+          "column-1": {
+            id: "column-1",
+            title: "To Do",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b67",
+          },
+          "column-2": {
+            id: "column-2",
+            title: "In Progress",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b68",
+          },
+          "column-3": {
+            id: "column-3",
+            title: "Done",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b69",
+          },
+        },
+        columnOrder: ["column-1", "column-2", "column-3"],
+      },
+      _id: "65b90f760c8ca73180ca1138",
+      projectname: "Fortuner",
+      projectdescription: "New Hybrid Break issues",
+      projecttype: "Team-managed software",
+      projectkey: "AGILE",
+      __v: 3,
+      projectlead: "Preetham Roy",
+      projecttasks: [],
+      projectmembers: [
+        {
+          id: "65b3adff112f8c8b512da4f5",
+          name: "Preetham Roy",
+          _id: "65c62e4e6a75b2c85ae10f7d",
+        },
+      ],
+      projecttemplate: "SCRUM",
+    },
+    {
+      projectissues: {
+        tasks: {},
+        columns: {
+          "column-1": {
+            id: "column-1",
+            title: "To Do",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b6c",
+          },
+          "column-2": {
+            id: "column-2",
+            title: "In Progress",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b6d",
+          },
+          "column-3": {
+            id: "column-3",
+            title: "Done",
+            taskIds: [],
+            _id: "65d18bade383bef347a64b6e",
+          },
+        },
+        columnOrder: ["column-1", "column-2", "column-3"],
+      },
+      _id: "65be77acc5e6691ec054bc8b",
+      projectname: "Test1",
+      projectdescription: "Testing",
+      projecttasks: [],
+      __v: 0,
+      projectkey: "WATERFALL",
+      projecttype: "Client-managed software",
+      projectlead: "Pavan",
+      projecttemplate: "SCRUM",
+    },
+  ];
   const data = [
     {
       id: 1,
@@ -103,6 +283,38 @@ export const Test = () => {
       ),
     },
   ];
+
+  const handleOpenproject = (e) => {
+    alert("clicked");
+  };
   const [drop1, setDrop1] = useState(data[0]);
-  return <Dropdown drop={drop1} setDrop={setDrop1} data={data} label={true} />;
+
+  return (
+    <>
+      <Modal>
+        <Modal.Header close={true} minimize={true}>
+          {" "}
+          Testing Js{" "}
+        </Modal.Header>
+        <p className="text-black font-semibold"> Dropdown </p>
+        <Dropdown
+          drop={drop1}
+          setDrop={setDrop1}
+          data={data}
+          label={true}
+          multiple={"multiple"}
+        />
+        <br />
+        <p className="text-black font-semibold"> Table </p>
+        <Table
+          labels={["Name", "Key", "Type", "Lead"]}
+          data={table_data}
+          keys={["projectname", "projectkey", "projecttype", "projectlead"]}
+          onClick={[handleOpenproject, "", handleOpenproject, ""]}
+          sort={true}
+        />
+        <Modal.Footer close={true}>Required Fields are marked *</Modal.Footer>
+      </Modal>
+    </>
+  );
 };
