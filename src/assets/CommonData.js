@@ -4,6 +4,7 @@ const Issuedata = [
   {
     value: "Bug",
     label: "Bug",
+    option: "Bug",
     icon: (
       <img
         width="25"
@@ -17,6 +18,7 @@ const Issuedata = [
   {
     value: "Task",
     label: "Task",
+    option: "Task",
     icon: (
       <img
         width="25"
@@ -30,6 +32,7 @@ const Issuedata = [
   {
     value: "Story",
     label: "Story",
+    option: "Story",
     icon: (
       <img
         width="25"
@@ -45,19 +48,23 @@ const status_data = [
   {
     value: "To Do",
     label: "To Do",
+    option: "To Do",
   },
   {
     value: "In Progress",
     label: "In Progress",
+    option: "In Progress",
   },
   {
     value: "In Review",
     label: "In Review",
+    option: "In Review",
   },
 
   {
     value: "Done",
     label: "Done",
+    option: "Done",
   },
 ];
 const labels_data = [

@@ -6,7 +6,6 @@ import CreateIssue from "../issue/CreateIssue";
 import { Sidebar } from "../layouts/Sidebar";
 import Dnd from "../dnd/Dnd";
 import "rsuite/dist/rsuite.min.css";
-import { Issuedata } from "../../assets/CommonData";
 
 export default function ProjectDetails() {
   const { auth, currentUser } = useContext(AuthContext);
@@ -14,7 +13,6 @@ export default function ProjectDetails() {
   const [modal, setModal] = useState(false);
   const [ready, setReady] = useState(false);
   const [issuecreated, setIssuecreated] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [state, setState] = useState({
     tasks: {},
     columns: {
@@ -97,11 +95,7 @@ export default function ProjectDetails() {
               type="button"
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               onClick={() => {
-                if (!isMinimized) setModal(true);
-                else {
-                  setIsMinimized(false);
-                  setModal(true);
-                }
+                setModal(true);
               }}
             >
               Create Issue
@@ -115,7 +109,6 @@ export default function ProjectDetails() {
               projectinfo={todos}
               user={auth.info}
               setIssuecreated={setIssuecreated}
-              setIsMinimized={setIsMinimized}
             />
           }
 
@@ -134,20 +127,6 @@ export default function ProjectDetails() {
             }
           </div>
         </div>
-        {isMinimized && (
-          <div
-            onClick={() => {
-              setModal(true);
-              setIsMinimized(false);
-            }}
-            className=" bg-white hover:cursor-pointer border-2 shadow-2xl items-center fixed top-[102px]  rounded-md right-52 w-[20%] h-12 flex "
-          >
-            <div className="inline-block px-4  ">{Issuedata[0].icon}</div>
-            <span className="inline-block  bg-white  text-black font-bold rounded">
-              New task
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );

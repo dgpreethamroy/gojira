@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
-import { Modal, Button, SelectPicker } from "rsuite";
+import { useState } from "react";
+import { SelectPicker } from "rsuite";
+import Modal from "../ui/modal/Modal";
 import "rsuite/dist/rsuite.min.css";
 import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
 import Avatar from "react-avatar";
+import Dropdown from "../ui/dropdown/Dropdown";
 export default function CreateIssue({
   modal,
   setModal,
   projectinfo,
   user,
   setIssuecreated,
-  setIsMinimized,
 }) {
-  const handleClose = () => setModal(false);
   console.log("Create Issue");
   console.log(status_data);
+  const [drop1, setDrop1] = useState(Issuedata[0]);
+  const [drop2, setDrop2] = useState(status_data[0]);
+
   const assignee = projectinfo?.projectmembers?.map((member) => {
     return { label: member.name, value: member.id, email: member.email };
   });
@@ -22,16 +25,9 @@ export default function CreateIssue({
   const [status, setStatus] = useState(" Select an option ");
   const [issuetype, setIssuetype] = useState("Select an option");
   const [Assignee, setAssignee] = useState("UnAssigned");
-  const [labels, setLabels] = useState("Select an option");
-  const [icon, setIcon] = useState("UnAssigned");
+  const [labels, setLabels] = useState([]);
   const [issueIcon, setIssueIcon] = useState(Issuedata[0].icon);
-  //  Implement Later
-  // const defaultvalues = {
-  //   issuetype: "Bug",
-  //   status: "To Do",
-  //   summary: "TADA",
-  //   description: "Only Lights",
-  // };
+
   const URL = "/issues/";
 
   const renderMenuItem = (label, item) => {
@@ -75,187 +71,85 @@ export default function CreateIssue({
   };
   const handleWarning = () => {
     return (
-      <Modal backdrop="static" open={warn}>
-        <Modal.Title>Your Changes won't be saved</Modal.Title>
-        <Modal.Body>
-          We won’t be able to save your data if you move away from this page.
-        </Modal.Body>
+      <Modal isOpen={warn} setIsOpen={setWarn} small>
+        <Modal.Header>Your Changes won't be saved</Modal.Header>
+        <span className="text-lg ">
+          We won’t be able to save your data if you move away from this page
+        </span>
         <Modal.Footer>
-          <Button
+          <button
             onClick={() => {
               setWarn(false);
-              document.getElementsByClassName(
-                "rs-modal-wrapper"
-              )[0].style.zIndex = "1050";
             }}
+            className="text-lg  px-4 py-2 text-gray-500 font-bold underline"
           >
             Go Back
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => {
               setWarn(false);
               setModal(false);
             }}
+            className="px-2 py-1 text-white bg-blue-800 rounded font-bold text-lg"
           >
             Discard issue
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     );
   };
 
   return (
-    <Modal backdrop="static" open={modal} size="55rem">
-      <Modal.Header as="h3" className="text-black" closeButton={false}>
+    <Modal isOpen={modal} setIsOpen={setModal}>
+      <Modal.Header close={true} minimize={true}>
         Create issue
-        <Button
-          className="float-right rs-btn-bgwhite"
-          onClick={() => {
-            setModal(false);
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
-            <path
-              d="M12 10.586L6.707 5.293a1 1 0 00-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414L12 10.586z"
-              fill="currentColor"
-            ></path>
-          </svg>
-        </Button>
-        <Button
-          onClick={() => {
-            setTimeout(() => {
-              setIsMinimized((prev) => !prev);
-            }, 500);
-            handleClose();
-          }}
-          className="float-right rs-btn-bgwhite"
-        >
-          <img
-            width="24"
-            height="24"
-            src="https://img.icons8.com/ios-filled/50/minus-math.png"
-            alt="minus-math"
-          />
-        </Button>
       </Modal.Header>
-      <hr />
-      <Modal.Body className="text-black">
+      <>
         <div className="after:content-['*'] after:text-red-800">
           Required fields are marked with an asterisk{" "}
         </div>
         <br />
-        <div className="flex flex-col">
-          <label
-            className="after:content-['*'] after:text-red-800  font-semibold"
-            htmlFor="type"
-          >
-            Issue Type
-          </label>
-          <SelectPicker
-            data={Issuedata}
-            value={issuetype}
-            onChange={setIssuetype}
-            style={{ width: 280 }}
-            label={issueIcon}
-            onSelect={(value, item) => {
-              setIssueIcon(item.icon);
-            }}
-            renderMenu={(menu) => <div>{menu}</div>}
-            renderMenuItem={(label, item) => renderMenuItem(label, item)}
-          />
-        </div>
+        <p className="font-semibold">Issue type</p>
+        <Dropdown
+          data={Issuedata}
+          drop={drop1}
+          setDrop={setDrop1}
+          icon={true}
+        />
         <br />
-        <hr />
-        <div className="flex flex-col">
-          <label
-            className="after:content-['*'] after:text-red-800  font-semibold"
-            htmlFor="type"
-          >
-            Status
-          </label>
-          <SelectPicker
-            searchable={false}
-            data={status_data}
-            value={status}
-            onChange={setStatus}
-            placeholder="To Do"
-            style={{ width: 280 }}
-          />
-          <span className="text-xs">
-            This is the issue's initial status upon creation
-          </span>
-        </div>
+        <p className="font-semibold">Status</p>
+        <Dropdown data={status_data} drop={drop2} setDrop={setDrop2} />
         <br />
-        <div>
-          <label
-            className="after:content-['*'] font-semibold after:text-red-800"
-            htmlFor="title"
-          >
-            Summary{" "}
-          </label>
-          <input
-            type="text"
-            id="summary"
-            name="title"
-            placeholder="Title"
-            className="w-full p-2 border-2 border-gray-200 rounded-md"
-          />
-        </div>
+        <p className="font-semibold">Summary</p>
+        <input
+          type="text"
+          id="summary"
+          name="title"
+          placeholder="Title"
+          className="w-full p-2 border-2 border-gray-200 rounded"
+        />
         <br />
-        <div>
-          <label
-            className="after:content-['*'] font-semibold after:text-red-800"
-            htmlFor="description"
-          >
-            Description{" "}
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Description"
-            className="w-full p-2 border-2 border-gray-200 rounded-md"
-          ></textarea>
-        </div>
+        <p className="font-semibold">Description</p>{" "}
+        <textarea
+          id="description"
+          name="description"
+          placeholder="Description"
+          className="w-full p-2 border-2 border-gray-200 rounded-md"
+        ></textarea>
         <br />
         <div className="flex flex-col">
-          <label className=" font-semibold" htmlFor="priority">
-            Assignee{" "}
-          </label>
-          <SelectPicker
-            searchable={true}
+          <p className="font-semibold">Assignee </p>
+          <Dropdown
             data={assignee}
-            value={Assignee}
-            placeholder={Assignee}
-            onChange={setAssignee}
-            onSelect={(value, item) => {
-              setIcon(item.label);
-            }}
-            style={{ width: 280 }}
-            label={
-              <Avatar textSizeRatio={2} name={icon} size="30" round={true} />
-            }
-            renderMenu={(menu) => <div>{menu}</div>}
-            renderMenuItem={(label, props) => (
-              <div className="inline-flex items-center ">
-                <div className="pr-5">
-                  <Avatar
-                    textSizeRatio={2}
-                    name={label}
-                    size="30"
-                    round={true}
-                  />
-                </div>
-                <div>
-                  <p className="font-semibold">{label}</p>
-                  <p className="text-xs mt-0">{props.email}</p>
-                </div>
-              </div>
-            )}
+            drop={Assignee}
+            setDrop={setAssignee}
+            option="label"
+            splitOption="email"
+            avatar={true}
           />
           <span
             onClick={() => {
-              setIcon(user.name);
-              setAssignee(user.id);
+              setAssignee({ label: user.name, id: user.id });
             }}
             className="font-bold w-[14%] text-base text-blue-600 hover:underline hover:cursor-pointer"
           >
@@ -263,36 +157,24 @@ export default function CreateIssue({
           </span>
         </div>
         <br />
-        <div className="flex flex-col">
-          <label className="font-semibold" htmlFor="type">
-            Labels
-          </label>
-          <SelectPicker
-            data={labels_data}
-            value={labels}
-            onChange={setLabels}
-            placeholder="Select an option"
-            style={{ width: 280 }}
-          ></SelectPicker>
-        </div>
+        <p className="font-semibold">Labels</p>
+        <Dropdown
+          data={labels_data}
+          drop={labels}
+          setDrop={setLabels}
+          option="label"
+          multiple={true}
+        />
         <br />
-        <div></div>
-      </Modal.Body>
+      </>
       <Modal.Footer>
-        <Button
-          onClick={() => {
-            setWarn(true);
-            document.getElementsByClassName(
-              "rs-modal-wrapper"
-            )[0].style.zIndex = "999";
-          }}
+        <button
+          className=" bg-blue-800 text-white px-2 py-2 rounded font-bold text-lg"
+          onClick={() => setWarn(true)}
         >
           Cancel
-        </Button>
+        </button>
         {handleWarning()}
-        <Button onClick={handleCreateIssue} appearance="primary">
-          Create
-        </Button>
       </Modal.Footer>
     </Modal>
   );

@@ -148,3 +148,22 @@ a:hover {
     143
   ) !important; /* Your desired background color */
 }
+.popover-content {
+  background-color: #209679;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px 8px rgba(46, 41, 51, 0.08),
+    0 4px 6px -2px rgba(71, 63, 79, 0.16);
+  font-size: 0.875rem;
+  min-width: 10rem;
+  padding: 1rem;
+  z-index: 9;
+}
+
+.popover-content.bg-white {
+  background-color: #fff;
+}
+
+.no-library .popover-content {
+  position: absolute;
+  margin-top: 0.5rem;
+}
