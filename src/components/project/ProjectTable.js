@@ -64,6 +64,7 @@ export default function ProjectTable() {
             onClick={[handleOpenproject, "", "", ""]}
             sort={true}
             id="_id"
+            search={true}
           />
         ) : (
           <p>NO PROJECTS</p>

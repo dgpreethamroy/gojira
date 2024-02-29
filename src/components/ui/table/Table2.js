@@ -63,12 +63,10 @@ const Table = (props) => {
     }
   }, [props.sort, search_results, sort, value]);
 
-  const filtered_results = useMemo(() => {
-    return sortProjects?.slice(
-      (CURRENTPAGE - 1) * PAGESIZE,
-      CURRENTPAGE * PAGESIZE
-    );
-  }, [sortProjects, CURRENTPAGE, PAGESIZE]);
+  const filtered_results = sortProjects?.slice(
+    (CURRENTPAGE - 1) * PAGESIZE,
+    CURRENTPAGE * PAGESIZE
+  );
 
   const sortingIcons = useMemo(
     () => (label) => {
@@ -129,17 +127,24 @@ const Table = (props) => {
   return (
     <div className="">
       <input
-        className="px-4 py-2 border shadow-md rounded-lg  my-2"
+        className={`px-4 py-2 border shadow-md rounded-lg  my-2 sticky top-2 ${
+          !props.search && "hidden"
+        }   `}
         value={searchinput}
         onChange={(e) => setSearchinput(e.target.value)}
         placeholder="Search"
       />
-      <table className="w-full">
-        <thead>
-          <tr className="bg-blue-300">
+      <table className="w-full table-auto">
+        <thead className="sticky top-0 ">
+          <tr className="bg-blue-300 ">
+            <td className="rounded-tl-xl ">
+              <input type="checkbox" className=" ml-4 " />
+            </td>
             {props.labels?.map((label, index) => (
               <td
-                className="px-4 py-2  text-black font-bold dark:text-slate-50"
+                className={`px-4 py-2  text-black font-bold dark:text-slate-50 ${
+                  props.border && "border border-gray-600 "
+                }`}
                 key={index}
               >
                 {sortingIcons(label)}
@@ -151,17 +156,26 @@ const Table = (props) => {
           {filtered_results?.map((items, index) => (
             <tr
               key={index}
-              className="bg-slate-300"
+              className={`bg-slate-300 ${
+                props.border && "border border-gray-600"
+              }`}
               id={props.id ? items[props.id] : null}
             >
+              <td>
+                <input type="checkbox" className=" ml-4 " />
+              </td>
               {props.keys.map((item, index) => (
                 <td
                   className={`px-4 py-2 ${
-                    props.onClick[index]
+                    props.onClick && props.onClick[index]
                       ? "hover:cursor-pointer underline text-blue-600"
                       : null
-                  }`}
-                  onClick={props.onClick[index] ? props.onClick[index] : null}
+                  }  ${props.border && "border border-gray-600"}`}
+                  onClick={
+                    props.onClick && props.onClick[index]
+                      ? props.onClick[index]
+                      : null
+                  }
                 >
                   {items[item]}
                 </td>
@@ -170,45 +184,47 @@ const Table = (props) => {
           ))}
         </tbody>
       </table>
-      <nav
-        className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
-        aria-label="Table navigation"
-      >
-        <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-          <li>
-            <button
-              id="prev"
-              disabled={CURRENTPAGE === 1}
-              onClick={() => {
-                setCurrentPage(CURRENTPAGE - 1);
-              }}
-              className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              {"<"}
-            </button>
-          </li>
-          <li>
-            <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-              {CURRENTPAGE}
-            </button>
-          </li>
+      {props.pagesize < 50 && (
+        <nav
+          className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+          aria-label="Table navigation"
+        >
+          <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+            <li>
+              <button
+                id="prev"
+                disabled={CURRENTPAGE === 1}
+                onClick={() => {
+                  setCurrentPage(CURRENTPAGE - 1);
+                }}
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                {"<"}
+              </button>
+            </li>
+            <li>
+              <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                {CURRENTPAGE}
+              </button>
+            </li>
 
-          <li>
-            <button
-              id="next"
-              disabled={
-                CURRENTPAGE === Math.ceil(search_results.length / PAGESIZE)
-              }
-              onClick={() => {
-                setCurrentPage(CURRENTPAGE + 1);
-              }}
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              {">"}
-            </button>
-          </li>
-        </ul>
-      </nav>
+            <li>
+              <button
+                id="next"
+                disabled={
+                  CURRENTPAGE === Math.ceil(search_results.length / PAGESIZE)
+                }
+                onClick={() => {
+                  setCurrentPage(CURRENTPAGE + 1);
+                }}
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                {">"}
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
     </div>
   );
 };

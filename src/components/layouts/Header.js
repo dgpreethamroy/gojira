@@ -86,8 +86,9 @@ export default function Header() {
                 >
                   <Avatar
                     size="30"
-                    textSizeRatio={2}
+                    textSizeRatio={1.5}
                     round
+                    className="font-semibold"
                     name={auth?.info?.name}
                   />
                 </Link>

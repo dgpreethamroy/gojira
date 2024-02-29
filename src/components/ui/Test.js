@@ -4,6 +4,7 @@ import Table from "./table/Table";
 import Modal from "./modal/Modal";
 import Menu from "./menu/Menu";
 import Popover from "./popover/Popover2";
+import Tabs from "./tabs/Tabs";
 const menu_data = [
   {
     label: (
@@ -384,7 +385,12 @@ const Test = () => {
 
   return (
     <>
-      <Modal>
+      <div className="text-center" onClick={() => setIsOpen(true)}>
+        <div className="bg-blue-500 hover:cursor-pointer text-white font-bold py-2 px-4 rounded">
+          Open Modal
+        </div>
+      </div>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
         <Modal.Header close={true} minimize={true}>
           Testing Js
         </Modal.Header>
@@ -457,7 +463,10 @@ const Test = () => {
           content={<div>Sample Popup Demo</div>}
           position="right"
         ></Popover>
-
+        <Tabs
+          tabs={["Tab 1", "Tab 2", "Tab 3", "Tab 4"]}
+          displays={["Hello", "Moto", "LG", "SAMSUNG"]}
+        />
         <Modal.Footer close={true}>Required Fields are marked *</Modal.Footer>
       </Modal>
     </>

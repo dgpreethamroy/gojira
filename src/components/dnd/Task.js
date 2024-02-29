@@ -11,7 +11,7 @@ const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 7px;
   padding: 8px;
-  padding-bottom:0px;
+  padding-bottom: 0px;
   margin-bottom: 8px;
   background-color: ${(props) =>
     props.isDragging ? "#b3ffb3" : "rgb(250,250,250)"};
@@ -79,13 +79,14 @@ const Task = (props) => {
           isDragging={snapshot.isDragging}
         >
           <div className="flex items-center justify-between">
-
-          <p className="text-black font-semibold py-2">{props.task.summary}</p>
-          <div className="z-10 hidenow">
-            <Dropdown renderToggle={renderIconButton}>
-              <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
-            </Dropdown>
-          </div>
+            <p className="text-black font-semibold py-2">
+              {props.task.summary}
+            </p>
+            <div className="z-10 hidenow">
+              <Dropdown renderToggle={renderIconButton}>
+                <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
+              </Dropdown>
+            </div>
           </div>
 
           <div className="py-2">
@@ -93,7 +94,7 @@ const Task = (props) => {
               (label) =>
                 label && (
                   <span
-                    className="bg-gray-200 text-black px-2 py-1 rounded"
+                    className="bg-gray-200 text-black px-2 mx-1 py-1 rounded"
                     key={label}
                   >
                     {label}
@@ -103,35 +104,30 @@ const Task = (props) => {
           </div>
           <div className="pt-2 flex justify-between items-start">
             <div className="flex items-center">
-
-            {Icon}
-            <span
-              className={`font-semibold text-black ${
-                props.parenttitle === "Done" && "line-through"
-              }`}
+              {Icon}
+              <span
+                className={`font-semibold text-black ${
+                  props.parenttitle === "Done" && "line-through"
+                }`}
               >
-              {props.task.issuetype.toUpperCase()}
-            </span>
+                {props.task.issuetype.toUpperCase()}
+              </span>
             </div>
-           
-            <div className="flex flex-col items-end justify-end" >
-       
-            <Avatar
-              className="hover-div"
-              name={assignee_name}
-              textSizeRatio={2}
-              size="28"
-              round={true}
+
+            <div className="flex flex-col items-end justify-end">
+              <Avatar
+                className="hover-div"
+                name={assignee_name}
+                textSizeRatio={2}
+                size="28"
+                round={true}
               />
-            <span className=" hide-div text-black italic font-bold">
+              <span className=" hide-div text-black italic font-bold">
                 Assignee: {assignee_name}
-            </span>    
-            </div>     
-            
+              </span>
+            </div>
           </div>
-      
-          
-         
+
           {showIssue && (
             <IssueDetails
               details={props}

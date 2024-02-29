@@ -143,11 +143,15 @@ a:hover {
 }
 .sb-avatar__text {
   background-color: rgb(
+    8,
     47,
-    47,
-    143
+    73
   ) !important; /* Your desired background color */
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(107 114 128 / var(--tw-border-opacity));
 }
+
 .popover-content {
   background-color: #209679;
   border-radius: 0.5rem;

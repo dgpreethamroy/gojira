@@ -4,8 +4,10 @@ import customAxios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
 import CreateIssue from "../issue/CreateIssue";
 import { Sidebar } from "../layouts/Sidebar";
+import { ListIssues } from "../list/ListIssues";
 import Dnd from "../dnd/Dnd";
 import "rsuite/dist/rsuite.min.css";
+import Tabs from "../ui/tabs/Tabs";
 
 export default function ProjectDetails() {
   const { auth, currentUser } = useContext(AuthContext);
@@ -44,6 +46,32 @@ export default function ProjectDetails() {
     getProjects();
   }, [currentUser, issuecreated, id.id]);
 
+  const Board = (
+    <div
+      id="DnDParent"
+      style={{ maxHeight: window.innerHeight - 200 }}
+      className={`pt-0 border-2 overflow-y-auto   border-gray-200  rounded-lg dark:border-gray-700`}
+    >
+      {
+        <Dnd
+          state={state}
+          setState={setState}
+          projectmembers={todos.projectmembers}
+          project_id={id}
+        />
+      }
+    </div>
+  );
+  const List = (
+    <div id="ListParent">
+      <ListIssues
+        state={state}
+        setState={setState}
+        project_id={id}
+        info={todos}
+      />
+    </div>
+  );
   if (!currentUser)
     return (
       <div>
@@ -59,14 +87,14 @@ export default function ProjectDetails() {
     <div className="pt-[60px] bg-white-800">
       <aside
         id="default-sidebar"
-        className="fixed left-0  w-64 h-screen sm:translate-x-0 delay-75 transition-transform -translate-x-full "
+        className="fixed left-0  w-64 h-screen  delay-75 transition-transform -translate-x-full "
         aria-label="Sidebar"
       >
         <Sidebar />
       </aside>
       <div
         id="main"
-        className=" h-[100%] min-h-[91.6vh] p-4 sm:ml-64 bg-[#EAE6FF] dark:bg-gray-900"
+        className=" h-[100%] min-h-[91.6vh] p-4  bg-[#EAE6FF] dark:bg-gray-900"
       >
         <div className="flow-root">
           <ol>
@@ -111,21 +139,7 @@ export default function ProjectDetails() {
               setIssuecreated={setIssuecreated}
             />
           }
-
-          <div
-            id="DnDParent"
-            style={{ maxHeight: window.innerHeight - 200 }}
-            className={`p-4 pt-0 border-2 overflow-y-auto   border-gray-200 border-dashed rounded-lg dark:border-gray-700`}
-          >
-            {
-              <Dnd
-                state={state}
-                setState={setState}
-                projectmembers={todos.projectmembers}
-                project_id={id}
-              />
-            }
-          </div>
+          <Tabs tabs={["Board", "List"]} displays={[Board, List]} open="List" />
         </div>
       </div>
     </div>

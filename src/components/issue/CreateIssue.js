@@ -15,34 +15,21 @@ export default function CreateIssue({
 }) {
   console.log("Create Issue");
   console.log(status_data);
-  const [drop1, setDrop1] = useState(Issuedata[0]);
-  const [drop2, setDrop2] = useState(status_data[0]);
 
   const assignee = projectinfo?.projectmembers?.map((member) => {
     return { label: member.name, value: member.id, email: member.email };
   });
   const [warn, setWarn] = useState(false);
-  const [status, setStatus] = useState(" Select an option ");
-  const [issuetype, setIssuetype] = useState("Select an option");
+  const [status, setStatus] = useState(status_data[0]);
+  const [issuetype, setIssuetype] = useState(Issuedata[0]);
   const [Assignee, setAssignee] = useState("UnAssigned");
   const [labels, setLabels] = useState([]);
-  const [issueIcon, setIssueIcon] = useState(Issuedata[0].icon);
 
   const URL = "/issues/";
 
-  const renderMenuItem = (label, item) => {
-    return (
-      <div className="inline-flex items-center ">
-        <div className="pr-5">{item.icon}</div>
-        <div className="font-semibold">{label}</div>
-      </div>
-    );
-  };
   const handleCreateIssue = async () => {
     if (
-      status === "Select an option" ||
-      issuetype === "Select an option" ||
-      Assignee === "Select an option" ||
+      Assignee === "UnAssigned" ||
       document.getElementById("summary").value === "" ||
       document.getElementById("description").value === ""
     ) {
@@ -52,12 +39,12 @@ export default function CreateIssue({
     try {
       const response = await customAxios.post(URL, {
         project_id: projectinfo._id,
-        issuetype: issuetype,
-        status: status,
+        issuetype: issuetype.value,
+        status: status.value,
         summary: document.getElementById("summary").value,
         description: document.getElementById("description").value,
-        assignee: Assignee,
-        labels: [labels],
+        assignee: Assignee.value ? Assignee.value : Assignee.id,
+        labels: labels.map((label) => label.value),
       });
       console.log(response);
     } catch (error) {
@@ -112,13 +99,13 @@ export default function CreateIssue({
         <p className="font-semibold">Issue type</p>
         <Dropdown
           data={Issuedata}
-          drop={drop1}
-          setDrop={setDrop1}
+          drop={issuetype}
+          setDrop={setIssuetype}
           icon={true}
         />
         <br />
         <p className="font-semibold">Status</p>
-        <Dropdown data={status_data} drop={drop2} setDrop={setDrop2} />
+        <Dropdown data={status_data} drop={status} setDrop={setStatus} />
         <br />
         <p className="font-semibold">Summary</p>
         <input
@@ -169,10 +156,17 @@ export default function CreateIssue({
       </>
       <Modal.Footer>
         <button
-          className=" bg-blue-800 text-white px-2 py-2 rounded font-bold text-lg"
+          className=" bg-white text-gray-600 px-2 py-1 rounded font-bold text-lg"
           onClick={() => setWarn(true)}
         >
           Cancel
+        </button>
+
+        <button
+          className=" bg-blue-800 text-white ml-2 px-2 py-1 rounded font-bold text-lg"
+          onClick={handleCreateIssue}
+        >
+          Create
         </button>
         {handleWarning()}
       </Modal.Footer>
