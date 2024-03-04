@@ -11,11 +11,11 @@ const ModalHeader = ({
   if (NestedModal) minimize = false;
   return (
     <>
-      <div className="flex items-center py-4">
-        <div className="text-xl text-gray-700 font-semibold w-4/5">
+      <div className="flex items-center py-4 ">
+        <div className="text-xl text-gray-700 font-semibold w-[90%]">
           {children}
         </div>
-        <div className="text-right w-1/5">
+        <div className="w-[10%] text-right">
           {minimize && (
             <button
               onClick={() => {
@@ -24,7 +24,7 @@ const ModalHeader = ({
                   setIsMinimized(true);
                 }, 200);
               }}
-              className="pl-2 pr-2 py-2 bg-white rounded"
+              className="pl-2 pr-2 py-2 bg-white rounded outline-none hover:cursor-pointer"
             >
               <img
                 width="24"
@@ -37,7 +37,7 @@ const ModalHeader = ({
           {close && close === true && (
             <button
               onClick={() => setIsOpen(false)}
-              className="pl-2 py-2 bg-white rounded"
+              className="pl-2 py-2 mr-2 bg-white rounded hover:cursor-pointer"
             >
               <svg
                 width="24"

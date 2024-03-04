@@ -6,7 +6,7 @@ export default function Dropdown({
   data,
   drop,
   setDrop,
-  icon,
+  icon = false,
   option = "option",
   splitOption = "",
   avatar = false,

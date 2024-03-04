@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Column from "./Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import axios from "../../api/axios";
 import PlusIcon from "@rsuite/icons/Plus";
 import { XIcon, CheckIcon } from "@heroicons/react/solid";
+import SearchBox from "../ui/filter/Search";
 
 const Container = styled.div`
   display: flex;
@@ -157,68 +158,80 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
     setState(newState);
     handlenewState(newState);
   };
-
+  const [inputSearch, setSearchinput] = useState("");
   return (
-    <DragDropContext
-      onDragEnd={onDragEnd}
-      onDragStart={(e) => onDragStart(e)}
-      onDragUpdate={onDragUpdate}
-    >
-      <Droppable droppableId="sfdaf" direction="horizantal" type="column">
-        {(provided) => (
-          <Container {...provided.droppableProps} ref={provided.innerRef}>
-            {state.columnOrder.map((columnId, index) => {
-              const column = state.columns[columnId];
-              const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
-              return (
-                <Column
-                  handleColumnDelete={handleColumnDelete}
-                  projectmembers={projectmembers}
-                  key={column.id}
-                  column={column}
-                  index={index}
-                  tasks={tasks}
-                />
-              );
-            })}
-            <div className="py-2 ">
-              <button
-                onClick={handleToggleNew}
-                id="createColumn"
-                className="border-2 border-gray-300  rounded-md"
-              >
-                <PlusIcon
-                  style={{
-                    borderRadius: "6px",
-                    fontSize: "2em",
-                    color: "rgb(50, 50, 50)",
-                    background: "rgb(240, 240, 240)",
-                  }}
-                />
-              </button>
-              <div id="createColumnDiv" className="hidden ">
-                <input
-                  id="createColumnInput"
-                  className="mt-1 mb-1 px-2 h-14 border font-semibold text-lg border-gray-300 rounded-md w-[300px] "
-                />
+    <>
+      <div className="flex m-1">
+        <SearchBox
+          placeholder={"Board"}
+          inputSearch={inputSearch}
+          setSearchinput={setSearchinput} 
+        />
+      </div>
+
+      <DragDropContext
+        onDragEnd={onDragEnd}
+        onDragStart={(e) => onDragStart(e)}
+        onDragUpdate={onDragUpdate}
+      >
+        <Droppable droppableId="sfdaf" direction="horizantal" type="column">
+          {(provided) => (
+            <Container {...provided.droppableProps} ref={provided.innerRef}>
+              {state.columnOrder.map((columnId, index) => {
+                const column = state.columns[columnId];
+                const tasks = column.taskIds.map(
+                  (taskId) => state.tasks[taskId]
+                );
+                return (
+                  <Column
+                    handleColumnDelete={handleColumnDelete}
+                    projectmembers={projectmembers}
+                    key={column.id}
+                    column={column}
+                    index={index}
+                    tasks={tasks}
+                  />
+                );
+              })}
+              <div className="py-2 ">
                 <button
-                  onClick={handleCancelEdit}
-                  className="ml-2 p-2 text-red-600 hover:text-red-700 focus:outline-none bg-white"
+                  onClick={handleToggleNew}
+                  id="createColumn"
+                  className="border-2 border-gray-300  rounded-md"
                 >
-                  <XIcon className="h-5 w-5" />
+                  <PlusIcon
+                    style={{
+                      borderRadius: "6px",
+                      fontSize: "2em",
+                      color: "rgb(50, 50, 50)",
+                      background: "rgb(240, 240, 240)",
+                    }}
+                  />
                 </button>
-                <button
-                  onClick={handleSaveChanges}
-                  className="ml-2 p-2 text-green-600 hover:text-green-700 focus:outline-none bg-white"
-                >
-                  <CheckIcon className="h-5 w-5" />
-                </button>
+                <div id="createColumnDiv" className="hidden ">
+                  <input
+                    id="createColumnInput"
+                    className="mt-1 mb-1 px-2 h-14 border font-semibold text-lg border-gray-300 rounded-md w-[300px] "
+                  />
+                  <button
+                    onClick={handleCancelEdit}
+                    className="ml-2 p-2 text-red-600 hover:text-red-700 focus:outline-none bg-white"
+                  >
+                    <XIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={handleSaveChanges}
+                    className="ml-2 p-2 text-green-600 hover:text-green-700 focus:outline-none bg-white"
+                  >
+                    <CheckIcon className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          </Container>
-        )}
-      </Droppable>
-    </DragDropContext>
+            </Container>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </>
   );
 };
 export default Dnd;

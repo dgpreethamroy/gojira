@@ -25,7 +25,8 @@ const Popover = ({ content, targetId, trigger, position = "right" }) => {
     const hidePopover = () => {
       setIsVisible(false);
     };
-    const togglePopover = () => {
+    const togglePopover = (e) => {
+      if (e.target.id !== targetId) return;
       setIsVisible((prevState) => !prevState);
     };
 

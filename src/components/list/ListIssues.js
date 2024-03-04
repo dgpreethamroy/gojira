@@ -79,6 +79,7 @@ export const ListIssues = (props) => {
           border={true}
           sticky={true}
           search={false}
+          checkbox={true}
         />
       </div>
     </div>

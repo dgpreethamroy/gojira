@@ -18,7 +18,7 @@ const SearchBox = ({ placeholder, inputSearch, setSearchinput }) => {
     >
       <input
         ref={inputRef}
-        className="px-2 py-2 outline-none rounded-3xl rounded-r-none h-full "
+        className="px-2 py-2 outline-none rounded-3xl rounded-r-none  h-full "
         placeholder={`Search ${placeholder && placeholder}`}
         value={inputSearch}
         onChange={(e) => setSearchinput(e.target.value)}

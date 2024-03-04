@@ -10,6 +10,7 @@ const Modal = ({
   isOpen,
   setIsOpen,
   small = false,
+  large = false,
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -59,8 +60,8 @@ const Modal = ({
             >
               <div
                 className={`bg-white p-4 rounded shadow-lg ${
-                  small ? "w-[35%] " : "w-[60%] "
-                } `}
+                  small ? "w-[35%] " : large ? "w-[90%] " : " w-[60%]"
+                }  `}
               >
                 <div className="Header">
                   {children.length

@@ -6,4 +6,4 @@ import { Dnd } from "./components/customdnd/Dnd";
 import { Table } from "./components/customdnd/Table";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(<Table />);
+root.render(<App />);

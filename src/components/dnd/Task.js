@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import IssueDetails from "../issue/IssueDetails";
 import Avatar from "react-avatar";
 import { Issuedata } from "../../assets/CommonData";
 import { Dropdown, IconButton } from "rsuite";
 import MoreIcon from "@rsuite/icons/More";
 import customAxios from "../../api/axios";
+import IssueModal from "../issue/issueModal";
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 7px;
@@ -66,76 +66,77 @@ const Task = (props) => {
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
-        <Container
-          className="shake hover-crap" //shake here
-          onClick={(e) =>
-            !e.target.classList.contains("rs-icon") &&
-            !e.target.classList.contains("rs-dropdown-item") &&
-            setShowIssue(!showIssue)
-          }
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          isDragging={snapshot.isDragging}
-        >
-          <div className="flex items-center justify-between">
-            <p className="text-black font-semibold py-2">
-              {props.task.summary}
-            </p>
-            <div className="z-10 hidenow">
-              <Dropdown renderToggle={renderIconButton}>
-                <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
-              </Dropdown>
-            </div>
-          </div>
-
-          <div className="py-2">
-            {props.task.labels.map(
-              (label) =>
-                label && (
-                  <span
-                    className="bg-gray-200 text-black px-2 mx-1 py-1 rounded"
-                    key={label}
-                  >
-                    {label}
-                  </span>
-                )
-            )}
-          </div>
-          <div className="pt-2 flex justify-between items-start">
-            <div className="flex items-center">
-              {Icon}
-              <span
-                className={`font-semibold text-black ${
-                  props.parenttitle === "Done" && "line-through"
-                }`}
-              >
-                {props.task.issuetype.toUpperCase()}
-              </span>
+        <>
+          <Container
+            className="shake hover-crap" //shake here
+            onClick={(e) => {
+              !e.target.classList.contains("rs-icon") &&
+                !e.target.classList.contains("rs-dropdown-item") &&
+                setShowIssue(!showIssue);
+            }}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+            isDragging={snapshot.isDragging}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-black font-semibold py-2">
+                {props.task.summary}
+              </p>
+              <div className="z-10 hidenow">
+                <Dropdown renderToggle={renderIconButton}>
+                  <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
+                </Dropdown>
+              </div>
             </div>
 
-            <div className="flex flex-col items-end justify-end">
-              <Avatar
-                className="hover-div"
-                name={assignee_name}
-                textSizeRatio={2}
-                size="28"
-                round={true}
-              />
-              <span className=" hide-div text-black italic font-bold">
-                Assignee: {assignee_name}
-              </span>
+            <div className="py-2">
+              {props.task.labels.map(
+                (label) =>
+                  label && (
+                    <span
+                      className="bg-gray-200 text-black px-2 mx-1 py-1 rounded"
+                      key={label}
+                    >
+                      {label}
+                    </span>
+                  )
+              )}
             </div>
-          </div>
+            <div className="pt-2 flex justify-between items-start">
+              <div className="flex items-center">
+                {Icon}
+                <span
+                  className={`font-semibold text-black ${
+                    props.parenttitle === "Done" && "line-through"
+                  }`}
+                >
+                  {props.task.issuetype.toUpperCase()}
+                </span>
+              </div>
 
+              <div className="flex flex-col items-end justify-end">
+                <Avatar
+                  className="hover-div"
+                  name={assignee_name}
+                  textSizeRatio={2}
+                  size="28"
+                  round={true}
+                />
+                <span className=" hide-div text-black italic font-bold">
+                  Assignee: {assignee_name}
+                </span>
+              </div>
+            </div>
+          </Container>
           {showIssue && (
-            <IssueDetails
+            <IssueModal
               details={props}
               showIssue={showIssue}
               setShowIssue={setShowIssue}
             />
           )}
-        </Container>
+        </>
       )}
     </Draggable>
   );

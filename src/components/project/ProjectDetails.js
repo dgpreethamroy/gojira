@@ -6,7 +6,6 @@ import CreateIssue from "../issue/CreateIssue";
 import { Sidebar } from "../layouts/Sidebar";
 import { ListIssues } from "../list/ListIssues";
 import Dnd from "../dnd/Dnd";
-import "rsuite/dist/rsuite.min.css";
 import Tabs from "../ui/tabs/Tabs";
 
 export default function ProjectDetails() {
@@ -115,8 +114,8 @@ export default function ProjectDetails() {
               </a>
             </li>{" "}
           </ol>
-          <div className="flex">
-            <h2 className="py-2 text-2xl dark:text-white font-semibold">
+          <div className="flex items-center">
+            <h2 className="py-2 text-2xl text-black dark:text-white font-semibold">
               SCRUM SPRINT 1
             </h2>
             <button
@@ -139,7 +138,53 @@ export default function ProjectDetails() {
               setIssuecreated={setIssuecreated}
             />
           }
-          <Tabs tabs={["Board", "List"]} displays={[Board, List]} open="List" />
+          <Tabs
+            tabs={[
+              "Summary",
+              "Board",
+              "List",
+              "Calendar",
+              "Timeline",
+              "Approvals",
+              "Forms",
+              "Pages",
+              "Issues",
+              "Reports",
+              "Project settings",
+            ]}
+            displays={[
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              Board,
+              List,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+              <h2 className="text-center text-slate-500">
+                Not yet implemented
+              </h2>,
+            ]}
+            open="Board"
+          />
         </div>
       </div>
     </div>

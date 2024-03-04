@@ -137,9 +137,11 @@ const Table = (props) => {
       <table className="w-full table-auto">
         <thead className="sticky top-0 ">
           <tr className="bg-blue-300 ">
-            <td className="rounded-tl-xl ">
-              <input type="checkbox" className=" ml-4 " />
-            </td>
+            {props.checkbox && (
+              <td className="rounded-tl-xl ">
+                <input type="checkbox" className=" ml-4 " />
+              </td>
+            )}
             {props.labels?.map((label, index) => (
               <td
                 className={`px-4 py-2  text-black font-bold dark:text-slate-50 ${
@@ -161,9 +163,11 @@ const Table = (props) => {
               }`}
               id={props.id ? items[props.id] : null}
             >
-              <td>
-                <input type="checkbox" className=" ml-4 " />
-              </td>
+              {props.checkbox && (
+                <td>
+                  <input type="checkbox" className=" ml-4 " />
+                </td>
+              )}
               {props.keys.map((item, index) => (
                 <td
                   className={`px-4 py-2 ${

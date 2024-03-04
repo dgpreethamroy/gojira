@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { SelectPicker } from "rsuite";
 import Modal from "../ui/modal/Modal";
-import "rsuite/dist/rsuite.min.css";
 import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
-import Avatar from "react-avatar";
 import Dropdown from "../ui/dropdown/Dropdown";
 export default function CreateIssue({
   modal,
@@ -163,7 +160,7 @@ export default function CreateIssue({
         </button>
 
         <button
-          className=" bg-blue-800 text-white ml-2 px-2 py-1 rounded font-bold text-lg"
+          className=" bg-blue-800 text-white ml-2 px-2 py-1 rounded font-semibold text-lg"
           onClick={handleCreateIssue}
         >
           Create
