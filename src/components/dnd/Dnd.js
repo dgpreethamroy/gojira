@@ -159,13 +159,50 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
     handlenewState(newState);
   };
   const [inputSearch, setSearchinput] = useState("");
+  const searchAndFilterTasks = (tasks, columns, search_term) => {
+    const matched_tasks = [];
+    for (const task_id in tasks) {
+      const task_details = tasks[task_id];
+      const summary = task_details.summary || "";
+      const description = task_details.description || "";
+      const task_id_lower = task_id.toLowerCase();
+      if (
+        summary.toLowerCase().includes(search_term.toLowerCase()) ||
+        description.toLowerCase().includes(search_term.toLowerCase()) ||
+        task_id_lower.includes(search_term.toLowerCase())
+      ) {
+        matched_tasks.push(task_details);
+      }
+    }
+    if (search_term === "") return columns;
+    // Filter columns based on matched tasks
+    const filtered_columns = {};
+    for (const column_id in columns) {
+      const column = columns[column_id];
+      const filtered_taskIds = column.taskIds.filter((taskId) =>
+        matched_tasks.some((task) => task.id === taskId)
+      );
+      if (filtered_taskIds.length > 0) {
+        filtered_columns[column_id] = { ...column, taskIds: filtered_taskIds };
+      } else {
+        filtered_columns[column_id] = { ...column, taskIds: [] };
+      }
+    }
+
+    // return { matched_tasks, filtered_columns };
+    return filtered_columns;
+  };
+  const mod_state = {
+    ...state,
+    columns: searchAndFilterTasks(state.tasks, state.columns, inputSearch),
+  };
   return (
     <>
       <div className="flex m-1">
         <SearchBox
           placeholder={"Board"}
           inputSearch={inputSearch}
-          setSearchinput={setSearchinput} 
+          setSearchinput={setSearchinput}
         />
       </div>
 
@@ -177,10 +214,10 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
         <Droppable droppableId="sfdaf" direction="horizantal" type="column">
           {(provided) => (
             <Container {...provided.droppableProps} ref={provided.innerRef}>
-              {state.columnOrder.map((columnId, index) => {
-                const column = state.columns[columnId];
+              {mod_state.columnOrder.map((columnId, index) => {
+                const column = mod_state.columns[columnId];
                 const tasks = column.taskIds.map(
-                  (taskId) => state.tasks[taskId]
+                  (taskId) => mod_state.tasks[taskId]
                 );
                 return (
                   <Column

@@ -54,6 +54,7 @@ a:hover {
 .hover-div:hover + .hide-div {
   opacity: 1;
 }
+
 .hide-div {
   opacity: 0;
 }

@@ -40,6 +40,7 @@ const renderIconButton = (props, ref) => {
 };
 const Task = (props) => {
   const [showIssue, setShowIssue] = React.useState(false);
+  const [showassignee, setShowassignee] = React.useState(false);
   const assignee_name = props.projectmembers.filter(
     (obj) => obj.id === props.task.assignee
   )[0].name;
@@ -103,30 +104,41 @@ const Task = (props) => {
                   )
               )}
             </div>
-            <div className="pt-2 flex justify-between items-start">
-              <div className="flex items-center">
-                {Icon}
-                <span
-                  className={`font-semibold text-black ${
-                    props.parenttitle === "Done" && "line-through"
-                  }`}
+            <div className="flex flex-col details">
+              <div className="pt-2 flex justify-between items-start">
+                <div className="flex items-center">
+                  {Icon}
+                  <span
+                    className={`font-semibold text-black ${
+                      props.parenttitle === "Done" && "line-through"
+                    }`}
+                  >
+                    {props.task.issuetype.toUpperCase()}
+                  </span>
+                </div>
+                <div
+                  onMouseEnter={() => setShowassignee(true)}
+                  onMouseLeave={() => setShowassignee(false)}
                 >
-                  {props.task.issuetype.toUpperCase()}
-                </span>
+                  <Avatar
+                    className="hover-div"
+                    name={assignee_name}
+                    textSizeRatio={2}
+                    size="28"
+                    round={true}
+                  />
+                </div>
               </div>
-
-              <div className="flex flex-col items-end justify-end">
-                <Avatar
-                  className="hover-div"
-                  name={assignee_name}
-                  textSizeRatio={2}
-                  size="28"
-                  round={true}
-                />
-                <span className=" hide-div text-black italic font-bold">
+              {showassignee ? (
+                <span
+                  className=" flex  justify-end py-1  text-black italic font-bold"
+                  id="assignee"
+                >
                   Assignee: {assignee_name}
                 </span>
-              </div>
+              ) : (
+                <div className="py-4"></div>
+              )}
             </div>
           </Container>
           {showIssue && (
