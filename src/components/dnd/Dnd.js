@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Column from "./Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
@@ -22,7 +22,20 @@ const handleCancelEdit = (e) => {
   document.getElementById("createColumn").style.display = "block";
   document.getElementById("createColumnDiv").style.display = "none";
 };
-const Dnd = ({ state, setState, project_id, projectmembers, inputSearch }) => {
+const Dnd = ({
+  state,
+  setState,
+  project_id,
+  projectmembers,
+  inputSearch,
+  parent,
+}) => {
+  useEffect(() => {
+    const minimapwidth =
+      parent?.current?.clientWidth / parent?.current?.scrollWidth;
+    if (minimapwidth !== NaN) setMiniMapWidth(minimapwidth);
+  }, []);
+  const [minimapwidth, setMiniMapWidth] = useState(0);
   const handleColumnDelete = (deletecolumn) => {
     debugger;
     let NewState = {
@@ -36,7 +49,7 @@ const Dnd = ({ state, setState, project_id, projectmembers, inputSearch }) => {
     handlenewState(NewState);
     //window.location.reload();
   };
-
+  const miniMap = useRef(null);
   console.log("Dnd Component");
   const handleSaveChanges = (e) => {
     console.log("handleSaveChanges");
@@ -197,6 +210,31 @@ const Dnd = ({ state, setState, project_id, projectmembers, inputSearch }) => {
     ...state,
     columns: searchAndFilterTasks(state.tasks, state.columns, inputSearch),
   };
+  let mouseDown = false;
+  let startX;
+  const offsetLeft = miniMap?.current?.offsetLeft;
+  const handleStartDrag = (e) => {
+    console.log("handleStartDrag", e);
+    mouseDown = true;
+    startX = e.pageX - miniMap.current.offsetLeft;
+  };
+  const handleStopDrag = (e) => {
+    console.log("handleStopDrag", e);
+    mouseDown = false;
+  };
+  const handleMove = (e) => {
+    e.preventDefault();
+    if (!mouseDown) return;
+    if (
+      e.pageX - startX + miniMap.current.offsetWidth < 140 &&
+      offsetLeft <= e.pageX - startX
+    ) {
+      miniMap.current.style.left = e.pageX - startX + "px";
+      parent.current.scrollLeft =
+        (e.pageX - startX - offsetLeft) *
+        ((parent.current.scrollWidth - parent.current.clientWidth) / 60);
+    }
+  };
   return (
     <>
       <DragDropContext
@@ -262,6 +300,21 @@ const Dnd = ({ state, setState, project_id, projectmembers, inputSearch }) => {
           )}
         </Droppable>
       </DragDropContext>
+      <div className="fixed bottom-10 right-20 flex bg-white p-2 shadow-2xl rounded">
+        {mod_state.columnOrder.map((columnId, index) => {
+          return (
+            <div className=" my-1  mx-[2px] bg-gray-300 w-5 h-10 rounded"></div>
+          );
+        })}
+        <div
+          ref={miniMap}
+          className="border-2 border-blue-800 h-12 rounded  absolute hover:cursor-[move]"
+          style={{ width: minimapwidth * 25 * mod_state.columnOrder.length }}
+          onMouseDown={handleStartDrag}
+          onMouseUp={handleStopDrag}
+          onMouseMove={handleMove}
+        ></div>
+      </div>
     </>
   );
 };

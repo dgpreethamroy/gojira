@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import customAxios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
@@ -25,7 +25,7 @@ export default function ProjectDetails() {
     },
     columnOrder: ["column-1", "column-2", "column-3"],
   });
-
+  const Parentref = useRef(null);
   const id = useParams();
   useEffect(() => {
     const getProjects = async () => {
@@ -58,19 +58,19 @@ export default function ProjectDetails() {
       </div>
       <div
         id="DnDParent"
+        ref={Parentref}
         style={{ maxHeight: window.innerHeight - 200 }}
         className={`pt-0 border-2 overflow-y-auto   border-gray-200  rounded-lg dark:border-gray-700`}
       >
-        {
-          <Dnd
-            state={state}
-            setState={setState}
-            projectmembers={todos.projectmembers}
-            project_id={id}
-            inputSearch={inputSearch}
-            setSearchinput={setSearchinput}
-          />
-        }
+        <Dnd
+          parent={Parentref}
+          state={state}
+          setState={setState}
+          projectmembers={todos.projectmembers}
+          project_id={id}
+          inputSearch={inputSearch}
+          setSearchinput={setSearchinput}
+        />
       </div>
     </>
   );
@@ -194,7 +194,7 @@ export default function ProjectDetails() {
                 Not yet implemented
               </h2>,
             ]}
-            open="Calendar"
+            open="Board"
           />
         </div>
       </div>

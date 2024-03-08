@@ -22,6 +22,9 @@ function startingDateAndDaysInRange(startDateStr, endDateStr, checkDateStr) {
   const startDate = new Date(startDateStr);
   const endDate = new Date(endDateStr);
   const checkDate = new Date(checkDateStr);
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+  checkDate.setHours(0, 0, 0, 0);
 
   let daysInRange = 0;
   let startingDateInRange = null;
@@ -82,20 +85,6 @@ const monthNames = [
   "December",
 ];
 
-const month_dict = {
-  Jan: "January",
-  Feb: "February",
-  Mar: "March",
-  Apr: "April",
-  May: "May",
-  Jun: "June",
-  Jul: "July",
-  Aug: "August",
-  Sep: "September",
-  Oct: "October",
-  Nov: "November",
-  Dec: "December",
-};
 function getNextMonday(date = new Date()) {
   const dateCopy = new Date(date.getTime());
 
@@ -135,7 +124,7 @@ const Calendar = ({ tasks, user }) => {
     <div className="flex items-center dark:bg-white">
       <span>{Filter_Icon}</span>
       {filterOptions.filter(Boolean).length > 0 ? (
-        <p className="text-black  font-semibold ml-2">
+        <p className="text-black text-nowrap  font-semibold ml-2">
           {filterOptions.filter(Boolean).length} Filters applied
         </p>
       ) : (
@@ -150,17 +139,20 @@ const Calendar = ({ tasks, user }) => {
     return currentYearMonth >= start && currentYearMonth <= end;
   };
 
-  const searchResults = Object.values(tasks).filter(
-    (task) =>
+  const searchResults = Object.values(tasks).filter((task) => {
+    let createdAt = dayjs(task.createdAt).$d;
+    let DueDate = dayjs(task.DueDate).$d;
+    return (
       (task.id.toLowerCase().includes(inputSearch.toLowerCase()) ||
         task.summary.toLowerCase().includes(inputSearch.toLowerCase())) &&
       isMonthYearInRange(
-        monthNames.indexOf(month_dict[task.createdAt.split(" ")[1]]) + 1,
-        Number(task.createdAt.split(" ")[3]),
-        monthNames.indexOf(month_dict[task.DueDate.split(" ")[1]]) + 1,
-        Number(task.DueDate.split(" ")[3])
+        createdAt.getMonth() + 1,
+        createdAt.getFullYear(),
+        DueDate.getMonth() + 1,
+        DueDate.getFullYear()
       )
-  );
+    );
+  });
   const handleprevMonth = () => {
     if (month === monthNames[0]) {
       setYear(year - 1);
@@ -186,10 +178,7 @@ const Calendar = ({ tasks, user }) => {
   };
 
   const searchandfilter = searchResults.map((task) => {
-    let taskEndDate = `${Number(task.DueDate.split(" ")[3])}-${
-      monthNames.indexOf(month_dict[task.DueDate.split(" ")[1]]) + 1
-    }-${Number(task.DueDate.split(" ")[2])}`;
-    let taskEndDate_dayjs = dayjs(taskEndDate).endOf("day");
+    let taskEndDate_dayjs = dayjs(task.DueDate).endOf("day");
     let Doneresult = taskEndDate_dayjs.$d - new Date() < 0 ? true : false;
     let Assigneresult = task.assignee === user ? true : false;
     let Duethisweekresult =
@@ -245,15 +234,9 @@ const Calendar = ({ tasks, user }) => {
           <div className="flex flex-col">
             {searchandfilter.map((task) => {
               if (!task) return;
-              let taskStartDate = `${Number(task.createdAt.split(" ")[3])}-${
-                monthNames.indexOf(month_dict[task.createdAt.split(" ")[1]]) + 1
-              }-${Number(task.createdAt.split(" ")[2])}`;
-              let taskEndDate = `${Number(task.DueDate.split(" ")[3])}-${
-                monthNames.indexOf(month_dict[task.DueDate.split(" ")[1]]) + 1
-              }-${Number(task.DueDate.split(" ")[2])}`;
-              let Thisweek = `${year}-${monthNames.indexOf(month) + 1}-${Number(
-                day.subtract(1, "day").format("D")
-              )}`;
+              let taskStartDate = dayjs(task.createdAt).format("YYYY-MM-DD");
+              let taskEndDate = dayjs(task.DueDate).format("YYYY-MM-DD");
+              let Thisweek = day.subtract(1, "days").format("YYYY-MM-DD");
               let { daysInRange, startingDateInRange } =
                 startingDateAndDaysInRange(
                   taskStartDate,
@@ -263,7 +246,7 @@ const Calendar = ({ tasks, user }) => {
               return (
                 <button
                   key={task.id}
-                  className={`text-black mt-1 rounded bg-gray-300  truncate text-start relative  w-[${
+                  className={`text-black mt-1 rounded truncate bg-gray-300   text-start relative  w-[${
                     (daysInRange * 100) / 7
                   }%]`}
                   style={{
@@ -277,7 +260,7 @@ const Calendar = ({ tasks, user }) => {
                       "%",
                   }}
                 >
-                  <span className="py-2">
+                  <span className="py-2 ">
                     {Issuedata.map((data) => {
                       if (data.label === task.issuetype) {
                         return (

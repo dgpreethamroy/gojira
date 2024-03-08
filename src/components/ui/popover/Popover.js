@@ -30,7 +30,7 @@ export default function Example({ label, children, dir }) {
         <>
           <button
             className={`
-                 inline-flex items-center max-h-10 w-auto rounded-md bg-inherit dark:bg-white hover:bg-gray-100  text-slate-300 px-3 py-2 text-base font-medium hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
+                 inline-flex items-center max-h-10  rounded-md bg-inherit dark:bg-white hover:bg-gray-100  text-slate-300 px-3 py-2 text-base font-medium hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
             onClick={handleOpentoggle}
           >
             {label}
