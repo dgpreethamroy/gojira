@@ -1,5 +1,20 @@
 import React from "react";
 
+const menu_icon_dots = (
+  <svg
+    className="TaskMenu"
+    width="28"
+    height="28"
+    viewBox="0 0 24 24"
+    role="presentation"
+  >
+    <g fill="black" fill-rule="evenodd">
+      <circle cx="5" cy="12" r="2"></circle>
+      <circle cx="12" cy="12" r="2"></circle>
+      <circle cx="19" cy="12" r="2"></circle>
+    </g>
+  </svg>
+);
 const Issuedata = [
   {
     value: "Bug",
@@ -151,5 +166,204 @@ const closeIcon = (
     />
   </svg>
 );
-export { Issuedata, status_data, labels_data ,checkIcon ,closeIcon};
+const Delete_Icon = (
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect
+      x="5"
+      y="6"
+      width="10"
+      height="10"
+      fill="#EDE9FE"
+      stroke="#A78BFA"
+      strokeWidth="2"
+    />
+    <path d="M3 6H17" stroke="#A78BFA" strokeWidth="2" />
+    <path d="M8 6V4H12V6" stroke="#A78BFA" strokeWidth="2" />
+  </svg>
+);
+const Plus_Icon = (
+  <img
+    width="30"
+    height="30"
+    src="https://img.icons8.com/ios-glyphs/30/000000/plus-math.png"
+    alt="plus-math"
+  />
+);
+const Calendar_Filter_Data = [
+  {
+    label: (
+      <span>
+        <svg
+          role="presentation"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 3a9 9 0 014.78 16.627c-.154.19-.375.323-.628.361A8.978 8.978 0 0112 21a8.961 8.961 0 01-4.151-1.013.993.993 0 01-.628-.36A9 9 0 0112 3zm1 13h-2l-.15.006a2 2 0 00-1.844 1.837L9 18v.326c.91.432 1.927.674 3 .674a6.972 6.972 0 003-.674V18l-.005-.15a2 2 0 00-1.838-1.844L13 16zM12 5a7 7 0 00-4.88 12.02 4.004 4.004 0 013.673-3.015L11 14h2l.2.005a4.002 4.002 0 013.679 3.013A7 7 0 0012 5zm0 2a3 3 0 110 6 3 3 0 010-6zm0 2a1 1 0 100 2 1 1 0 000-2z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </span>
+    ),
+    value: "Assign to me",
+  },
+  {
+    label: (
+      <span>
+        <svg
+          role="presentation"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M8 6a1 1 0 012 0h4a1 1 0 112 0h1a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V8a2 2 0 012-2h1zm6 2a1 1 0 102 0h1v2H7V8h1a1 1 0 002 0h4zm-7 4v4h10v-4H7z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </span>
+    ),
+    value: "Due this week ",
+  },
+  {
+    label: (
+      <span>
+        <svg
+          role="presentation"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 20a8 8 0 100-16.001A8 8 0 0012 20zm0 2C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
+            fill="currentColor"
+          ></path>
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M9.707 11.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 10-1.414-1.414L11 12.586l-1.293-1.293z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </span>
+    ),
+    value: "Done items",
+  },
+];
+const Filter_Icon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+    <path
+      d="M7 13h10l1-2H6zM3.993 6c-.548 0-.79.405-.546.895L4 8h16l.553-1.105C20.8 6.4 20.555 6 20.007 6H3.993zm6.785 11.556a.87.87 0 00.727.444h.99c.279 0 .605-.2.727-.444L14 16h-4l.778 1.556z"
+      fill=""
+      fill-rule="evenodd"
+    ></path>
+  </svg>
+);
+const Leftarrow_Icon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+    <path
+      fill="currentColor"
+      fill-rule="evenodd"
+      d="M9.005 10.995l4.593-4.593a.99.99 0 111.4 1.4l-3.9 3.9 3.9 3.9a.99.99 0 01-1.4 1.4L9.005 12.41a1 1 0 010-1.414z"
+    ></path>
+  </svg>
+);
+const Rightarrow_Icon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+    <path
+      fill="currentColor"
+      fill-rule="evenodd"
+      d="M14.995 10.995a1 1 0 010 1.414l-4.593 4.593a.99.99 0 01-1.4-1.4l3.9-3.9-3.9-3.9a.99.99 0 011.4-1.4l4.593 4.593z"
+    ></path>
+  </svg>
+);
+const checkwithCircle_Icon = (
+  <svg
+    role="presentation"
+    fill="none"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+  >
+    <path
+      d="M12 20a8 8 0 100-16.001A8 8 0 0012 20zm0 2C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
+      fill="currentColor"
+    ></path>
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M9.707 11.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 10-1.414-1.414L11 12.586l-1.293-1.293z"
+      fill="currentColor"
+    ></path>
+  </svg>
+);
+const Calendar_Icon = (
+  <svg
+    role="presentation"
+    fill="none"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M8 6a1 1 0 012 0h4a1 1 0 112 0h1a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V8a2 2 0 012-2h1zm6 2a1 1 0 102 0h1v2H7V8h1a1 1 0 002 0h4zm-7 4v4h10v-4H7z"
+      fill="currentColor"
+    ></path>
+  </svg>
+);
+const Profile_Icon = (
+  <svg
+    role="presentation"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M12 3a9 9 0 014.78 16.627c-.154.19-.375.323-.628.361A8.978 8.978 0 0112 21a8.961 8.961 0 01-4.151-1.013.993.993 0 01-.628-.36A9 9 0 0112 3zm1 13h-2l-.15.006a2 2 0 00-1.844 1.837L9 18v.326c.91.432 1.927.674 3 .674a6.972 6.972 0 003-.674V18l-.005-.15a2 2 0 00-1.838-1.844L13 16zM12 5a7 7 0 00-4.88 12.02 4.004 4.004 0 013.673-3.015L11 14h2l.2.005a4.002 4.002 0 013.679 3.013A7 7 0 0012 5zm0 2a3 3 0 110 6 3 3 0 010-6zm0 2a1 1 0 100 2 1 1 0 000-2z"
+      fill="currentColor"
+    ></path>
+  </svg>
+);
+const blueCheck_Icon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+    <path
+      d="M6.735 12.322a1 1 0 00-1.47 1.356l3.612 3.919c.537.526 1.337.526 1.834.03l.364-.359a2335.638 2335.638 0 003.939-3.883l.04-.04a492.598 492.598 0 003.658-3.643 1 1 0 00-1.424-1.404 518.42 518.42 0 01-3.64 3.625l-.04.04a2049.114 2049.114 0 01-3.775 3.722l-3.098-3.363z"
+      fill="blue"
+    ></path>
+  </svg>
+);
+const Rightarrow_Medium_Icon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
+    <path
+      d="M11.793 5.793a.999.999 0 000 1.414L15.586 11H6a1 1 0 000 2h9.586l-3.793 3.793a.999.999 0 000 1.414c.39.39 1.024.39 1.415 0l5.499-5.5a.997.997 0 00.293-.679v-.057a.996.996 0 00-.293-.678l-5.499-5.5a1 1 0 00-1.415 0z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    ></path>
+  </svg>
+);
+export {
+  Issuedata,
+  status_data,
+  labels_data,
+  checkIcon,
+  closeIcon,
+  menu_icon_dots,
+  Delete_Icon,
+  Plus_Icon,
+  Calendar_Filter_Data,
+  Filter_Icon,
+  Leftarrow_Icon,
+  Rightarrow_Icon,
+  checkwithCircle_Icon,
+  Calendar_Icon,
+  Profile_Icon,
+  blueCheck_Icon,
+  Rightarrow_Medium_Icon,
+};
 // Path: src/assets/CommonData.js

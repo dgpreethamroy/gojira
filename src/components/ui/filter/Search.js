@@ -14,7 +14,7 @@ const SearchBox = ({ placeholder, inputSearch, setSearchinput }) => {
     <div
       className={`flex items-center   border-2 font-semibold ${
         isFocused ? "border-blue-500 " : "border-gray-300 "
-      }  rounded-3xl bg-white `}
+      }  rounded-3xl bg-white  h-[40px]`}
     >
       <input
         ref={inputRef}

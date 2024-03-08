@@ -63,17 +63,20 @@ export const Table = () => {
     let shiftX = event.clientX - ball.getBoundingClientRect().left;
     let shiftY = event.clientY - ball.getBoundingClientRect().top;
 
+    let eventInitialposX = event.clientX;
+    let eventInitialposY = event.clientY;
+
     let paddingX = ball.getBoundingClientRect().top - ball.offsetTop;
     let paddingY = ball.getBoundingClientRect().left - ball.offsetLeft;
 
     ball.style.position = "absolute";
     ball.style.zIndex = 1000;
     ball.style.border = "1px solid black";
-    ball.style.background = "white";
+    // ball.style.background = "white";
 
     const moveAt = (pageX, pageY) => {
-      ball.style.left = pageX - shiftX + "px";
-      ball.style.top = pageY - shiftY + "px";
+      ball.style.left = pageX - eventInitialposX + "px";
+      ball.style.top = pageY - eventInitialposY + "px";
     };
 
     moveAt(event.pageX, event.pageY);
@@ -130,7 +133,7 @@ export const Table = () => {
   return (
     <div className="bg-gray-200">
       <h2 className="text-black text-center bg-slate-500">Table</h2>
-      <div className="top-0 left-0  text-black  font-bold  text-xl w-11/12 min-h-[500px] mx-auto  text-center overflow-x-auto  drop-shadow-2xl bg-white ">
+      <div className=" text-black  font-bold  text-xl min-h-[500px]   text-center bg-white ">
         {columnLabels.map((label, index) => (
           <div
             name={label}

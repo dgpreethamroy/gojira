@@ -38,7 +38,7 @@ export const ListIssues = (props) => {
   if (Object.keys(props.state.tasks).length === 0) return <div>No issues</div>;
   return (
     <div>
-      <div id="Filters" className="flex">
+      <div id="Filters" className="flex m-1">
         <SearchBox
           placeholder="List"
           inputSearch={inputSearch}
@@ -49,7 +49,7 @@ export const ListIssues = (props) => {
             <button className="rounded-full hover:bg-gray-300 p-1">
               <Avatar
                 name={item.name}
-                size="40"
+                size="30"
                 round
                 className="font-semibold "
                 textSizeRatio={1}
@@ -60,7 +60,7 @@ export const ListIssues = (props) => {
         <button className="rounded-full hover:bg-gray-300 p-1">
           <Avatar
             src="https://www.clipartmax.com/png/middle/41-410441_add-people-comments-add-people-icon.png"
-            size="40"
+            size="30"
             round
           />
         </button>

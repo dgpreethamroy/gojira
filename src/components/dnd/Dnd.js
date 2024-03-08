@@ -3,7 +3,6 @@ import Column from "./Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import axios from "../../api/axios";
-import PlusIcon from "@rsuite/icons/Plus";
 import { XIcon, CheckIcon } from "@heroicons/react/solid";
 import SearchBox from "../ui/filter/Search";
 
@@ -23,12 +22,9 @@ const handleCancelEdit = (e) => {
   document.getElementById("createColumn").style.display = "block";
   document.getElementById("createColumnDiv").style.display = "none";
 };
-const Dnd = ({ state, setState, project_id, projectmembers }) => {
-  const handleColumnDelete = (e) => {
+const Dnd = ({ state, setState, project_id, projectmembers, inputSearch }) => {
+  const handleColumnDelete = (deletecolumn) => {
     debugger;
-    let deletecolumn =
-      e.target.parentElement.parentElement.parentElement.previousSibling
-        .children[0].id;
     let NewState = {
       ...state,
       columnOrder: state.columnOrder.filter(
@@ -118,8 +114,14 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
     const finish = state.columns[destination.droppableId];
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      newTaskIds.splice(newTaskIds.indexOf(draggableId), 1);
+      newTaskIds.splice(
+        destination.index +
+          (start.taskIds.length -
+            mod_state.columns[source.droppableId].taskIds.length),
+        0,
+        draggableId
+      );
       const newColumn = {
         ...start,
         taskIds: newTaskIds,
@@ -136,7 +138,7 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
       return;
     }
     const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
+    startTaskIds.splice(startTaskIds.indexOf(draggableId), 1);
     const newStart = {
       ...start,
       taskIds: startTaskIds,
@@ -158,7 +160,6 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
     setState(newState);
     handlenewState(newState);
   };
-  const [inputSearch, setSearchinput] = useState("");
   const searchAndFilterTasks = (tasks, columns, search_term) => {
     const matched_tasks = [];
     for (const task_id in tasks) {
@@ -198,14 +199,6 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
   };
   return (
     <>
-      <div className="flex m-1">
-        <SearchBox
-          placeholder={"Board"}
-          inputSearch={inputSearch}
-          setSearchinput={setSearchinput}
-        />
-      </div>
-
       <DragDropContext
         onDragEnd={onDragEnd}
         onDragStart={(e) => onDragStart(e)}
@@ -234,16 +227,17 @@ const Dnd = ({ state, setState, project_id, projectmembers }) => {
                 <button
                   onClick={handleToggleNew}
                   id="createColumn"
-                  className="border-2 border-gray-300  rounded-md"
+                  className="border-2 border-gray-300 w-8 rounded-md"
                 >
-                  <PlusIcon
+                  {/* <PlusIcon
                     style={{
                       borderRadius: "6px",
                       fontSize: "2em",
                       color: "rgb(50, 50, 50)",
                       background: "rgb(240, 240, 240)",
                     }}
-                  />
+                  /> */}
+                  <img src="https://img.icons8.com/ios-glyphs/30/000000/plus-math.png" />
                 </button>
                 <div id="createColumnDiv" className="hidden ">
                   <input

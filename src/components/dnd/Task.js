@@ -2,11 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import Avatar from "react-avatar";
-import { Issuedata } from "../../assets/CommonData";
-import { Dropdown, IconButton } from "rsuite";
-import MoreIcon from "@rsuite/icons/More";
+import {
+  Issuedata,
+  menu_icon_dots,
+  Delete_Icon,
+} from "../../assets/CommonData";
 import customAxios from "../../api/axios";
 import IssueModal from "../issue/issueModal";
+import Menu from "../ui/menu/Menu";
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 7px;
@@ -20,24 +23,7 @@ const Container = styled.div`
     background-color: #99ccff;
   }
 `;
-const renderIconButton = (props, ref) => {
-  return (
-    <IconButton
-      style={{ padding: "0em" }}
-      {...props}
-      ref={ref}
-      icon={
-        <MoreIcon
-          style={{
-            fontSize: "2em",
-            color: "rgb(0, 0, 0)",
-            background: "rgb(255, 255, 255)",
-          }}
-        />
-      }
-    />
-  );
-};
+
 const Task = (props) => {
   const [showIssue, setShowIssue] = React.useState(false);
   const [showassignee, setShowassignee] = React.useState(false);
@@ -46,6 +32,8 @@ const Task = (props) => {
   )[0].name;
   const Icon = Issuedata.filter((obj) => obj.label === props.task.issuetype)[0]
     .icon;
+  // Icon.props.width = "20";
+  // Icon.props.height = "20";
 
   // handle Delete Event
 
@@ -63,6 +51,12 @@ const Task = (props) => {
     e.preventDefault();
     return false; // prevent the default form submission behavior
   };
+  const menu_data = [
+    {
+      label: Delete_Icon,
+      value: "Delete",
+    },
+  ];
 
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
@@ -71,9 +65,9 @@ const Task = (props) => {
           <Container
             className="shake hover-crap" //shake here
             onClick={(e) => {
-              !e.target.classList.contains("rs-icon") &&
-                !e.target.classList.contains("rs-dropdown-item") &&
-                setShowIssue(!showIssue);
+              !["customMenu", "TaskMenu", "customMenuOption"].some(
+                (className) => e.target.classList.contains(className)
+              ) && setShowIssue(!showIssue);
             }}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -84,10 +78,17 @@ const Task = (props) => {
               <p className="text-black font-semibold py-2">
                 {props.task.summary}
               </p>
-              <div className="z-10 hidenow">
-                <Dropdown renderToggle={renderIconButton}>
-                  <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
-                </Dropdown>
+              <div className=" hidenow">
+                <Menu
+                  name={menu_icon_dots}
+                  data={menu_data}
+                  downIcon={false}
+                  buttonStyle={true}
+                  align="left"
+                  onClick={(e) => {
+                    e.target.innerText === "Delete" && handleDelete(e);
+                  }}
+                />
               </div>
             </div>
 
@@ -105,15 +106,15 @@ const Task = (props) => {
               )}
             </div>
             <div className="flex flex-col details">
-              <div className="pt-2 flex justify-between items-start">
+              <div className="pt-2 flex justify-between items-center">
                 <div className="flex items-center">
-                  {Icon}
+                  <div className="h-5 w-5 flex items-center">{Icon}</div>
                   <span
-                    className={`font-semibold text-black ${
+                    className={`font-semibold text-black text-sm px-1 ${
                       props.parenttitle === "Done" && "line-through"
                     }`}
                   >
-                    {props.task.issuetype.toUpperCase()}
+                    {props.task.id.toUpperCase()}
                   </span>
                 </div>
                 <div

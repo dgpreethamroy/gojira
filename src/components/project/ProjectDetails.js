@@ -7,13 +7,15 @@ import { Sidebar } from "../layouts/Sidebar";
 import { ListIssues } from "../list/ListIssues";
 import Dnd from "../dnd/Dnd";
 import Tabs from "../ui/tabs/Tabs";
-
+import SearchBox from "../ui/filter/Search";
+import Calendar from "../calendar/Calendar";
 export default function ProjectDetails() {
   const { auth, currentUser } = useContext(AuthContext);
   const [todos, setTodos] = useState({});
   const [modal, setModal] = useState(false);
   const [ready, setReady] = useState(false);
   const [issuecreated, setIssuecreated] = useState(false);
+  const [inputSearch, setSearchinput] = useState("");
   const [state, setState] = useState({
     tasks: {},
     columns: {
@@ -46,20 +48,31 @@ export default function ProjectDetails() {
   }, [currentUser, issuecreated, id.id]);
 
   const Board = (
-    <div
-      id="DnDParent"
-      style={{ maxHeight: window.innerHeight - 200 }}
-      className={`pt-0 border-2 overflow-y-auto   border-gray-200  rounded-lg dark:border-gray-700`}
-    >
-      {
-        <Dnd
-          state={state}
-          setState={setState}
-          projectmembers={todos.projectmembers}
-          project_id={id}
+    <>
+      <div className="flex m-1 sticky top-0 ">
+        <SearchBox
+          placeholder={"Board"}
+          inputSearch={inputSearch}
+          setSearchinput={setSearchinput}
         />
-      }
-    </div>
+      </div>
+      <div
+        id="DnDParent"
+        style={{ maxHeight: window.innerHeight - 200 }}
+        className={`pt-0 border-2 overflow-y-auto   border-gray-200  rounded-lg dark:border-gray-700`}
+      >
+        {
+          <Dnd
+            state={state}
+            setState={setState}
+            projectmembers={todos.projectmembers}
+            project_id={id}
+            inputSearch={inputSearch}
+            setSearchinput={setSearchinput}
+          />
+        }
+      </div>
+    </>
   );
   const List = (
     <div id="ListParent">
@@ -158,9 +171,7 @@ export default function ProjectDetails() {
               </h2>,
               Board,
               List,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
+              <Calendar tasks={state.tasks} user={currentUser} />,
               <h2 className="text-center text-slate-500">
                 Not yet implemented
               </h2>,
@@ -183,7 +194,7 @@ export default function ProjectDetails() {
                 Not yet implemented
               </h2>,
             ]}
-            open="Board"
+            open="Calendar"
           />
         </div>
       </div>

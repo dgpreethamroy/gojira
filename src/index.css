@@ -48,9 +48,7 @@ a:hover {
     opacity: 1;
   }
 }
-.hover-crap:hover .hide-now {
-  opacity: 1;
-}
+
 .hover-div:hover + .hide-div {
   opacity: 1;
 }
@@ -61,9 +59,7 @@ a:hover {
 .hidenow {
   opacity: 0;
 }
-.hide-now {
-  opacity: 0;
-}
+
 /* .hidenow:hover {
   opacity: 1;
 } */

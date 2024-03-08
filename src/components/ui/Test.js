@@ -3,8 +3,8 @@ import Dropdown from "./dropdown/Dropdown";
 import Table from "./table/Table";
 import Modal from "./modal/Modal";
 import Menu from "./menu/Menu";
-import Popover from "./popover/Popover2";
 import Tabs from "./tabs/Tabs";
+import Popover from "./popover/Popover";
 const menu_data = [
   {
     label: (
@@ -412,6 +412,9 @@ const Test = () => {
               downIcon={false}
               buttonStyle={true}
               align="right"
+              onClick={(e) => {
+                alert("Clicked on " + e.target.innerText);
+              }}
             />
           </div>
         </div>
@@ -427,42 +430,22 @@ const Test = () => {
           />
         </div>
         <br />
-        <div className="text-center">
-          <div id="sample" className="">
-            <span className="hover:cursor-pointer " id="meme">
-              Click here to open popover
+        <div
+          className="
+        flex"
+        >
+          <Popover label="Filter">
+            <span>
+              <p>This is inside Popover...</p>
             </span>
-          </div>
-          <p>Fillers</p>
-          <p>Fillers</p>
-          <p>Fillers</p>
-          <p>Fillers</p>
-          <p>Fillers</p>
+          </Popover>{" "}
+          <Popover label="More">
+            <span>
+              <p>This is inside Popover...</p>
+            </span>
+          </Popover>
         </div>
-        <Popover
-          targetId="meme"
-          trigger="click"
-          content={<div>Sample Popup Demo</div>}
-          position="top"
-        ></Popover>
-        <Popover
-          targetId="meme"
-          trigger="click"
-          content={<div>Sample Popup Demo</div>}
-          position="bottom"
-        ></Popover>
-        <Popover
-          targetId="meme"
-          trigger="click"
-          content={<div>Sample Popup Demo</div>}
-          position="left"
-        ></Popover>
-        <Popover
-          targetId="meme"
-          trigger="click"
-          content={<div>Sample Popup Demo</div>}
-          position="right"
-        ></Popover>
+        <br />
         <Tabs
           tabs={["Tab 1", "Tab 2", "Tab 3", "Tab 4"]}
           displays={["Hello", "Moto", "LG", "SAMSUNG"]}

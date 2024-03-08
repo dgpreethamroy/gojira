@@ -2,9 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import Task from "./Task";
-import { Dropdown, IconButton } from "rsuite";
-import MoreIcon from "@rsuite/icons/More";
-
+import { Delete_Icon, menu_icon_dots } from "../../assets/CommonData";
+import Menu from "../ui/menu/Menu";
 const Container = styled.div`
   border-radius: 7px;
   background-color: #f2f2f2;
@@ -37,25 +36,12 @@ const TaskList = styled.div`
 // )},${Math.floor(Math.random() * 256)})`;
 // const lightrandomColor = randomColor.replace(")", ", 0.25)").replace("b", "ba");
 
-const renderIconButton = (props, ref) => {
-  return (
-    <IconButton
-      style={{ padding: "0em" }}
-      {...props}
-      ref={ref}
-      icon={
-        <MoreIcon
-          style={{
-            fontSize: "2.5em",
-            color: "rgb(0, 0, 0)",
-            background: "#f2f2f2",
-          }}
-        />
-      }
-    />
-  );
-};
-
+const menu_data = [
+  {
+    label: Delete_Icon,
+    value: "Delete",
+  },
+];
 const Column = (props) => {
   const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
     Math.random() * 256
@@ -72,7 +58,7 @@ const Column = (props) => {
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
-          <Title className="flex justify-between items-center border-b-2 border-gray-400 z-20 sticky top-[-2px]  ">
+          <Title className="flex justify-between items-center border-b-2 border-gray-400 sticky top-0 ">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${
@@ -121,12 +107,19 @@ const Column = (props) => {
               </span>
             </div>
 
-            <div className=" z-10 hide-now px-4">
-              <Dropdown renderToggle={renderIconButton}>
-                <Dropdown.Item onClick={props.handleColumnDelete}>
-                  Delete
-                </Dropdown.Item>
-              </Dropdown>
+            <div className="  px-4">
+              <Menu
+                data={menu_data}
+                name={menu_icon_dots}
+                downIcon={false}
+                buttonStyle={true}
+                align="right"
+                onClick={(e) => {
+                  if (e.target.innerText === "Delete") {
+                    props.handleColumnDelete(props.column.id);
+                  }
+                }}
+              />
             </div>
           </Title>
 
