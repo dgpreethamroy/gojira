@@ -10,6 +10,7 @@ import Tabs from "../ui/tabs/Tabs";
 import SearchBox from "../ui/filter/Search";
 import Calendar from "../calendar/Calendar";
 export default function ProjectDetails() {
+  console.log("project Details Component");
   const { auth, currentUser } = useContext(AuthContext);
   const [todos, setTodos] = useState({});
   const [modal, setModal] = useState(false);
@@ -28,6 +29,7 @@ export default function ProjectDetails() {
   const Parentref = useRef(null);
   const id = useParams();
   useEffect(() => {
+    console.log("project Details useEffect");
     const getProjects = async () => {
       if (currentUser) {
         console.log("Fetching project details for project id:", id.id);

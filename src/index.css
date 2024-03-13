@@ -53,6 +53,9 @@ a:hover {
   opacity: 1;
 }
 
+.hover-div:hover .color-div {
+  background-color: lightblue;
+}
 .hide-div {
   opacity: 0;
 }
