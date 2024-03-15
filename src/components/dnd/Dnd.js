@@ -30,14 +30,15 @@ const Dnd = ({
   inputSearch,
   parent,
 }) => {
-  useEffect(() => {
-    const minimapwidth =
-      parent?.current?.clientWidth / parent?.current?.scrollWidth;
-    if (minimapwidth !== NaN) setMiniMapWidth(minimapwidth);
-  }, []);
   const [minimapwidth, setMiniMapWidth] = useState(0);
+  const miniMap = useRef(null);
+
+  useEffect(() => {
+    const mapwidth =
+      parent?.current?.clientWidth / parent?.current?.scrollWidth;
+    if (mapwidth !== NaN) setMiniMapWidth(mapwidth);
+  }, []);
   const handleColumnDelete = (deletecolumn) => {
-    debugger;
     let NewState = {
       ...state,
       columnOrder: state.columnOrder.filter(
@@ -49,7 +50,7 @@ const Dnd = ({
     handlenewState(NewState);
     //window.location.reload();
   };
-  const miniMap = useRef(null);
+
   console.log("Dnd Component");
   const handleSaveChanges = (e) => {
     console.log("handleSaveChanges");
@@ -217,16 +218,21 @@ const Dnd = ({
     console.log("handleStartDrag", e);
     mouseDown = true;
     startX = e.pageX - miniMap.current.offsetLeft;
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("mouseup", handleStopDrag);
   };
   const handleStopDrag = (e) => {
     console.log("handleStopDrag", e);
     mouseDown = false;
+    document.removeEventListener("mousemove", handleMove);
+    document.removeEventListener("mouseup", handleStopDrag);
   };
   const handleMove = (e) => {
     e.preventDefault();
     if (!mouseDown) return;
     if (
-      e.pageX - startX + miniMap.current.offsetWidth < 140 &&
+      e.pageX - startX + miniMap.current.clientWidth <
+        mod_state.columnOrder.length * 24 &&
       offsetLeft <= e.pageX - startX
     ) {
       miniMap.current.style.left = e.pageX - startX + "px";
@@ -267,14 +273,6 @@ const Dnd = ({
                   id="createColumn"
                   className="border-2 border-gray-300 w-8 rounded-md"
                 >
-                  {/* <PlusIcon
-                    style={{
-                      borderRadius: "6px",
-                      fontSize: "2em",
-                      color: "rgb(50, 50, 50)",
-                      background: "rgb(240, 240, 240)",
-                    }}
-                  /> */}
                   <img src="https://img.icons8.com/ios-glyphs/30/000000/plus-math.png" />
                 </button>
                 <div id="createColumnDiv" className="hidden ">
@@ -308,11 +306,9 @@ const Dnd = ({
         })}
         <div
           ref={miniMap}
-          className="border-2 border-blue-800 h-12 rounded  absolute hover:cursor-[move]"
-          style={{ width: minimapwidth * 25 * mod_state.columnOrder.length }}
+          className="border-2 border-blue-800 h-12 rounded  absolute hover:cursor-move"
+          style={{ width: 24 * mod_state.columnOrder.length * minimapwidth }}
           onMouseDown={handleStartDrag}
-          onMouseUp={handleStopDrag}
-          onMouseMove={handleMove}
         ></div>
       </div>
     </>

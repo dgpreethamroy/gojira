@@ -5,6 +5,7 @@ import AuthContext from "../../context/AuthProvider";
 import CreateIssue from "../issue/CreateIssue";
 import { Sidebar } from "../layouts/Sidebar";
 import { ListIssues } from "../list/ListIssues";
+import { Gnatt_Chart } from "../timeline/Gnatt_Chart";
 import Dnd from "../dnd/Dnd";
 import Tabs from "../ui/tabs/Tabs";
 import SearchBox from "../ui/filter/Search";
@@ -86,6 +87,7 @@ export default function ProjectDetails() {
       />
     </div>
   );
+  const Timeline = <Gnatt_Chart project_id={id} data={state} />;
   if (!currentUser)
     return (
       <div>
@@ -174,9 +176,7 @@ export default function ProjectDetails() {
               Board,
               List,
               <Calendar tasks={state.tasks} user={currentUser} />,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
+              Timeline,
               <h2 className="text-center text-slate-500">
                 Not yet implemented
               </h2>,
@@ -196,7 +196,7 @@ export default function ProjectDetails() {
                 Not yet implemented
               </h2>,
             ]}
-            open="Board"
+            open="Timeline"
           />
         </div>
       </div>

@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { TestData } from "../../assets/CommonData";
-import dayjs, { Dayjs } from "dayjs";
-const weekOfYear = require("dayjs/plugin/weekOfYear");
-
+import dayjs from "dayjs";
 const Filters = ["Weeks", "Months", "Quaters"];
 function getPreviousMonday(date = new Date()) {
   const today = date.getDay(); // 0 for Sunday, 1 for Monday, and so on
@@ -19,50 +16,61 @@ function getPreviousMonday(date = new Date()) {
     return previousMonday;
   }
 }
-export const Gnatt_Chart = () => {
+export const Gnatt_Chart = ({ data }) => {
   const labelref = useRef(null);
   const timelineRef = useRef(null);
   const container = useRef(null);
   const timelineheaderRef = useRef(null);
+  const timelineBodyRef = useRef(null);
   const [currentFilter, setCurrentFilter] = useState(Filters[0]);
-  const [Length, setLength] = useState(0);
   const [timelineheader, setTimelineHeader] = useState(<div>March</div>);
   const [adjusted, setAdjusted] = useState(null);
   const [start, setStart] = useState(null);
   const quaters_data = ["JAN-MAR", "APR-JUNE", "JULY-SEP", "OCT-DEC"];
 
   useEffect(() => {
+    if (data.length === 0) return;
     console.log("Gnatt useEffect");
     document.body.style.backgroundColor = "antiquewhite";
     let currentMonth = dayjs().add(1, "years");
     let names = [];
+    let initPos = 0;
     if (currentFilter === Filters[1]) {
       for (let i = 0; i < 25; i++) {
         // Add name of current month to the array
         if (currentMonth.format("YYYY") === "2024")
           names.push(
-            <div className="px-20 pt-3 h-12  border-[0.25px] text-sm  border-gray-400">
+            <div className="px-20 pt-3 h-12 w-[200px] items-center text-center  border-[0.25px] text-sm  border-gray-400">
               {currentMonth.format("MMM")}
             </div>
           );
         else
           names.push(
-            <div className="px-20 pt-3 h-12 border-[0.25px] text-sm text-nowrap border-gray-400">
+            <div className="px-20 pt-3 w-[200px] h-12 border-[0.25px] text-sm text-nowrap border-gray-400">
               {currentMonth.format("MMM") + " '" + currentMonth.format("YY")}
             </div>
           );
+        if (i == 24) {
+          setStart(currentMonth.startOf("month"));
+          initPos =
+            (dayjs().diff(currentMonth.startOf("month"), "month") - 2) * 200;
+        }
 
         // Move to the previous month
         currentMonth = currentMonth.subtract(1, "month");
       }
       setTimelineHeader(names.reverse());
-      if (!adjusted) {
-        setAdjusted(container.current.getBoundingClientRect().top);
-      }
+      // if (!adjusted) {
+      //   setAdjusted(container.current.getBoundingClientRect().top);
+      // }
+      timelineheaderRef.current.style.width = 25 * 200 + "px";
+      timelineBodyRef.current.style.width = 25 * 200 + "px";
+      timelineRef.current.scrollTo({ left: initPos });
     } else if (currentFilter === Filters[2]) {
       let currentMonth = dayjs().$d.getMonth();
       let currentQuater = quaters_data[Math.floor(currentMonth / 3)];
       let currentYear = dayjs().format("YY");
+
       let tempData = quaters_data
         .map((Q) => Q + " '" + (Number(currentYear) - 1))
         .concat(
@@ -71,15 +79,28 @@ export const Gnatt_Chart = () => {
           quaters_data.map((Q) => Q + " '" + (Number(currentYear) + 2))
         );
       let index = tempData.indexOf(currentQuater);
-      let names = tempData.slice(index - 4, index + 9).map((Q, index) => (
-        <div
-          key={index}
-          className="px-16 py-2 h-12 pt-3 border-[0.25px] text-nowrap text-sm border-gray-400"
-        >
-          {Q}
-        </div>
-      ));
+      let names = tempData.slice(index - 4, index + 9).map((Q, index) => {
+        if (index === 0) {
+          let parts = Q.split(/[-' ]+/);
+          let month = parts[0];
+          let year = 2000 + Number(parts[2]);
+          setStart(dayjs(`${month} ${year}`));
+        }
+        return (
+          <div
+            key={index}
+            className=" w-[250px] items-center text-center py-2 h-12 pt-3 border-[0.25px] text-nowrap text-sm border-gray-400"
+          >
+            {Q}
+          </div>
+        );
+      });
       setTimelineHeader(names);
+      debugger;
+      timelineheaderRef.current.style.width = 13 * 250 + "px";
+      timelineBodyRef.current.style.width = 13 * 250 + "px";
+      console.log(timelineBodyRef.current.style.width);
+      timelineRef.current.scrollTo({ left: 750 });
     } else {
       let lastyear = dayjs(getPreviousMonday(dayjs().subtract(1, "years").$d));
       if (!start) setStart(lastyear.$d);
@@ -137,9 +158,8 @@ export const Gnatt_Chart = () => {
       timelineRef.current.scrollTo({ left: initPos });
     }
   }, [currentFilter]);
-
+  if (data.length === 0) return;
   const handleScroll = (e) => {
-    console.log(e.target.scrollTop);
     timelineRef.current.scrollTop = e.target.scrollTop;
     labelref.current.scrollTop = e.target.scrollTop;
   };
@@ -175,7 +195,6 @@ export const Gnatt_Chart = () => {
   };
 
   const handleMove = (e) => {
-    console.log("In");
     e.preventDefault();
     if (!isDrag) return;
     const MoveAt = (pageX) => {
@@ -201,7 +220,6 @@ export const Gnatt_Chart = () => {
   };
 
   const handleUp = (e) => {
-    console.log("Out");
     document.removeEventListener("mousemove", handleMove);
     document.removeEventListener("mouseup", handleUp);
     leftButton = false;
@@ -213,7 +231,7 @@ export const Gnatt_Chart = () => {
   };
 
   /////
-
+  if (data.length === 0) return;
   return (
     <div
       ref={container}
@@ -230,7 +248,7 @@ export const Gnatt_Chart = () => {
         >
           Items
         </div>
-        {Object.values(TestData.tasks).map((task, index) => {
+        {Object.values(data.tasks).map((task, index) => {
           return (
             <div
               key={"label" + task.id}
@@ -256,10 +274,26 @@ export const Gnatt_Chart = () => {
           {timelineheader}
         </div>
         <div
-          className=""
+          ref={timelineBodyRef}
           style={{ width: timelineheaderRef.current?.scrollWidth + "px" }}
         >
-          {Object.values(TestData.tasks).map((task, index) => {
+          {Object.values(data.tasks).map((task, index) => {
+            let dueDate = dayjs(task.DueDate);
+            let createdAt = dayjs(task.createdAt);
+            let startDayjs = dayjs(start);
+
+            let monthsDiffDue = dueDate.diff(startDayjs, "months");
+            let daysInMonthDue = dueDate.$d.getDate();
+            let endOfMonthDue = dueDate.endOf("month").$d.getDate();
+
+            let monthsDiffCreated = createdAt.diff(startDayjs, "months");
+            let daysInMonthCreated = createdAt.$d.getDate();
+            let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
+
+            let quaters = Math.floor(createdAt.diff(startDayjs, "month") / 3);
+            let daysDiffCreated = createdAt.diff(startDayjs, "days");
+            let daysDiff = dueDate.diff(createdAt, "days");
+
             return (
               <div
                 key={"timeline" + task.id}
@@ -271,16 +305,36 @@ export const Gnatt_Chart = () => {
                   className="draggable hover-div relative left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
                   style={{
                     left:
-                      (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
-                        28 +
-                      (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) /
-                        7 +
-                      "px",
+                      currentFilter === Filters[0]
+                        ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                            1) *
+                            28 +
+                          (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                            1) /
+                            7 +
+                          "px"
+                        : currentFilter === Filters[1]
+                        ? dayjs(task.createdAt).diff(dayjs(start), "months") *
+                            200 +
+                          (dayjs(task.createdAt).$d.getDate() /
+                            dayjs(task.createdAt).endOf("month").$d.getDate()) *
+                            200
+                        : (daysDiffCreated * 1000) / 365,
                     width:
-                      (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
-                        1) *
-                        28 +
-                      "px",
+                      currentFilter === Filters[0]
+                        ? (dayjs(task.DueDate).diff(
+                            dayjs(task.createdAt),
+                            "days"
+                          ) +
+                            1) *
+                            28 +
+                          "px"
+                        : currentFilter === Filters[1]
+                        ? monthsDiffDue * 200 +
+                          (daysInMonthDue / endOfMonthDue) * 200 -
+                          monthsDiffCreated * 200 -
+                          (daysInMonthCreated / endOfMonthCreated) * 200
+                        : (daysDiff * 1000) / 365,
                   }}
                   onMouseDown={handleDown}
                   // onPointerMove={handleMove}
@@ -312,7 +366,7 @@ export const Gnatt_Chart = () => {
           })}
         </div>
       </div>
-      <div className="fixed  right-0 shadow-2xl ">
+      <div className="fixed Filters right-0 shadow-2xl ">
         <div
           className="  p-1 absolute bg-white rounded flex"
           style={{ top: adjusted + 260, right: 20 }}
