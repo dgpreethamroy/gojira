@@ -1,6 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
 import dayjs from "dayjs";
+import SearchBox from "../ui/filter/Search";
+import Popover from "../ui/popover/Popover";
+import {
+  Filter_Icon,
+  menu_icon_dots,
+  checkwithCircle_Icon,
+  Calendar_Icon,
+  Profile_Icon,
+  blueCheck_Icon,
+  Rightarrow_Medium_Icon,
+} from "../../assets/CommonData";
+import { Timeline } from "../timeline/Timeline";
 const Filters = ["Weeks", "Months", "Quaters"];
+const menu_icon_dotsWithText = (
+  <div className="flex items-center dark:bg-white">
+    <span>{menu_icon_dots}</span>
+    <p className="text-black  font-semibold ml-2">Menu</p>
+  </div>
+);
 function getPreviousMonday(date = new Date()) {
   const today = date.getDay(); // 0 for Sunday, 1 for Monday, and so on
 
@@ -16,18 +34,55 @@ function getPreviousMonday(date = new Date()) {
     return previousMonday;
   }
 }
-export const Gnatt_Chart = ({ data }) => {
+export const Gnatt_Chart = ({ data, user }) => {
   const labelref = useRef(null);
   const timelineRef = useRef(null);
   const container = useRef(null);
   const timelineheaderRef = useRef(null);
   const timelineBodyRef = useRef(null);
-  const [currentFilter, setCurrentFilter] = useState(Filters[0]);
+  const [currentFilter, setCurrentFilter] = useState(Filters[1]);
   const [timelineheader, setTimelineHeader] = useState(<div>March</div>);
-  const [adjusted, setAdjusted] = useState(null);
   const [start, setStart] = useState(null);
   const quaters_data = ["JAN-MAR", "APR-JUNE", "JULY-SEP", "OCT-DEC"];
+  const [inputSearch, setSearchinput] = useState("");
+  const [filterOptions, setFilterOptions] = useState([false, false, false]);
+  const [initpos, setInitPos] = useState(0);
+  const [open, close] = useState(false);
+  function getNextMonday(date = new Date()) {
+    const dateCopy = new Date(date.getTime());
 
+    const nextMonday = new Date(
+      dateCopy.setDate(
+        dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7 || 7)
+      )
+    );
+
+    return nextMonday;
+  }
+  const Filter_IconWithText = (
+    <div className="flex items-center dark:bg-white">
+      <span>{Filter_Icon}</span>
+      {filterOptions.filter(Boolean).length > 0 ? (
+        <p className="text-black text-nowrap  font-semibold ml-2">
+          {filterOptions.filter(Boolean).length} Filters applied
+        </p>
+      ) : (
+        <p className="text-black  font-semibold ml-2">Filter</p>
+      )}
+    </div>
+  );
+  const handleClear = () => {
+    setFilterOptions([false, false, false]);
+  };
+
+  const handleFilteroption = (index) => {
+    const newFilterOptions = [...filterOptions];
+    newFilterOptions[index] = !newFilterOptions[index];
+    setFilterOptions(newFilterOptions);
+  };
+  const handleTodayButton = () => {
+    timelineRef.current?.scrollTo({ left: initpos });
+  };
   useEffect(() => {
     if (data.length === 0) return;
     console.log("Gnatt useEffect");
@@ -36,6 +91,7 @@ export const Gnatt_Chart = ({ data }) => {
     let names = [];
     let initPos = 0;
     if (currentFilter === Filters[1]) {
+      //// Months Filters
       for (let i = 0; i < 25; i++) {
         // Add name of current month to the array
         if (currentMonth.format("YYYY") === "2024")
@@ -54,19 +110,18 @@ export const Gnatt_Chart = ({ data }) => {
           setStart(currentMonth.startOf("month"));
           initPos =
             (dayjs().diff(currentMonth.startOf("month"), "month") - 2) * 200;
+          setInitPos(initPos);
         }
 
         // Move to the previous month
         currentMonth = currentMonth.subtract(1, "month");
       }
       setTimelineHeader(names.reverse());
-      // if (!adjusted) {
-      //   setAdjusted(container.current.getBoundingClientRect().top);
-      // }
       timelineheaderRef.current.style.width = 25 * 200 + "px";
       timelineBodyRef.current.style.width = 25 * 200 + "px";
       timelineRef.current.scrollTo({ left: initPos });
     } else if (currentFilter === Filters[2]) {
+      ///  Quaters Filters
       let currentMonth = dayjs().$d.getMonth();
       let currentQuater = quaters_data[Math.floor(currentMonth / 3)];
       let currentYear = dayjs().format("YY");
@@ -96,15 +151,16 @@ export const Gnatt_Chart = ({ data }) => {
         );
       });
       setTimelineHeader(names);
-      debugger;
       timelineheaderRef.current.style.width = 13 * 250 + "px";
       timelineBodyRef.current.style.width = 13 * 250 + "px";
-      console.log(timelineBodyRef.current.style.width);
       timelineRef.current.scrollTo({ left: 750 });
+      setInitPos(750);
     } else {
+      /// Weeks Filter
       let lastyear = dayjs(getPreviousMonday(dayjs().subtract(1, "years").$d));
-      if (!start) setStart(lastyear.$d);
+      setStart(lastyear.$d);
       let initPos = dayjs().diff(lastyear, "days") * 27;
+      setInitPos(initPos);
       let nextyear = dayjs(getPreviousMonday(dayjs().add(2, "years").$d));
       let weeks = [];
       let currentYear = dayjs();
@@ -153,8 +209,10 @@ export const Gnatt_Chart = ({ data }) => {
           break;
         lastyear = lastyear.add(1, "weeks");
       }
-      timelineheaderRef.current.style.width = length + "px";
       setTimelineHeader(weeks);
+      timelineheaderRef.current.style.width = length + "px";
+      timelineBodyRef.current.style.width = length + "px";
+
       timelineRef.current.scrollTo({ left: initPos });
     }
   }, [currentFilter]);
@@ -229,147 +287,273 @@ export const Gnatt_Chart = ({ data }) => {
     isDrag = false;
     button = null;
   };
+  const searchResults = Object.values(data.tasks).filter((task) => {
+    return (
+      task.id.toLowerCase().includes(inputSearch.toLowerCase()) ||
+      task.summary.toLowerCase().includes(inputSearch.toLowerCase())
+    );
+  });
 
+  const searchandfilter = searchResults.filter((task) => {
+    let taskEndDate_dayjs = dayjs(task.DueDate).endOf("day");
+    let Doneresult = taskEndDate_dayjs.$d - new Date() < 0 ? true : false;
+    let Assigneresult = task.assignee === user ? true : false;
+    let Duethisweekresult =
+      taskEndDate_dayjs.$d - getPreviousMonday() >= 0 &&
+      taskEndDate_dayjs.$d - getNextMonday() < 0;
+
+    let filterResult =
+      (filterOptions[0] ? Assigneresult : true) &&
+      (filterOptions[2] ? Doneresult : true) &&
+      (filterOptions[1] ? Duethisweekresult : true);
+    if (filterResult) return task;
+  });
   /////
+
+  const connectionMatrix = [
+    [0, 1, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0],
+  ];
+  const handleOpenTimeline = () => {
+    close(true);
+  };
   if (data.length === 0) return;
   return (
-    <div
-      ref={container}
-      className="w-auto  flex flex-rows  overflow-y-auto   m-5 rounded-2xl"
-    >
-      <div
-        ref={labelref}
-        className="w-[25%] overflow-x-hidden   scrollbar-none h-[300px] border-r border-slate-400"
-        onScroll={handleScroll}
-      >
-        <div
-          key="labelheader"
-          className="  p-2 pt-3 border-[.25px] h-12 text-start text-sm rounded-tl-2xl sticky top-0 border-gray-500 bg-slate-200"
-        >
-          Items
-        </div>
-        {Object.values(data.tasks).map((task, index) => {
-          return (
-            <div
-              key={"label" + task.id}
-              className={`p-2   border-gray-500 ${
-                index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-              }`}
-            >
-              {task.id}
+    <>
+      <div className="flex m-1 mx-5 items-center justify-between ">
+        <SearchBox
+          inputSearch={inputSearch}
+          setSearchinput={setSearchinput}
+          placeholder={"Calendar"}
+        />
+
+        <div id="filter" className="flex items-center dark:text-white">
+          <button
+            className="px-2 py-2 bg-blue-300 hover:bg-blue-500 rounded m-2"
+            onClick={handleTodayButton}
+          >
+            <span className="text-black font-semibold">TODAY</span>
+          </button>
+          <Popover label={Filter_IconWithText} dir="right">
+            <div className="flex flex-col h-80 overflow-y-auto">
+              <div className="w-full  flex justify-between">
+                <span className="p-5 font-semibold text-sm">FILTERS</span>
+                {filterOptions.includes(true) && (
+                  <button className="px-5" onClick={handleClear}>
+                    <span className="hover:underline">Clear</span>
+                  </button>
+                )}
+              </div>
+              <div className="w-full hover:bg-slate-200 ">
+                <button
+                  className="px-5 py-3 w-full flex justify-between text-start"
+                  onClick={() => {
+                    handleFilteroption(0);
+                  }}
+                >
+                  <span className="flex">
+                    {Profile_Icon}
+                    <span className="pl-2"> Assign to me</span>
+                  </span>
+                  {filterOptions[0] && (
+                    <span className="">{blueCheck_Icon}</span>
+                  )}
+                </button>
+              </div>
+              <div className="w-full hover:bg-slate-200">
+                <button
+                  className="px-5 py-3 w-full flex justify-between text-start"
+                  onClick={() => handleFilteroption(1)}
+                >
+                  <span className="flex">
+                    {Calendar_Icon}
+                    <span className="pl-2">Due this week</span>
+                  </span>
+                  {filterOptions[1] && <span>{blueCheck_Icon}</span>}
+                </button>
+              </div>
+              <div className="w-full hover:bg-slate-200">
+                <button
+                  className="px-5 py-3 w-full text-start flex justify-between"
+                  onClick={() => handleFilteroption(2)}
+                >
+                  <span className="flex">
+                    {checkwithCircle_Icon}
+                    <span className="pl-2">Done items</span>
+                  </span>
+                  {filterOptions[2] && <span>{blueCheck_Icon}</span>}
+                </button>
+              </div>
+              <div className="w-full h-[1px] bg-gray-300"></div>
+              <div className="w-full flex flex-col">
+                <span className="text-sm font-semibold p-3">DATE RANGE</span>
+                <div className="flex w-full pl-3 ">
+                  <div className="flex flex-col">
+                    <label className="text-gray-700 pl-2 ">Start Date</label>
+                    <input className="p-2" type="date" />
+                  </div>
+                  <span className="p-5">{Rightarrow_Medium_Icon}</span>
+                  <div className="flex flex-col">
+                    <label className="text-gray-700 pl-2 ">Due Date</label>
+                    <input className="p-2" type="date" />
+                  </div>
+                </div>
+              </div>
             </div>
-          );
-        })}
+          </Popover>
+          <Popover label={menu_icon_dotsWithText} dir="right">
+            <span className="py-5 px-2">Not yet implemented</span>
+          </Popover>
+        </div>
       </div>
       <div
-        ref={timelineRef}
-        className="w-[75%]  overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[315px]"
-        onScroll={handleScroll}
+        ref={container}
+        className="w-auto bg-white  flex flex-rows  overflow-y-auto   m-5 rounded-2xl"
       >
         <div
-          key="timelineheader"
-          ref={timelineheaderRef}
-          className="bg-slate-200  z-10 flex sticky top-0"
+          ref={labelref}
+          className="w-[25%] overflow-x-hidden   scrollbar-none h-[300px] border-r border-slate-400"
+          onScroll={handleScroll}
         >
-          {timelineheader}
-        </div>
-        <div
-          ref={timelineBodyRef}
-          style={{ width: timelineheaderRef.current?.scrollWidth + "px" }}
-        >
-          {Object.values(data.tasks).map((task, index) => {
-            let dueDate = dayjs(task.DueDate);
-            let createdAt = dayjs(task.createdAt);
-            let startDayjs = dayjs(start);
-
-            let monthsDiffDue = dueDate.diff(startDayjs, "months");
-            let daysInMonthDue = dueDate.$d.getDate();
-            let endOfMonthDue = dueDate.endOf("month").$d.getDate();
-
-            let monthsDiffCreated = createdAt.diff(startDayjs, "months");
-            let daysInMonthCreated = createdAt.$d.getDate();
-            let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
-
-            let quaters = Math.floor(createdAt.diff(startDayjs, "month") / 3);
-            let daysDiffCreated = createdAt.diff(startDayjs, "days");
-            let daysDiff = dueDate.diff(createdAt, "days");
-
+          <div
+            key="labelheader"
+            className="  p-2 pt-3 border-[.25px] h-12 text-start text-sm rounded-tl-2xl sticky top-0 border-gray-500 bg-slate-200"
+          >
+            Items
+          </div>
+          {searchandfilter.map((task, index) => {
             return (
               <div
-                key={"timeline" + task.id}
-                className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
+                key={"label" + task.id}
+                className={`p-2   border-gray-500 ${
                   index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
                 }`}
               >
-                <button
-                  className="draggable hover-div relative left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
-                  style={{
-                    left:
-                      currentFilter === Filters[0]
-                        ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                            1) *
-                            28 +
-                          (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                            1) /
-                            7 +
-                          "px"
-                        : currentFilter === Filters[1]
-                        ? dayjs(task.createdAt).diff(dayjs(start), "months") *
-                            200 +
-                          (dayjs(task.createdAt).$d.getDate() /
-                            dayjs(task.createdAt).endOf("month").$d.getDate()) *
-                            200
-                        : (daysDiffCreated * 1000) / 365,
-                    width:
-                      currentFilter === Filters[0]
-                        ? (dayjs(task.DueDate).diff(
-                            dayjs(task.createdAt),
-                            "days"
-                          ) +
-                            1) *
-                            28 +
-                          "px"
-                        : currentFilter === Filters[1]
-                        ? monthsDiffDue * 200 +
-                          (daysInMonthDue / endOfMonthDue) * 200 -
-                          monthsDiffCreated * 200 -
-                          (daysInMonthCreated / endOfMonthCreated) * 200
-                        : (daysDiff * 1000) / 365,
-                  }}
-                  onMouseDown={handleDown}
-                  // onPointerMove={handleMove}
-                  // onMouseUp={handleUp}
-                >
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <div className="w-1 px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
-                      <span className="">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          role="presentation"
-                          className="border rounded-full ml-1"
-                        >
-                          <g fill="white" fill-rule="evenodd">
-                            <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                          </g>
-                        </svg>
-                      </span>
-                    </div>
-                    <div className="w-1 px-1 mx-1 rounded color-div rightButton hover:cursor-col-resize"></div>
-                  </div>
-                </button>
+                <div className="flex">
+                  <span className="px-2 text-nowrap">
+                    {task.id.toUpperCase()}
+                  </span>
+                  <span className="truncate"> {task.summary}</span>
+                </div>
               </div>
             );
           })}
         </div>
-      </div>
-      <div className="fixed Filters right-0 shadow-2xl ">
         <div
-          className="  p-1 absolute bg-white rounded flex"
-          style={{ top: adjusted + 260, right: 20 }}
+          ref={timelineRef}
+          className="w-[75%]  overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[315px]"
+          onScroll={handleScroll}
+        >
+          <div
+            key="timelineheader"
+            ref={timelineheaderRef}
+            className="bg-slate-200  z-10 flex sticky top-0"
+          >
+            {timelineheader}
+          </div>
+          <div
+            ref={timelineBodyRef}
+            style={{ width: timelineheaderRef.current?.style.width }}
+          >
+            {searchandfilter.map((task, index) => {
+              let dueDate = dayjs(task.DueDate);
+              let createdAt = dayjs(task.createdAt);
+              let startDayjs = dayjs(start);
+
+              let monthsDiffDue = dueDate.diff(startDayjs, "months");
+              let daysInMonthDue = dueDate.$d.getDate();
+              let endOfMonthDue = dueDate.endOf("month").$d.getDate();
+
+              let monthsDiffCreated = createdAt.diff(startDayjs, "months");
+              let daysInMonthCreated = createdAt.$d.getDate();
+              let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
+
+              let quaters = Math.floor(createdAt.diff(startDayjs, "month") / 3);
+              let daysDiffCreated = createdAt.diff(startDayjs, "days");
+              let daysDiff = dueDate.diff(createdAt, "days");
+
+              return (
+                <div
+                  key={"timeline" + task.id}
+                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
+                    index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                  }`}
+                >
+                  <button
+                    id={task.id}
+                    className="draggable hover-div relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
+                    style={{
+                      left:
+                        currentFilter === Filters[0]
+                          ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                              1) *
+                              28 +
+                            (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                              1) /
+                              7 +
+                            "px"
+                          : currentFilter === Filters[1]
+                          ? dayjs(task.createdAt).diff(dayjs(start), "months") *
+                              200 +
+                            (dayjs(task.createdAt).$d.getDate() /
+                              dayjs(task.createdAt)
+                                .endOf("month")
+                                .$d.getDate()) *
+                              200
+                          : (daysDiffCreated * 1000) / 365,
+                      width:
+                        currentFilter === Filters[0]
+                          ? (dayjs(task.DueDate).diff(
+                              dayjs(task.createdAt),
+                              "days"
+                            ) +
+                              1) *
+                              28 +
+                            "px"
+                          : currentFilter === Filters[1]
+                          ? monthsDiffDue * 200 +
+                            (daysInMonthDue / endOfMonthDue) * 200 -
+                            monthsDiffCreated * 200 -
+                            (daysInMonthCreated / endOfMonthCreated) * 200
+                          : (daysDiff * 1000) / 365,
+                    }}
+                    onMouseDown={handleDown}
+                  >
+                    <div className="flex justify-between">
+                      <div className="flex">
+                        <div className="w-1 px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
+                        <span className="">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            role="presentation"
+                            className="border rounded-full ml-1"
+                          >
+                            <g fill="white" fill-rule="evenodd">
+                              <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
+                              <circle cx="12" cy="7" r="4"></circle>
+                            </g>
+                          </svg>
+                        </span>
+                      </div>
+                      <div className="w-1 px-1 mx-1 rounded color-div rightButton hover:cursor-col-resize"></div>
+                    </div>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className=" mx-5 w-2/12 Filters right-0 shadow-2xl ">
+        <div
+          className="  p-1  bg-white rounded flex"
+          //   style={{ top: 275, right: 44 }}
         >
           {Filters.map((filter) => {
             return (
@@ -386,8 +570,28 @@ export const Gnatt_Chart = ({ data }) => {
               </button>
             );
           })}
+          <button
+            className="p-2  bg-white text-black"
+            onClick={handleOpenTimeline}
+          >
+            open Timeline
+          </button>
         </div>
       </div>
-    </div>
+
+      {open && (
+        <Timeline
+          connectionMatrix={connectionMatrix}
+          ids={[
+            "task-23",
+            "task-24",
+            "task-25",
+            "task-26",
+            "task-27",
+            "task-28",
+          ]}
+        />
+      )}
+    </>
   );
 };

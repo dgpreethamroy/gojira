@@ -27,6 +27,7 @@ export const Gnatt_Chart = ({ data }) => {
   const [adjusted, setAdjusted] = useState(null);
   const [start, setStart] = useState(null);
   const quaters_data = ["JAN-MAR", "APR-JUNE", "JULY-SEP", "OCT-DEC"];
+  const [initPos, setInitPos] = useState(0);
 
   useEffect(() => {
     if (data.length === 0) return;
@@ -54,6 +55,7 @@ export const Gnatt_Chart = ({ data }) => {
           setStart(currentMonth.startOf("month"));
           initPos =
             (dayjs().diff(currentMonth.startOf("month"), "month") - 2) * 200;
+          setInitPos(initPos);
         }
 
         // Move to the previous month
@@ -92,10 +94,13 @@ export const Gnatt_Chart = ({ data }) => {
       });
       initPos = 750;
       width = 13 * 250;
+      setInitPos(initPos);
     } else {
       let lastyear = dayjs(getPreviousMonday(dayjs().subtract(1, "years").$d));
       if (!start) setStart(lastyear.$d);
       initPos = dayjs().diff(lastyear, "days") * 27;
+      setInitPos(initPos);
+
       let nextyear = dayjs(getPreviousMonday(dayjs().add(2, "years").$d));
       let currentYear = dayjs();
       let length = 0;

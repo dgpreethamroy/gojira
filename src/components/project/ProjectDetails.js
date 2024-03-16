@@ -87,7 +87,7 @@ export default function ProjectDetails() {
       />
     </div>
   );
-  const Timeline = <Gnatt_Chart project_id={id} data={state} />;
+  const Timeline = <Gnatt_Chart project_id={id} data={state} user={currentUser} />;
   if (!currentUser)
     return (
       <div>
