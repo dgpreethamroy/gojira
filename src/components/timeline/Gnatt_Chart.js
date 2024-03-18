@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import SearchBox from "../ui/filter/Search";
 import Popover from "../ui/popover/Popover";
 import {
+  LinkIcon,
   Filter_Icon,
   menu_icon_dots,
   checkwithCircle_Icon,
@@ -215,6 +216,10 @@ export const Gnatt_Chart = ({ data, user }) => {
 
       timelineRef.current.scrollTo({ left: initPos });
     }
+    //close(true);
+    setTimeout(() => {
+      close(true);
+    }, 2000);
   }, [currentFilter]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
@@ -223,6 +228,7 @@ export const Gnatt_Chart = ({ data, user }) => {
   };
   const handleFilters = (e) => {
     setCurrentFilter(e.target.innerText);
+    close(false);
   };
 
   /////
@@ -312,7 +318,7 @@ export const Gnatt_Chart = ({ data, user }) => {
 
   const connectionMatrix = [
     [0, 1, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0],
+    [1, 0, 1, 0, 0, 0],
     [0, 0, 0, 1, 0, 0],
     [0, 0, 0, 0, 1, 0],
     [0, 0, 0, 0, 0, 1],
@@ -457,6 +463,7 @@ export const Gnatt_Chart = ({ data, user }) => {
           </div>
           <div
             ref={timelineBodyRef}
+            className="relative"
             style={{ width: timelineheaderRef.current?.style.width }}
           >
             {searchandfilter.map((task, index) => {
@@ -523,8 +530,8 @@ export const Gnatt_Chart = ({ data, user }) => {
                     }}
                     onMouseDown={handleDown}
                   >
-                    <div className="flex justify-between">
-                      <div className="flex">
+                    <div className="flex justify-between items-center">
+                      <div className="flex  ">
                         <div className="w-1 px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
                         <span className="">
                           <svg
@@ -541,12 +548,28 @@ export const Gnatt_Chart = ({ data, user }) => {
                           </svg>
                         </span>
                       </div>
-                      <div className="w-1 px-1 mx-1 rounded color-div rightButton hover:cursor-col-resize"></div>
+                      <div className="flex">
+                        {LinkIcon}
+                        <div className="w-1 px-1 mx-1 rounded color-div rightButton hover:cursor-col-resize"></div>
+                      </div>
                     </div>
                   </button>
                 </div>
               );
             })}
+            {open && (
+              <Timeline
+                connectionMatrix={connectionMatrix}
+                ids={[
+                  "task-23",
+                  "task-24",
+                  "task-25",
+                  "task-26",
+                  "task-27",
+                  "task-28",
+                ]}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -570,28 +593,8 @@ export const Gnatt_Chart = ({ data, user }) => {
               </button>
             );
           })}
-          <button
-            className="p-2  bg-white text-black"
-            onClick={handleOpenTimeline}
-          >
-            open Timeline
-          </button>
         </div>
       </div>
-
-      {open && (
-        <Timeline
-          connectionMatrix={connectionMatrix}
-          ids={[
-            "task-23",
-            "task-24",
-            "task-25",
-            "task-26",
-            "task-27",
-            "task-28",
-          ]}
-        />
-      )}
     </>
   );
 };
