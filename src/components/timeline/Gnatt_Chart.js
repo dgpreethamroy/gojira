@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
+import { XIcon, CheckIcon, PlusIcon } from "@heroicons/react/solid";
 import dayjs from "dayjs";
 import SearchBox from "../ui/filter/Search";
 import Popover from "../ui/popover/Popover";
@@ -49,6 +50,21 @@ export const Gnatt_Chart = ({ data, user }) => {
   const [filterOptions, setFilterOptions] = useState([false, false, false]);
   const [initpos, setInitPos] = useState(0);
   const [open, close] = useState(false);
+
+
+  const handleToggleNew = (e) => {
+    console.log("handleToggleNew");
+    document.getElementById("createColumn").style.display = "none";
+    document.getElementById("createColumnDiv").style.display = "flex";
+    document.getElementById("createColumnInput").focus();
+  };
+
+  const handleCancelEdit = (e) => {
+    document.getElementById("createColumn").style.display = "flex";
+    document.getElementById("createColumnDiv").style.display = "none";
+  };
+
+
   function getNextMonday(date = new Date()) {
     const dateCopy = new Date(date.getTime());
 
@@ -263,13 +279,13 @@ export const Gnatt_Chart = ({ data, user }) => {
     if (!isDrag) return;
     const MoveAt = (pageX) => {
       if (!rightButton) {
-        if (buttonInitwidth - pageX + startX < 112) return;
+        if (buttonInitwidth - pageX + startX < 28) return;
 
         button.style.left = pageX - startX + buttonInitleft + "px";
       }
       //  Math.round((pageX - startX + buttonInitleft) / 28) * 28 + "px"; /// Implement it
       else if (rightButton) {
-        if (pageX - startX + buttonInitwidth < 112) return;
+        if (pageX - startX + buttonInitwidth < 28) return;
 
         button.style.width = pageX - startX + buttonInitwidth + "px";
       }
@@ -418,11 +434,11 @@ export const Gnatt_Chart = ({ data, user }) => {
       </div>
       <div
         ref={container}
-        className="w-auto bg-white  flex flex-rows  overflow-y-auto   m-5 rounded-2xl"
+        className="w-auto bg-white  flex flex-rows  overflow-y-auto   m-5 mb-0 rounded-2xl"
       >
         <div
           ref={labelref}
-          className="w-[25%] overflow-x-hidden   scrollbar-none h-[300px] border-r border-slate-400"
+          className="w-[25%] overflow-x-hidden   scrollbar-none h-[360px] border-r border-slate-400"
           onScroll={handleScroll}
         >
           <div
@@ -435,9 +451,8 @@ export const Gnatt_Chart = ({ data, user }) => {
             return (
               <div
                 key={"label" + task.id}
-                className={`p-2   border-gray-500 ${
-                  index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                }`}
+                className={`p-2   border-gray-500 ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                  }`}
               >
                 <div className="flex">
                   <span className="px-2 text-nowrap">
@@ -448,16 +463,51 @@ export const Gnatt_Chart = ({ data, user }) => {
               </div>
             );
           })}
+          <div className=" bg-gray-300 sticky bottom-0">
+            <button
+              onClick={handleToggleNew}
+              id="createColumn"
+              className="px-2 rounded-md h-10 flex items-center"
+            >
+              <span className="px-2">Create</span>
+              <PlusIcon className="w-5 h-5" />
+
+            </button>
+            <div id="createColumnDiv" className="hidden ">
+              <div className="flex">
+
+                <input
+                  id="createColumnInput"
+                  className=" h-10 border font-semibold text-lg border-gray-300 rounded-md w-[75%] "
+                />
+                <div className="flex w-1/5 items-center">
+
+                  <button
+                    onClick={handleCancelEdit}
+                    className="ml-2 p-2 h-10 text-red-600 hover:text-red-700 focus:outline-none"
+                  >
+                    <XIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    // onClick={handleSaveChanges}
+                    className="ml-2 p-2 h-10 text-green-600 hover:text-green-700 focus:outline-none"
+                  >
+                    <CheckIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           ref={timelineRef}
-          className="w-[75%]  overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[315px]"
+          className="w-[75%]  overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[375px]"
           onScroll={handleScroll}
         >
           <div
             key="timelineheader"
             ref={timelineheaderRef}
-            className="bg-slate-200  z-10 flex sticky top-0"
+            className="bg-slate-200  z-[15] flex sticky top-0"
           >
             {timelineheader}
           </div>
@@ -486,77 +536,107 @@ export const Gnatt_Chart = ({ data, user }) => {
               return (
                 <div
                   key={"timeline" + task.id}
-                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
-                    index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                  }`}
+                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                    }`}
                 >
                   <button
                     id={task.id}
-                    className="draggable hover-div relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
+                    className="draggable hover-div  relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
                     style={{
                       left:
                         currentFilter === Filters[0]
                           ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                              1) *
-                              28 +
-                            (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                              1) /
-                              7 +
-                            "px"
+                            1) *
+                          28 +
+                          (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                            1) /
+                          7 +
+                          "px"
                           : currentFilter === Filters[1]
-                          ? dayjs(task.createdAt).diff(dayjs(start), "months") *
-                              200 +
+                            ? dayjs(task.createdAt).diff(dayjs(start), "months") *
+                            200 +
                             (dayjs(task.createdAt).$d.getDate() /
                               dayjs(task.createdAt)
                                 .endOf("month")
                                 .$d.getDate()) *
-                              200
-                          : (daysDiffCreated * 1000) / 365,
+                            200
+                            : (daysDiffCreated * 1000) / 365,
                       width:
                         currentFilter === Filters[0]
                           ? (dayjs(task.DueDate).diff(
-                              dayjs(task.createdAt),
-                              "days"
-                            ) +
-                              1) *
-                              28 +
-                            "px"
+                            dayjs(task.createdAt),
+                            "days"
+                          ) +
+                            1) *
+                          28 +
+                          "px"
                           : currentFilter === Filters[1]
-                          ? monthsDiffDue * 200 +
+                            ? monthsDiffDue * 200 +
                             (daysInMonthDue / endOfMonthDue) * 200 -
                             monthsDiffCreated * 200 -
                             (daysInMonthCreated / endOfMonthCreated) * 200
-                          : (daysDiff * 1000) / 365,
+                            : (daysDiff * 1000) / 365,
                     }}
                     onMouseDown={handleDown}
                   >
                     <div className="flex justify-between items-center">
                       <div className="flex  ">
-                        <div className="w-1 px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
+                        <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
                         <span className="">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            role="presentation"
-                            className="border rounded-full ml-1"
-                          >
-                            <g fill="white" fill-rule="evenodd">
-                              <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
-                              <circle cx="12" cy="7" r="4"></circle>
-                            </g>
-                          </svg>
+                          {
+                            document.getElementById(task.id)?.offsetWidth > 28 &&
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              role="presentation"
+                              className="border rounded-full ml-1"
+                            >
+                              <g fill="white" fill-rule="evenodd">
+                                <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </g>
+                            </svg>
+                          }
                         </span>
                       </div>
                       <div className="flex">
-                        {LinkIcon}
-                        <div className="w-1 px-1 mx-1 rounded color-div rightButton hover:cursor-col-resize"></div>
+                        <div className="">
+                          {LinkIcon}
+                        </div>
+                        <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
                       </div>
                     </div>
                   </button>
                 </div>
               );
             })}
+            <div className={`h-[38px] ${searchandfilter.length % 2 !== 0 ? 'bg-slate-200' : 'bg-slate-50'}`}>
+
+            </div>
+            {/* here */}
+            <div className=" z-10 fixed right-0 bottom-0 Filters  shadow-2xl ">
+              <div
+                className="  p-1 bg-white rounded-lg  flex"
+              //   style={{ top: 275, right: 44 }}
+              >
+                {Filters.map((filter) => {
+                  return (
+                    <button
+                      key={filter}
+                      className={`px-2 py-1 mx-[2px] rounded ${currentFilter === filter
+                        ? "bg-blue-100 text-blue-500 "
+                        : "hover:bg-gray-300"
+                        } `}
+                      onClick={handleFilters}
+                    >
+                      {filter}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {open && (
               <Timeline
                 connectionMatrix={connectionMatrix}
@@ -570,31 +650,21 @@ export const Gnatt_Chart = ({ data, user }) => {
                 ]}
               />
             )}
+
           </div>
+
         </div>
-      </div>
-      <div className=" mx-5 w-2/12 Filters right-0 shadow-2xl ">
-        <div
-          className="  p-1  bg-white rounded flex"
-          //   style={{ top: 275, right: 44 }}
-        >
-          {Filters.map((filter) => {
-            return (
-              <button
-                key={filter}
-                className={`px-2 py-1 mx-[2px] rounded ${
-                  currentFilter === filter
-                    ? "bg-blue-100 text-blue-500 "
-                    : "hover:bg-gray-300"
-                } `}
-                onClick={handleFilters}
-              >
-                {filter}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+
+      </div >
+
     </>
   );
 };
+
+
+//  orange line -today
+//  search filter with connection matrix
+//  reload connections for filters
+//  task dates outside button
+//  DYNAMIC CONNECTION
+//  delete connection

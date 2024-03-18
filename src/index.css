@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 h1 {
   @apply text-3xl font-bold;
 }
@@ -12,28 +13,34 @@ h1 {
 
   border: 2px solid var(--ds-border-input, #dfe1e6);
 }
+
 @layer base {
   body {
     @apply bg-white dark:bg-gray-900;
     @apply overflow-y-hidden;
   }
 }
+
 .issue-wrap[data-v-bf5f2b94] {
   touch-action: manipulation;
   cursor: grab;
   margin-bottom: 5px;
 }
+
 @layer utilities {
   .w-300 {
     width: 300px;
   }
+
   .h-475 {
     height: 475px;
   }
+
   .text-shadow-custom {
     text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
   }
 }
+
 a {
   text-decoration: none !important;
 }
@@ -44,24 +51,28 @@ a:hover {
 
 .shake:hover {
   animation: tilt-shaking 0.5s;
+
   .hidenow {
     opacity: 1;
   }
 }
 
-.hover-div:hover + .hide-div {
+.hover-div:hover+.hide-div {
   opacity: 1;
 }
 
 .hover-div:hover {
-  min-width: 60px;
+  min-width: 50px;
+
   .color-div {
     background-color: lightblue;
   }
 }
+
 .hide-div {
   opacity: 0;
 }
+
 .hidenow {
   opacity: 0;
 }
@@ -73,15 +84,19 @@ a:hover {
   0% {
     transform: rotate(0deg);
   }
+
   25% {
     transform: rotate(5deg);
   }
+
   50% {
     transform: rotate(0eg);
   }
+
   75% {
     transform: rotate(-5deg);
   }
+
   100% {
     transform: rotate(0deg);
   }
@@ -134,22 +149,24 @@ a:hover {
   padding: 0;
 }
 
-.sticky + .content {
+.sticky+.content {
   padding-top: 102px;
 }
+
 .rs-picker-toggle-label::after {
   content: "" !important;
   margin: 0 4px 0 2px;
 }
+
 .rs-btn-bgwhite {
   background-color: #ffffff !important;
 }
+
 .sb-avatar__text {
-  background-color: rgb(
-    8,
-    47,
-    73
-  ) !important; /* Your desired background color */
+  background-color: rgb(8,
+      47,
+      73) !important;
+  /* Your desired background color */
   border-width: 2px;
   --tw-border-opacity: 1;
   border-color: rgb(107 114 128 / var(--tw-border-opacity));

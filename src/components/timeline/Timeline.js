@@ -53,9 +53,7 @@ export const Timeline = ({ connectionMatrix, ids }) => {
     console.log("up");
     setNeedUpdate(false);
     ones.map((curve, index) => {
-      if (index == 6) {
-        debugger;
-      }
+   
       let start_left = curve[0].current.offsetLeft;
       let start_top = curve[0].current.offsetTop;
       let start_height = curve[0].current.offsetHeight;
