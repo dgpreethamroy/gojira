@@ -37,6 +37,7 @@ function getPreviousMonday(date = new Date()) {
   }
 }
 export const Gnatt_Chart = ({ data, user }) => {
+  console.log("Gnatt Component");
   const labelref = useRef(null);
   const timelineRef = useRef(null);
   const container = useRef(null);
@@ -529,9 +530,31 @@ export const Gnatt_Chart = ({ data, user }) => {
               let daysInMonthCreated = createdAt.$d.getDate();
               let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
 
-              let quaters = Math.floor(createdAt.diff(startDayjs, "month") / 3);
               let daysDiffCreated = createdAt.diff(startDayjs, "days");
               let daysDiff = dueDate.diff(createdAt, "days");
+
+              let leftpos =
+                currentFilter === Filters[0]
+                  ? (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
+                      28 +
+                    (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
+                  : currentFilter === Filters[1]
+                  ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
+                    (dayjs(task.createdAt).$d.getDate() /
+                      dayjs(task.createdAt).endOf("month").$d.getDate()) *
+                      200
+                  : (daysDiffCreated * 1000) / 365;
+              let widthpos =
+                currentFilter === Filters[0]
+                  ? (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
+                      1) *
+                    28
+                  : currentFilter === Filters[1]
+                  ? monthsDiffDue * 200 +
+                    (daysInMonthDue / endOfMonthDue) * 200 -
+                    monthsDiffCreated * 200 -
+                    (daysInMonthCreated / endOfMonthCreated) * 200
+                  : (daysDiff * 1000) / 365;
 
               return (
                 <div
@@ -540,73 +563,56 @@ export const Gnatt_Chart = ({ data, user }) => {
                     index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
                   }`}
                 >
-                  <button
-                    id={task.id}
-                    className="draggable hover-div  relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
-                    style={{
-                      left:
-                        currentFilter === Filters[0]
-                          ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                              1) *
-                              28 +
-                            (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                              1) /
-                              7 +
-                            "px"
-                          : currentFilter === Filters[1]
-                          ? dayjs(task.createdAt).diff(dayjs(start), "months") *
-                              200 +
-                            (dayjs(task.createdAt).$d.getDate() /
-                              dayjs(task.createdAt)
-                                .endOf("month")
-                                .$d.getDate()) *
-                              200
-                          : (daysDiffCreated * 1000) / 365,
-                      width:
-                        currentFilter === Filters[0]
-                          ? (dayjs(task.DueDate).diff(
-                              dayjs(task.createdAt),
-                              "days"
-                            ) +
-                              1) *
-                              28 +
-                            "px"
-                          : currentFilter === Filters[1]
-                          ? monthsDiffDue * 200 +
-                            (daysInMonthDue / endOfMonthDue) * 200 -
-                            monthsDiffCreated * 200 -
-                            (daysInMonthCreated / endOfMonthCreated) * 200
-                          : (daysDiff * 1000) / 365,
-                    }}
-                    onMouseDown={handleDown}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex  ">
-                        <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
-                        <span className="">
-                          {document.getElementById(task.id)?.offsetWidth >
-                            28 && (
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              role="presentation"
-                              className="border rounded-full ml-1"
-                            >
-                              <g fill="white" fill-rule="evenodd">
-                                <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                              </g>
-                            </svg>
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <div className="">{LinkIcon}</div>
-                        <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
-                      </div>
+                  <div className="flex hover-div">
+                    <div
+                      className=" text-sm absolute items-center text-center hidden date-div "
+                      style={{ left: leftpos - 80 }}
+                    >
+                      <p>{createdAt.format("DD/MM/YYYY")}</p>
                     </div>
-                  </button>
+                    <button
+                      id={task.id}
+                      className="draggable hover-div   relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
+                      style={{
+                        left: leftpos,
+                        width: widthpos,
+                      }}
+                      onMouseDown={handleDown}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex  ">
+                          <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
+                          <span className="">
+                            {document.getElementById(task.id)?.offsetWidth >
+                              28 && (
+                              <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                role="presentation"
+                                className="border rounded-full ml-1"
+                              >
+                                <g fill="white" fill-rule="evenodd">
+                                  <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
+                                  <circle cx="12" cy="7" r="4"></circle>
+                                </g>
+                              </svg>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <div className="">{LinkIcon}</div>
+                          <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
+                        </div>
+                      </div>
+                    </button>
+                    <div
+                      className=" text-sm absolute items-center text-center hidden  date-div "
+                      style={{ left: leftpos + widthpos + 10 }}
+                    >
+                      <p>{dueDate.format("DD/MM/YYYY")}</p>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -644,6 +650,7 @@ export const Gnatt_Chart = ({ data, user }) => {
                 className=" ml-[5px] w-[2px] bg-orange-500"
                 style={{
                   height: (searchandfilter.length + 1) * 40 + "px",
+                  minHeight: "305px",
                 }}
               ></div>
               <div></div>
@@ -656,8 +663,9 @@ export const Gnatt_Chart = ({ data, user }) => {
 };
 
 //  orange line -today  DONE
-//  search filter with connection matrix
-//  reload connections for filters
+//  search filter with connection matrix DONE
+//  reload connections for filters DONE
 //  task dates outside button
 //  DYNAMIC CONNECTION
-//  delete connection
+//  delete connection  **IMP
+//  DuringSearch button align changes

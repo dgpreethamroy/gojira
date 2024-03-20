@@ -57,7 +57,7 @@ a:hover {
   }
 }
 
-.hover-div:hover+.hide-div {
+.hover-div:hover + .hide-div {
   opacity: 1;
 }
 
@@ -66,6 +66,9 @@ a:hover {
 
   .color-div {
     background-color: lightblue;
+  }
+  .date-div {
+    display: block;
   }
 }
 
@@ -149,7 +152,7 @@ a:hover {
   padding: 0;
 }
 
-.sticky+.content {
+.sticky + .content {
   padding-top: 102px;
 }
 
@@ -163,9 +166,7 @@ a:hover {
 }
 
 .sb-avatar__text {
-  background-color: rgb(8,
-      47,
-      73) !important;
+  background-color: rgb(8, 47, 73) !important;
   /* Your desired background color */
   border-width: 2px;
   --tw-border-opacity: 1;

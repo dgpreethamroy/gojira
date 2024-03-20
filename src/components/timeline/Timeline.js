@@ -13,12 +13,12 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
     return ref;
   });
 
-  function getIndicesOfOnes(matrix) {
+  function getIndicesOfOnes(matrix, localrefs = refs) {
     const indices = [];
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 1) {
-          indices.push([refs[i], refs[j]]);
+          indices.push([localrefs[i], localrefs[j]]);
         }
       }
     }
@@ -26,12 +26,9 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
   }
 
   const ones = getIndicesOfOnes(connectionMatrix);
-  const [path, setPath] = useState(() => {
-    const n = ones.length; // Number of rows
-    const m = 8; // Number of columns
-    return Array.from({ length: n }, () => Array(m).fill(0));
-  });
-  const [pathRef, setPathRef] = useState(Array.from({ length: ones.length }));
+  const [pathRef, setPathRef] = useState(
+    Array.from({ length: connectionMatrix.length })
+  );
   //console.log(path);
   // const boxpathRef = useRef(Array.from({ length: ones.length }));
   const [width, setWidth] = useState(100);
@@ -50,11 +47,20 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
 
   const handleUpTimeline = () => {
     console.log("up");
-    if (!ones.length) {
+    if (!connectionMatrix.length) {
       targetRef.current.style.display = "none";
       return;
     }
-    ones.map((curve, index) => {
+
+    let Updatedrefs = ids.map((id) => {
+      const ref = {
+        current: document.getElementById(id),
+      };
+
+      return ref;
+    });
+    let Updatedones = getIndicesOfOnes(connectionMatrix, Updatedrefs);
+    Updatedones.map((curve, index) => {
       if (!curve[0].current && !curve[1].current) {
         setPathRef((oldPathRef) => {
           const newpath = [...oldPathRef];
@@ -207,7 +213,7 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
   }, [connectionMatrix]);
   return (
     <svg ref={targetRef} className="absolute top-0 left-0 w-full h-full ">
-      {path?.map((curve, index) => (
+      {pathRef?.map((curve, index) => (
         <path
           d={pathRef[index]}
           stroke={pathRef[index]?.split("M").length == 2 ? "gray" : "#8B0000"}
