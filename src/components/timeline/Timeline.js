@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 
-export const Timeline = ({ connectionMatrix, ids }) => {
+export const Timeline = ({ connectionMatrix, ids, reload }) => {
   console.log("Timeline Componennt");
-  const [needUpdate, setNeedUpdate] = useState(true);
-  const [color, setColor] = useState("#000");
+  // const [needUpdate, setNeedUpdate] = useState(true);
+  // const [color, setColor] = useState("#000");
   const targetRef = useRef(null);
   const refs = ids.map((id) => {
     const ref = {
@@ -39,7 +39,6 @@ export const Timeline = ({ connectionMatrix, ids }) => {
 
   const handleDownTimeline = (e) => {
     console.log("down");
-    setNeedUpdate(true);
     targetRef.current.style.display = "none";
 
     document.onmouseup = () => {
@@ -51,9 +50,20 @@ export const Timeline = ({ connectionMatrix, ids }) => {
 
   const handleUpTimeline = () => {
     console.log("up");
-    setNeedUpdate(false);
+    if (!ones.length) {
+      targetRef.current.style.display = "none";
+      return;
+    }
     ones.map((curve, index) => {
-   
+      if (!curve[0].current && !curve[1].current) {
+        setPathRef((oldPathRef) => {
+          const newpath = [...oldPathRef];
+          newpath[index] = null;
+          return newpath;
+        });
+        return;
+      }
+
       let start_left = curve[0].current.offsetLeft;
       let start_top = curve[0].current.offsetTop;
       let start_height = curve[0].current.offsetHeight;
@@ -167,29 +177,34 @@ export const Timeline = ({ connectionMatrix, ids }) => {
 
   useEffect(() => {
     console.log("Timeline useEffect");
+    setPathRef([]);
     let attachEvent;
     ids.map((id) => {
       attachEvent = document.getElementById(id);
-      if (attachEvent)
+      if (attachEvent) {
         attachEvent.addEventListener("mousedown", handleDownTimeline);
-      attachEvent.addEventListener("mouseup", handleUpTimeline);
+        attachEvent.addEventListener("mouseup", handleUpTimeline);
+      }
     });
 
-    if (needUpdate) {
-      targetRef.current.style.display = "none";
-      handleUpTimeline();
-    }
+    // if (needUpdate)
+    targetRef.current.style.display = "none";
+    // setTimeout(() => {
+    // }, 2000);
+    handleUpTimeline();
+
     ///cleanup
     return () => {
       let attachEvent;
       ids.map((id) => {
         attachEvent = document.getElementById(id);
-        if (attachEvent)
+        if (attachEvent) {
           attachEvent.removeEventListener("mousedown", handleDownTimeline);
-        attachEvent.removeEventListener("mouseup", handleUpTimeline);
+          attachEvent.removeEventListener("mouseup", handleUpTimeline);
+        }
       });
     };
-  }, []);
+  }, [connectionMatrix]);
   return (
     <svg ref={targetRef} className="absolute top-0 left-0 w-full h-full ">
       {path?.map((curve, index) => (

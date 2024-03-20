@@ -51,7 +51,6 @@ export const Gnatt_Chart = ({ data, user }) => {
   const [initpos, setInitPos] = useState(0);
   const [open, close] = useState(false);
 
-
   const handleToggleNew = (e) => {
     console.log("handleToggleNew");
     document.getElementById("createColumn").style.display = "none";
@@ -63,7 +62,6 @@ export const Gnatt_Chart = ({ data, user }) => {
     document.getElementById("createColumn").style.display = "flex";
     document.getElementById("createColumnDiv").style.display = "none";
   };
-
 
   function getNextMonday(date = new Date()) {
     const dateCopy = new Date(date.getTime());
@@ -125,8 +123,8 @@ export const Gnatt_Chart = ({ data, user }) => {
           );
         if (i == 24) {
           setStart(currentMonth.startOf("month"));
-          initPos =
-            (dayjs().diff(currentMonth.startOf("month"), "month") - 2) * 200;
+          initPos = dayjs().diff(currentMonth.startOf("month"), "month") * 200;
+          initPos += dayjs().diff(dayjs().startOf("month"), "days") * 7;
           setInitPos(initPos);
         }
 
@@ -136,7 +134,7 @@ export const Gnatt_Chart = ({ data, user }) => {
       setTimelineHeader(names.reverse());
       timelineheaderRef.current.style.width = 25 * 200 + "px";
       timelineBodyRef.current.style.width = 25 * 200 + "px";
-      timelineRef.current.scrollTo({ left: initPos });
+      timelineRef.current.scrollTo({ left: initPos - 400 });
     } else if (currentFilter === Filters[2]) {
       ///  Quaters Filters
       let currentMonth = dayjs().$d.getMonth();
@@ -170,13 +168,18 @@ export const Gnatt_Chart = ({ data, user }) => {
       setTimelineHeader(names);
       timelineheaderRef.current.style.width = 13 * 250 + "px";
       timelineBodyRef.current.style.width = 13 * 250 + "px";
+      let daydiff = (dayjs().diff(dayjs().startOf("month"), "days") * 250) / 90;
+      setInitPos(750 - daydiff + 500);
       timelineRef.current.scrollTo({ left: 750 });
-      setInitPos(750);
     } else {
       /// Weeks Filter
       let lastyear = dayjs(getPreviousMonday(dayjs().subtract(1, "years").$d));
       setStart(lastyear.$d);
-      let initPos = dayjs().diff(lastyear, "days") * 27;
+      let initPos =
+        dayjs().diff(lastyear, "days") * 28 +
+        dayjs().diff(lastyear, "weeks") +
+        8;
+
       setInitPos(initPos);
       let nextyear = dayjs(getPreviousMonday(dayjs().add(2, "years").$d));
       let weeks = [];
@@ -230,12 +233,12 @@ export const Gnatt_Chart = ({ data, user }) => {
       timelineheaderRef.current.style.width = length + "px";
       timelineBodyRef.current.style.width = length + "px";
 
-      timelineRef.current.scrollTo({ left: initPos });
+      timelineRef.current.scrollTo({ left: initPos - 400 });
     }
     //close(true);
     setTimeout(() => {
       close(true);
-    }, 2000);
+    }, 200);
   }, [currentFilter]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
@@ -332,17 +335,16 @@ export const Gnatt_Chart = ({ data, user }) => {
   });
   /////
 
-  const connectionMatrix = [
-    [0, 1, 0, 0, 0, 0],
-    [1, 0, 1, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0],
-  ];
-  const handleOpenTimeline = () => {
-    close(true);
-  };
+  let ids = [];
+  const connectionMatrix = searchandfilter.map((task) => {
+    let row = [];
+    ids.push(task.id);
+    searchandfilter.map((task2) => {
+      row.push(task.linkedtasks.includes(task2.id) ? 1 : 0);
+    });
+    return row;
+  });
+
   if (data.length === 0) return;
   return (
     <>
@@ -451,8 +453,9 @@ export const Gnatt_Chart = ({ data, user }) => {
             return (
               <div
                 key={"label" + task.id}
-                className={`p-2   border-gray-500 ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                  }`}
+                className={`p-2   border-gray-500 ${
+                  index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                }`}
               >
                 <div className="flex">
                   <span className="px-2 text-nowrap">
@@ -471,17 +474,14 @@ export const Gnatt_Chart = ({ data, user }) => {
             >
               <span className="px-2">Create</span>
               <PlusIcon className="w-5 h-5" />
-
             </button>
             <div id="createColumnDiv" className="hidden ">
               <div className="flex">
-
                 <input
                   id="createColumnInput"
                   className=" h-10 border font-semibold text-lg border-gray-300 rounded-md w-[75%] "
                 />
                 <div className="flex w-1/5 items-center">
-
                   <button
                     onClick={handleCancelEdit}
                     className="ml-2 p-2 h-10 text-red-600 hover:text-red-700 focus:outline-none"
@@ -536,8 +536,9 @@ export const Gnatt_Chart = ({ data, user }) => {
               return (
                 <div
                   key={"timeline" + task.id}
-                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                    }`}
+                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
+                    index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                  }`}
                 >
                   <button
                     id={task.id}
@@ -546,36 +547,36 @@ export const Gnatt_Chart = ({ data, user }) => {
                       left:
                         currentFilter === Filters[0]
                           ? (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                            1) *
-                          28 +
-                          (dayjs(task.createdAt).diff(dayjs(start), "days") +
-                            1) /
-                          7 +
-                          "px"
+                              1) *
+                              28 +
+                            (dayjs(task.createdAt).diff(dayjs(start), "days") +
+                              1) /
+                              7 +
+                            "px"
                           : currentFilter === Filters[1]
-                            ? dayjs(task.createdAt).diff(dayjs(start), "months") *
-                            200 +
+                          ? dayjs(task.createdAt).diff(dayjs(start), "months") *
+                              200 +
                             (dayjs(task.createdAt).$d.getDate() /
                               dayjs(task.createdAt)
                                 .endOf("month")
                                 .$d.getDate()) *
-                            200
-                            : (daysDiffCreated * 1000) / 365,
+                              200
+                          : (daysDiffCreated * 1000) / 365,
                       width:
                         currentFilter === Filters[0]
                           ? (dayjs(task.DueDate).diff(
-                            dayjs(task.createdAt),
-                            "days"
-                          ) +
-                            1) *
-                          28 +
-                          "px"
+                              dayjs(task.createdAt),
+                              "days"
+                            ) +
+                              1) *
+                              28 +
+                            "px"
                           : currentFilter === Filters[1]
-                            ? monthsDiffDue * 200 +
+                          ? monthsDiffDue * 200 +
                             (daysInMonthDue / endOfMonthDue) * 200 -
                             monthsDiffCreated * 200 -
                             (daysInMonthCreated / endOfMonthCreated) * 200
-                            : (daysDiff * 1000) / 365,
+                          : (daysDiff * 1000) / 365,
                     }}
                     onMouseDown={handleDown}
                   >
@@ -583,8 +584,8 @@ export const Gnatt_Chart = ({ data, user }) => {
                       <div className="flex  ">
                         <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
                         <span className="">
-                          {
-                            document.getElementById(task.id)?.offsetWidth > 28 &&
+                          {document.getElementById(task.id)?.offsetWidth >
+                            28 && (
                             <svg
                               width="20"
                               height="20"
@@ -597,13 +598,11 @@ export const Gnatt_Chart = ({ data, user }) => {
                                 <circle cx="12" cy="7" r="4"></circle>
                               </g>
                             </svg>
-                          }
+                          )}
                         </span>
                       </div>
                       <div className="flex">
-                        <div className="">
-                          {LinkIcon}
-                        </div>
+                        <div className="">{LinkIcon}</div>
                         <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
                       </div>
                     </div>
@@ -611,23 +610,25 @@ export const Gnatt_Chart = ({ data, user }) => {
                 </div>
               );
             })}
-            <div className={`h-[38px] ${searchandfilter.length % 2 !== 0 ? 'bg-slate-200' : 'bg-slate-50'}`}>
-
-            </div>
+            <div
+              className={`h-[38px] ${
+                searchandfilter.length % 2 !== 0
+                  ? "bg-slate-200"
+                  : "bg-slate-50"
+              }`}
+            ></div>
             {/* here */}
             <div className=" z-10 fixed right-0 bottom-0 Filters  shadow-2xl ">
-              <div
-                className="  p-1 bg-white rounded-lg  flex"
-              //   style={{ top: 275, right: 44 }}
-              >
+              <div className="  p-1 bg-white rounded-lg  flex">
                 {Filters.map((filter) => {
                   return (
                     <button
                       key={filter}
-                      className={`px-2 py-1 mx-[2px] rounded ${currentFilter === filter
-                        ? "bg-blue-100 text-blue-500 "
-                        : "hover:bg-gray-300"
-                        } `}
+                      className={`px-2 py-1 mx-[2px] rounded ${
+                        currentFilter === filter
+                          ? "bg-blue-100 text-blue-500 "
+                          : "hover:bg-gray-300"
+                      } `}
                       onClick={handleFilters}
                     >
                       {filter}
@@ -636,33 +637,25 @@ export const Gnatt_Chart = ({ data, user }) => {
                 })}
               </div>
             </div>
-
-            {open && (
-              <Timeline
-                connectionMatrix={connectionMatrix}
-                ids={[
-                  "task-23",
-                  "task-24",
-                  "task-25",
-                  "task-26",
-                  "task-27",
-                  "task-28",
-                ]}
-              />
-            )}
-
+            {open && <Timeline connectionMatrix={connectionMatrix} ids={ids} />}
+            <div className="absolute top-0  z-10" style={{ left: initpos }}>
+              <div className=" sticky top-12  w-0 h-0 border-[6px] border-transparent border-t-orange-500 border-b-0"></div>
+              <div
+                className=" ml-[5px] w-[2px] bg-orange-500"
+                style={{
+                  height: (searchandfilter.length + 1) * 40 + "px",
+                }}
+              ></div>
+              <div></div>
+            </div>
           </div>
-
         </div>
-
-      </div >
-
+      </div>
     </>
   );
 };
 
-
-//  orange line -today
+//  orange line -today  DONE
 //  search filter with connection matrix
 //  reload connections for filters
 //  task dates outside button
