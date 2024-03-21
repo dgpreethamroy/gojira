@@ -5,6 +5,7 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
   // const [needUpdate, setNeedUpdate] = useState(true);
   // const [color, setColor] = useState("#000");
   const targetRef = useRef(null);
+  const [LinkPathRef, setLinkPathRef] = useState("");
   const refs = ids.map((id) => {
     const ref = {
       current: document.getElementById(id),
@@ -29,10 +30,6 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
   const [pathRef, setPathRef] = useState(
     Array.from({ length: connectionMatrix.length })
   );
-  //console.log(path);
-  // const boxpathRef = useRef(Array.from({ length: ones.length }));
-  const [width, setWidth] = useState(100);
-  const [height, setHeight] = useState(100);
 
   const handleDownTimeline = (e) => {
     console.log("down");
@@ -181,39 +178,69 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
     targetRef.current.style.display = "block";
   };
 
+  const handleLinkDown = (e) => {
+    const startpos = e.currentTarget;
+
+    const handleLinkMove = (e) => {
+      debugger;
+      const MoveAt = (pageX, pageY) => {
+        setLinkPathRef(
+          `M ${startpos.left} ${startpos.top} L ${pageX} ${pageY - 340}`
+        );
+      };
+      MoveAt(e.clientX, e.clientY);
+    };
+    const handleLinkUp = () => {
+      document.removeEventListener("mousemove", handleLinkMove);
+      document.removeEventListener("mouseup", handleLinkUp);
+      //setLinkPathRef("");
+      return;
+    };
+    document.addEventListener("mousemove", handleLinkMove);
+    document.addEventListener("mouseup", handleLinkUp);
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   useEffect(() => {
     console.log("Timeline useEffect");
     setPathRef([]);
     let attachEvent;
+    let attachLink;
     ids.map((id) => {
       attachEvent = document.getElementById(id);
+      attachLink = document.getElementById(id + "Link");
       if (attachEvent) {
         attachEvent.addEventListener("mousedown", handleDownTimeline);
         attachEvent.addEventListener("mouseup", handleUpTimeline);
       }
+      if (attachLink) {
+        attachLink.addEventListener("mousedown", handleLinkDown);
+      }
     });
 
-    // if (needUpdate)
     targetRef.current.style.display = "none";
-    // setTimeout(() => {
-    // }, 2000);
     handleUpTimeline();
 
     ///cleanup
     return () => {
       let attachEvent;
+      let attachLink;
       ids.map((id) => {
         attachEvent = document.getElementById(id);
         if (attachEvent) {
           attachEvent.removeEventListener("mousedown", handleDownTimeline);
           attachEvent.removeEventListener("mouseup", handleUpTimeline);
         }
+        if (attachLink) {
+          attachLink.removeEventListener("mousedown", handleLinkDown);
+        }
       });
     };
   }, [connectionMatrix]);
   return (
     <svg ref={targetRef} className="absolute top-0 left-0 w-full h-full ">
-      {pathRef?.map((curve, index) => (
+      {pathRef?.map((_, index) => (
         <path
           d={pathRef[index]}
           stroke={pathRef[index]?.split("M").length == 2 ? "gray" : "#8B0000"}
@@ -221,6 +248,9 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
           strokeWidth={2}
         />
       ))}
+      {LinkPathRef.length > 0 && (
+        <path d={LinkPathRef} stroke="red" fill="none" strokeWidth={2}></path>
+      )}
     </svg>
   );
 };
