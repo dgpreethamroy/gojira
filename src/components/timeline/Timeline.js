@@ -1,11 +1,22 @@
 import React, { useRef, useState, useEffect } from "react";
-
-export const Timeline = ({ connectionMatrix, ids, reload }) => {
+import { Issuedata, LinkIcon_Black } from "../../assets/CommonData";
+export const Timeline = ({
+  connectionMatrix,
+  ids,
+  handleNewLinkConnection,
+  handleLinkClick,
+  data,
+}) => {
   console.log("Timeline Componennt");
-  // const [needUpdate, setNeedUpdate] = useState(true);
-  // const [color, setColor] = useState("#000");
+
   const targetRef = useRef(null);
   const [LinkPathRef, setLinkPathRef] = useState("");
+  const [showConnection, setShowConnection] = useState(false);
+  const [connPosition, setConnPosition] = useState({ left: 0, top: 0 });
+  const [connEndPoints, setConnEndPoints] = useState({
+    start: null,
+    end: null,
+  });
   const refs = ids.map((id) => {
     const ref = {
       current: document.getElementById(id),
@@ -26,13 +37,14 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
     return indices;
   }
 
-  const ones = getIndicesOfOnes(connectionMatrix);
   const [pathRef, setPathRef] = useState(
     Array.from({ length: connectionMatrix.length })
   );
-
+  let timeline = false;
   const handleDownTimeline = (e) => {
     console.log("down");
+
+    timeline = true;
     targetRef.current.style.display = "none";
 
     document.onmouseup = () => {
@@ -43,6 +55,7 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
   };
 
   const handleUpTimeline = () => {
+    if (!timeline) return;
     console.log("up");
     if (!connectionMatrix.length) {
       targetRef.current.style.display = "none";
@@ -176,28 +189,40 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
     });
 
     targetRef.current.style.display = "block";
+    timeline = false;
   };
 
   const handleLinkDown = (e) => {
-    const startpos = e.currentTarget;
-
+    console.log("grabbded");
+    const startpos = e.currentTarget.closest(".draggable");
+    const padding = e.currentTarget.closest(".timelineRef");
+    const paddingX = padding.scrollLeft;
+    const paddingY = padding.getBoundingClientRect().top - padding.scrollTop;
+    const startX = startpos.offsetLeft + startpos.offsetWidth;
+    const startY = startpos.offsetTop + startpos.offsetHeight / 2;
     const handleLinkMove = (e) => {
-      debugger;
       const MoveAt = (pageX, pageY) => {
         setLinkPathRef(
-          `M ${startpos.left} ${startpos.top} L ${pageX} ${pageY - 340}`
+          `M ${startX} ${startY} L ${
+            pageX + paddingX - ((window.innerWidth - 88) / 4 + 44)
+          } ${pageY - paddingY - 48}`
         );
       };
-      MoveAt(e.clientX, e.clientY);
+      MoveAt(e.pageX, e.pageY);
     };
-    const handleLinkUp = () => {
+    const handleLinkUp = (e, startpos) => {
+      console.log("released");
+      if (e.target.closest(".draggable")?.id.indexOf("task") === 0) {
+        handleNewLinkConnection(startpos.id, e.target.closest(".draggable").id);
+      }
+      document.removeEventListener("mouseup", (e) => handleLinkUp(e, startpos));
       document.removeEventListener("mousemove", handleLinkMove);
-      document.removeEventListener("mouseup", handleLinkUp);
-      //setLinkPathRef("");
-      return;
+      setLinkPathRef("");
     };
     document.addEventListener("mousemove", handleLinkMove);
-    document.addEventListener("mouseup", handleLinkUp);
+    document.addEventListener("mouseup", (e) => handleLinkUp(e, startpos), {
+      once: true,
+    });
     e.preventDefault();
     e.stopPropagation();
   };
@@ -220,6 +245,7 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
     });
 
     targetRef.current.style.display = "none";
+    timeline = true;
     handleUpTimeline();
 
     ///cleanup
@@ -238,19 +264,126 @@ export const Timeline = ({ connectionMatrix, ids, reload }) => {
       });
     };
   }, [connectionMatrix]);
+
+  const LinkClick = (e, index) => {
+    let start = getIndicesOfOnes(connectionMatrix)[index][0].current;
+    let end = getIndicesOfOnes(connectionMatrix)[index][1].current;
+
+    setShowConnection(true);
+    setConnPosition({
+      left:
+        e.clientX +
+        start.closest(".timelineRef").scrollLeft -
+        ((window.innerWidth - 88) / 4 + 44),
+      top:
+        e.clientY +
+        start.closest(".timelineRef").scrollTop -
+        48 -
+        start.closest(".timelineRef").offsetTop,
+    });
+
+    setConnEndPoints({
+      start: start,
+      end: end,
+    });
+    const handleClose = () => {
+      setShowConnection(false);
+      document.removeEventListener("click", handleClose);
+    };
+    document.addEventListener("click", handleClose);
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <svg ref={targetRef} className="absolute top-0 left-0 w-full h-full ">
-      {pathRef?.map((_, index) => (
-        <path
-          d={pathRef[index]}
-          stroke={pathRef[index]?.split("M").length == 2 ? "gray" : "#8B0000"}
-          fill="none"
-          strokeWidth={2}
-        />
-      ))}
-      {LinkPathRef.length > 0 && (
-        <path d={LinkPathRef} stroke="red" fill="none" strokeWidth={2}></path>
+    <>
+      <svg ref={targetRef} className="absolute top-0 left-0 w-full h-full ">
+        {pathRef?.map((_, index) => (
+          <path
+            className="hover:cursor-pointer"
+            d={pathRef[index]}
+            stroke={pathRef[index]?.split("M").length == 2 ? "gray" : "#8B0000"}
+            fill="none"
+            strokeWidth={2}
+            onClick={(e) => LinkClick(e, index)}
+          />
+        ))}
+        {LinkPathRef.length > 0 && (
+          <path d={LinkPathRef} stroke="red" fill="none" strokeWidth={2}></path>
+        )}
+      </svg>
+      {showConnection && (
+        <div
+          className="absolute border-2 border-slate-200 shadow-2xl rounded-xl top-0 left-0 w-80 h-44 z-[20] text-black bg-white"
+          style={{
+            left: connPosition.left,
+            top: connPosition.top,
+          }}
+        >
+          <div className="p-2">
+            <div className="shadow-2xl p-1 border-2 border-slate-200 rounded w-full h-[60px]">
+              <p className="flex">
+                {Issuedata.map(
+                  (item, index) =>
+                    item.value ===
+                      data.tasks[connEndPoints.start.id]["issuetype"] && (
+                      <p key={index}>{item.icon}</p>
+                    )
+                )}
+                <p className="truncate">
+                  {data.tasks[connEndPoints.start.id]["summary"]}
+                </p>
+              </p>
+              <p className="text-sm text-gray-500 flex">
+                <p className="px-7">Due date</p>
+                {data.tasks[connEndPoints.start.id]["DueDate"]}
+              </p>
+            </div>
+            <div className="justify-around flex h-[35px]">
+              <div className="flex items-center">
+                <p className="w-1 h-full border-2 border-red-800"></p>
+                <svg className="w-5 h-5">{LinkIcon_Black}</svg>
+              </div>
+              <button
+                onClick={() => {
+                  handleLinkClick(connEndPoints.start.id, connEndPoints.end.id);
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  role="presentation"
+                >
+                  <path
+                    d="M13.721 14.43a.972.972 0 00-1.37-.004l-2.088 2.059a1.928 1.928 0 01-1.37.568c-.588 0-1.135-.26-1.525-.738-.634-.777-.505-1.933.203-2.643l1.321-1.322.002.001.688-.686a.974.974 0 000-1.377l-.002-.003a.972.972 0 00-1.375 0l-2.068 2.07a3.892 3.892 0 000 5.497l.009.01A3.87 3.87 0 008.892 19a3.87 3.87 0 002.746-1.139l2.083-2.085a.951.951 0 000-1.345zm-3.442-4.86a.972.972 0 001.37.004l2.088-2.058c.366-.367.853-.57 1.37-.57.588 0 1.135.26 1.525.739.634.777.505 1.933-.203 2.643l-1.321 1.322-.002-.001-.688.686a.974.974 0 000 1.377l.002.003c.38.38.995.38 1.375 0l2.068-2.07a3.892 3.892 0 000-5.497l-.009-.01A3.87 3.87 0 0015.108 5a3.87 3.87 0 00-2.746 1.139l-2.083 2.085a.951.951 0 000 1.345zM8.924 4.618l.401.968a1 1 0 11-1.848.765l-.4-.968a1 1 0 111.848-.765M5.383 7.076l.968.401a1.001 1.001 0 01-.766 1.848l-.968-.4a1.001 1.001 0 01.766-1.848m9.932 10.413a1.003 1.003 0 00-.542 1.307l.402.968A1 1 0 1017.023 19l-.401-.967a1 1 0 00-1.307-.542zm2.176-2.174a1 1 0 00.54 1.306l.969.401a1.001 1.001 0 00.766-1.848l-.969-.4a1 1 0 00-1.306.542z"
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div className="shadow-2xl border-2 p-2 border-slate-5=200 rounded w-full h-[60px]">
+              <p className="flex">
+                {Issuedata.map(
+                  (item, index) =>
+                    item.value ===
+                      data.tasks[connEndPoints.end.id]["issuetype"] && (
+                      <p key={index}>{item.icon}</p>
+                    )
+                )}
+                <p className="truncate">
+                  {data.tasks[connEndPoints.end.id]["summary"]}
+                </p>
+              </p>
+              <p className="text-sm text-gray-500 flex">
+                <p className="px-7">created date</p>
+                {data.tasks[connEndPoints.end.id]["createdAt"]}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
-    </svg>
+    </>
   );
 };

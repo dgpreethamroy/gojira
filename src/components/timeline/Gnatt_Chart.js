@@ -3,6 +3,7 @@ import { XIcon, CheckIcon, PlusIcon } from "@heroicons/react/solid";
 import dayjs from "dayjs";
 import SearchBox from "../ui/filter/Search";
 import Popover from "../ui/popover/Popover";
+import customaxios from "../../api/axios";
 import {
   LinkIcon,
   Filter_Icon,
@@ -51,9 +52,9 @@ export const Gnatt_Chart = ({ data, user }) => {
   const [filterOptions, setFilterOptions] = useState([false, false, false]);
   const [initpos, setInitPos] = useState(0);
   const [open, close] = useState(false);
-
+  const [linkStart, setLinkStart] = useState("");
+  const [chartdata, setChartData] = useState(data);
   const [endDate, setEndDate] = useState([]);
-  console.log(endDate);
 
   const handleToggleNew = (e) => {
     console.log("handleToggleNew");
@@ -103,6 +104,11 @@ export const Gnatt_Chart = ({ data, user }) => {
     timelineRef.current?.scrollTo({ left: initpos });
   };
   useEffect(() => {
+    if (
+      Object.values(chartdata.tasks).length === 0 &&
+      Object.values(data.tasks).length !== 0
+    )
+      setChartData(data);
     if (data.length === 0) return;
     console.log("Gnatt useEffect");
     document.body.style.backgroundColor = "antiquewhite";
@@ -243,7 +249,7 @@ export const Gnatt_Chart = ({ data, user }) => {
     setTimeout(() => {
       close(true);
     }, 200);
-  }, [currentFilter]);
+  }, [currentFilter, data]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
     timelineRef.current.scrollTop = e.target.scrollTop;
@@ -336,7 +342,7 @@ export const Gnatt_Chart = ({ data, user }) => {
     isDrag = false;
     button = null;
   };
-  const searchResults = Object.values(data.tasks).filter((task) => {
+  const searchResults = Object.values(chartdata.tasks).filter((task) => {
     if (endDate.length === 0) {
       setEndDate((prev) => {
         let newenddate = [...prev];
@@ -375,6 +381,57 @@ export const Gnatt_Chart = ({ data, user }) => {
     });
     return row;
   });
+  const handleNewLinkConnection = (start, end) => {
+    if (start === end) return;
+    if (chartdata.tasks[start]["linkedtasks"].includes(end)) return;
+    const currentLinks = Object.values(data.tasks).filter((task) => {
+      if (task.id === start) return true;
+      else return false;
+    });
+    const UpdateLink = async () => {
+      try {
+        const result = await customaxios.put("/issues", {
+          id: start,
+          linkedtasks: [...currentLinks[0].linkedtasks, end],
+        });
+        setChartData((prev) => {
+          let newdata = { ...prev };
+          newdata.tasks[start]["linkedtasks"] = [
+            ...newdata.tasks[start]["linkedtasks"],
+            end,
+          ];
+          return newdata;
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    UpdateLink();
+  };
+
+  const handleLinkClick = (start, end) => {
+    const DeleteConnection = async () => {
+      try {
+        const result = await customaxios.put("/issues", {
+          id: start,
+          linkedtasks: chartdata.tasks[start]["linkedtasks"].filter(
+            (task) => task !== end
+          ),
+        });
+        console.log(result.data);
+        setChartData((prev) => {
+          let newdata = { ...prev };
+          newdata.tasks[start]["linkedtasks"] = newdata.tasks[start][
+            "linkedtasks"
+          ].filter((task) => task !== end);
+          return newdata;
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    DeleteConnection();
+  };
 
   if (data.length === 0) return;
 
@@ -533,7 +590,7 @@ export const Gnatt_Chart = ({ data, user }) => {
         </div>
         <div
           ref={timelineRef}
-          className="w-[75%]  overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[375px]"
+          className="w-[75%] timelineRef overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[375px]"
           onScroll={handleScroll}
         >
           <div
@@ -680,7 +737,17 @@ export const Gnatt_Chart = ({ data, user }) => {
                 })}
               </div>
             </div>
-            {open && <Timeline connectionMatrix={connectionMatrix} ids={ids} />}
+            {open && (
+              <Timeline
+                connectionMatrix={connectionMatrix}
+                ids={ids}
+                handleNewLinkConnection={handleNewLinkConnection}
+                linkStart={linkStart}
+                setLinkStart={setLinkStart}
+                handleLinkClick={handleLinkClick}
+                data={chartdata}
+              />
+            )}
             <div className="absolute top-0  z-10" style={{ left: initpos }}>
               <div className=" sticky top-12  w-0 h-0 border-[6px] border-transparent border-t-orange-500 border-b-0"></div>
               <div
