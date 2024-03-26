@@ -23,13 +23,9 @@ export const ListIssues = (props) => {
     if (title === "labels") return 300;
     if (title === "createdAt") return 200;
     if (title === "DueDate") return 200;
+    return 100;
   };
-  if (tablewidth === 0) {
-    setTableWidth(
-      data?.columns?.reduce((acc, curr) => acc + getColumnWidth(curr), 0)
-    );
-    alert(data?.columns?.reduce((acc, curr) => acc + getColumnWidth(curr), 0));
-  }
+
   const toggleRowSelection = (id) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows.includes(id)) {
@@ -39,29 +35,12 @@ export const ListIssues = (props) => {
       }
     });
   };
-  useEffect(() => {
-    console.log("ListIssues useEffect");
-    const fetch_projectdetails = async () => {
-      if (currentUser) {
-        try {
-          const response = await axios.get(`/projects/${props.project_id.id}`);
-
-          console.log({
-            ...response.data.projectissues,
-            ...response.data.projectListOrder,
-          });
-          if (!listResponse)
-            setListResponse({
-              ...response.data.projectissues,
-              ...response.data.projectListOrder,
-            });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    };
-    fetch_projectdetails();
-  }, []);
+  if (props.info.projectissues && !listResponse) {
+    setListResponse({
+      ...props.info.projectissues,
+      ...props.info.projectListOrder,
+    });
+  }
 
   const listData = {
     columns:
@@ -73,7 +52,19 @@ export const ListIssues = (props) => {
 
     rows: listResponse && Object.values(listResponse?.tasks),
   };
-  if (!data && listResponse) setData(listData);
+  if (!data && listResponse) {
+    setData(listData);
+    let calculate = listData?.columns?.reduce(
+      (acc, curr) => acc + getColumnWidth(curr),
+      0
+    );
+    debugger;
+
+    setTableWidth(
+      listData?.columns?.reduce((acc, curr) => acc + getColumnWidth(curr), 0)
+    );
+  }
+
   const svgString = (
     <svg width="24" height="24" viewBox="0 0 24 24" role="presentation">
       <g fill="currentColor" fill-rule="evenodd">

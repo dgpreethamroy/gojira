@@ -55,6 +55,7 @@ export const Gnatt_Chart = ({ data, user }) => {
   const [linkStart, setLinkStart] = useState("");
   const [chartdata, setChartData] = useState(data);
   const [endDate, setEndDate] = useState([]);
+  const [startDate, setStartDate] = useState([]);
 
   const handleToggleNew = (e) => {
     console.log("handleToggleNew");
@@ -101,7 +102,7 @@ export const Gnatt_Chart = ({ data, user }) => {
     setFilterOptions(newFilterOptions);
   };
   const handleTodayButton = () => {
-    timelineRef.current?.scrollTo({ left: initpos });
+    timelineRef.current?.scrollTo({ left: initpos - 400 });
   };
   useEffect(() => {
     if (
@@ -291,48 +292,110 @@ export const Gnatt_Chart = ({ data, user }) => {
     if (!isDrag) return;
     const MoveAt = (pageX) => {
       if (!rightButton) {
-        if (buttonInitwidth - pageX + startX < 28) return;
+        if (buttonInitwidth - pageX + startX < 112) return;
 
         button.style.left = pageX - startX + buttonInitleft + "px";
-      }
-      //  Math.round((pageX - startX + buttonInitleft) / 28) * 28 + "px"; /// Implement it
-      else if (rightButton) {
-        if (pageX - startX + buttonInitwidth < 28) return;
+      } else if (rightButton) {
+        if (pageX - startX + buttonInitwidth < 112) return;
 
         button.style.width = pageX - startX + buttonInitwidth + "px";
-        const dayschange = Math.round((pageX - startX) / 28);
-        // const comingfrom = 'right'
-        // const finaldate = addDaysToDate(endDate, dayschange, comingfrom)
-        let enddate = dayjs(Object.values(data.tasks)[targetindex]["DueDate"]);
-        const finaldate = enddate.add(dayschange, "days");
-        setEndDate((prev) => {
-          let newenddate = [...prev];
-          newenddate[targetindex] = finaldate.format("DD/MM/YYYY");
-          return newenddate;
-        });
       }
       if (leftButton) {
         button.style.width = buttonInitwidth - pageX + startX + "px";
-
-        //console.log( buttonInitwidth - pageX + startX);
-        const dayschange = Math.round((pageX - startX) / 28);
-        // const comingfrom = 'left'
-        let startdate = dayjs(
-          Object.values(data.tasks)[targetindex]["createdAt"]
-        );
-        const finaldate = startdate.add(dayschange, "days");
-        setEndDate((prev) => {
-          let newenddate = [...prev];
-          newenddate[targetindex] = finaldate.format("DD/MM/YYYY");
-          return newenddate;
-        });
       }
+      const finalDate = getDatesfromPosition(
+        button.offsetLeft,
+        button.offsetWidth + button.offsetLeft
+      );
+      setStartDate((prev) => {
+        let newstartdate = [...prev];
+        newstartdate[targetindex] = dayjs(finalDate[0]).format("DD/MM/YYYY");
+        return newstartdate;
+      });
+      setEndDate((prev) => {
+        let newenddate = [...prev];
+        newenddate[targetindex] = dayjs(finalDate[1]).format("DD/MM/YYYY");
+        return newenddate;
+      });
     };
 
     MoveAt(e.pageX);
   };
 
+  const updateTaskPositions = async (taskid, startdate, enddate) => {
+    try {
+      const result = await customaxios.put(`/issues/`, {
+        id: taskid,
+        createdAt: startdate,
+        DueDate: enddate,
+      });
+      console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getDatesfromPosition = (startpos, endpos) => {
+    console.log(startpos, endpos);
+    let startdate, enddate;
+    if (currentFilter === Filters[0]) {
+      startdate = dayjs(start)
+        .add(Math.floor(startpos / 197), "weeks")
+        .add(Math.floor((startpos % 197) / 28), "days")
+        .toLocaleString()
+        .slice(0, 16);
+      enddate = dayjs(start)
+        .add(Math.floor(endpos / 197), "weeks")
+        .add(Math.floor((endpos % 197) / 28), "days")
+        .toLocaleString()
+        .slice(0, 16);
+    } else if (currentFilter === Filters[1]) {
+      const daysinstart = start
+        .add(Math.floor(startpos / 200), "months")
+        .daysInMonth();
+      const daysinend = start
+        .add(Math.floor(endpos / 200), "months")
+        .daysInMonth();
+
+      startdate = dayjs(start)
+        .add(Math.floor(startpos / 200), "months")
+        .add(Math.ceil((startpos % 200) * (daysinstart / 200)), "days")
+        .toLocaleString()
+        .slice(0, 16);
+      enddate = dayjs(start)
+        .add(Math.floor(endpos / 200), "months")
+        .add(Math.ceil((endpos % 200) * (daysinend / 200)), "days")
+        .toLocaleString()
+        .slice(0, 16);
+    } else {
+      const daysinstartQ = start
+        .add(Math.floor(startpos / 250) * 3 + 3, "months")
+        .diff(start.add(Math.floor(startpos / 250) * 3, "months"), "days");
+      const daysinendQ = start
+        .add(Math.floor(endpos / 250) * 3 + 3, "months")
+        .diff(start.add(Math.floor(endpos / 250) * 3, "months"), "days");
+
+      startdate = dayjs(start)
+        .add(Math.floor(startpos / 250) * 3, "months")
+        .add(Math.ceil((startpos % 250) * (daysinstartQ / 250)), "days")
+        .toLocaleString()
+        .slice(0, 16);
+      enddate = dayjs(start)
+        .add(Math.floor(endpos / 250) * 3, "months")
+        .add(Math.ceil((endpos % 250) * (daysinendQ / 250)), "days")
+        .toLocaleString()
+        .slice(0, 16);
+    }
+    return [startdate, enddate];
+  };
+
   const handleUp = (e) => {
+    const taskid = e.target.closest(".draggable").id;
+    const startpos = document.getElementById(taskid).offsetLeft;
+    const endpos = startpos + document.getElementById(taskid).offsetWidth;
+    console.log(taskid, startpos, endpos);
+    const [startdate, enddate] = getDatesfromPosition(startpos, endpos);
+
+    updateTaskPositions(taskid, startdate, enddate);
     document.removeEventListener("mousemove", handleMove);
     document.removeEventListener("mouseup", handleUp);
     leftButton = false;
@@ -342,14 +405,27 @@ export const Gnatt_Chart = ({ data, user }) => {
     isDrag = false;
     button = null;
   };
-  const searchResults = Object.values(chartdata.tasks).filter((task) => {
-    if (endDate.length === 0) {
+
+  if (endDate.length === 0) {
+    Object.values(chartdata.tasks).forEach((task) => {
       setEndDate((prev) => {
         let newenddate = [...prev];
-        newenddate.push(task.DueDate);
+        newenddate.push(dayjs(task.DueDate).format("DD/MM/YYYY"));
         return newenddate;
       });
-    }
+    });
+  }
+  if (startDate.length === 0) {
+    Object.values(chartdata.tasks).forEach((task) => {
+      setStartDate((prev) => {
+        let newenddate = [...prev];
+        newenddate.push(dayjs(task.createdAt).format("DD/MM/YYYY"));
+        return newenddate;
+      });
+    });
+  }
+
+  const searchResults = Object.values(chartdata.tasks).filter((task) => {
     return (
       task.id.toLowerCase().includes(inputSearch.toLowerCase()) ||
       task.summary.toLowerCase().includes(inputSearch.toLowerCase())
@@ -525,7 +601,7 @@ export const Gnatt_Chart = ({ data, user }) => {
       </div>
       <div
         ref={container}
-        className="w-auto bg-white  flex flex-rows  overflow-y-auto   m-5 mb-0 rounded-2xl"
+        className="w-auto bg-white  flex flex-rows  overflow-y-auto   mx-5  rounded-2xl"
       >
         <div
           ref={labelref}
@@ -651,16 +727,10 @@ export const Gnatt_Chart = ({ data, user }) => {
                     index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
                   }`}
                 >
-                  <div className="flex hover-div">
-                    {/* <div
-                      className=" text-sm absolute items-center text-center hidden date-div "
-                      style={{ left: leftpos - 80 }}
-                    >
-                      <p>{createdAt.format("DD/MM/YYYY")}</p>
-                    </div> */}
+                  <div className="flex  hover-div">
                     <button
                       id={task.id}
-                      className="draggable hover-div   relative z-10 left-0 py-[2px] bg-blue-500 rounded truncate text-sm hover:cursor-pointer"
+                      className="draggable hover-div  relative z-10 left-0 py-[2px] bg-blue-500 rounded  text-sm hover:cursor-pointer"
                       style={{
                         left: leftpos,
                         width: widthpos,
@@ -669,6 +739,9 @@ export const Gnatt_Chart = ({ data, user }) => {
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex  ">
+                          <div className="left-[-85px] w-20 absolute  ">
+                            {startDate[index]}
+                          </div>
                           <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
                           <span className="">
                             {document.getElementById(task.id)?.offsetWidth >
@@ -695,17 +768,14 @@ export const Gnatt_Chart = ({ data, user }) => {
                           >
                             {LinkIcon}
                           </div>
-                          <div className=" bg-slate-100">{endDate[index]}</div>
+
                           <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
+                          <div className=" w-20 right-[-90px] absolute z-0 ">
+                            {endDate[index]}
+                          </div>
                         </div>
                       </div>
                     </button>
-                    {/* <div
-                      className=" text-sm absolute items-center text-center hidden  date-div "
-                      style={{ left: leftpos + widthpos + 10 }}
-                    >
-                      <p>{dueDate.format("DD/MM/YYYY")}</p>
-                    </div> */}
                   </div>
                 </div>
               );
@@ -770,6 +840,6 @@ export const Gnatt_Chart = ({ data, user }) => {
 //  search filter with connection matrix DONE
 //  reload connections for filters DONE
 //  task dates outside button
-//  DYNAMIC CONNECTION
-//  delete connection  **IMP
+//  DYNAMIC CONNECTION DONE
+//  delete connection  **IMP Done
 //  DuringSearch button align changes

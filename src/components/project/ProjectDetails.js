@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import customAxios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider";
 import CreateIssue from "../issue/CreateIssue";
@@ -7,10 +7,22 @@ import { Sidebar } from "../layouts/Sidebar";
 import { ListIssues } from "../list/ListIssues";
 import { Gnatt_Chart } from "../timeline/Gnatt_Chart";
 import Dnd from "../dnd/Dnd";
-import Tabs from "../ui/tabs/Tabs";
 import SearchBox from "../ui/filter/Search";
-import Calendar from "../calendar/Calendar";
-export default function ProjectDetails() {
+import CalendarComponent from "../calendar/Calendar";
+const navItems = [
+  "Board",
+  "List",
+  "Timeline",
+  "Calendar",
+  "Summary",
+  "Approvals",
+  "Forms",
+  "Pages",
+  "Issues",
+  "Reports",
+  "ProjectSettings",
+];
+export default function ProjectDetails(props) {
   console.log("project Details Component");
   const { auth, currentUser } = useContext(AuthContext);
   const [todos, setTodos] = useState({});
@@ -18,6 +30,7 @@ export default function ProjectDetails() {
   const [ready, setReady] = useState(false);
   const [issuecreated, setIssuecreated] = useState(false);
   const [inputSearch, setSearchinput] = useState("");
+  const [defaultTab, setDefaultTab] = useState("Board");
   const [state, setState] = useState({
     tasks: {},
     columns: {
@@ -29,14 +42,22 @@ export default function ProjectDetails() {
   });
   const Parentref = useRef(null);
   const id = useParams();
+  const navigate = useNavigate();
+  if (!id.tab) {
+    console.log("Navigating to default Tab");
+    navigate(`/projects/${id.pid}/${defaultTab}`);
+  } else {
+    const tab = id.tab;
+    if (tab !== defaultTab) setDefaultTab(tab);
+  }
   useEffect(() => {
     console.log("project Details useEffect");
     const getProjects = async () => {
       if (currentUser) {
-        console.log("Fetching project details for project id:", id.id);
+        console.log("Fetching project details for project id:", id.pid);
         try {
           // Get Project Details
-          const response = await customAxios.get(`/projects/${id.id}`);
+          const response = await customAxios.get(`/projects/${id.pid}`);
           setTodos(response.data);
           if (response.data.projectissues.tasks)
             setState(response.data.projectissues);
@@ -48,7 +69,7 @@ export default function ProjectDetails() {
       }
     };
     getProjects();
-  }, [currentUser, issuecreated, id.id]);
+  }, [currentUser, issuecreated, id.pid]);
 
   const Board = (
     <>
@@ -87,7 +108,31 @@ export default function ProjectDetails() {
       />
     </div>
   );
-  const Timeline = <Gnatt_Chart project_id={id} data={state} user={currentUser} />;
+  const Timeline = (
+    <Gnatt_Chart project_id={id} data={state} user={currentUser} />
+  );
+  const Summary = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Approvals = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Forms = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Pages = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Issues = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Reports = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const ProjectSettings = (
+    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+  );
+  const Calendar = <CalendarComponent tasks={state.tasks} user={currentUser} />;
   if (!currentUser)
     return (
       <div>
@@ -155,49 +200,25 @@ export default function ProjectDetails() {
               setIssuecreated={setIssuecreated}
             />
           }
-          <Tabs
-            tabs={[
-              "Summary",
-              "Board",
-              "List",
-              "Calendar",
-              "Timeline",
-              "Approvals",
-              "Forms",
-              "Pages",
-              "Issues",
-              "Reports",
-              "Project settings",
-            ]}
-            displays={[
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              Board,
-              List,
-              <Calendar tasks={state.tasks} user={currentUser} />,
-              Timeline,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-              <h2 className="text-center text-slate-500">
-                Not yet implemented
-              </h2>,
-            ]}
-            open="Timeline"
-          />
+
+          <div className="relative top-[2px]">
+            {navItems.map((item, index) => (
+              <button
+                className={`py-2 px-5 hover:cursor-pointer ${
+                  item === defaultTab
+                    ? "border-b-2 border-orange-800 text-orange-800 "
+                    : "dark:text-white"
+                }`}
+                onClick={() => {
+                  navigate(`/projects/${id.pid}/${item}`);
+                }}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          <div className="  w-full border-[1px] z-0 border-gray-400"></div>
+          <div>{eval(defaultTab)}</div>
         </div>
       </div>
     </div>

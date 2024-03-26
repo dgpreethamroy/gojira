@@ -9,6 +9,7 @@ import { Dashboard } from "./components/dashboard/Dashboard";
 import React from "react";
 
 import { AuthProvider } from "./context/AuthProvider";
+import { Timeline } from "./components/timeline/Timeline";
 
 function App() {
   return (
@@ -22,7 +23,12 @@ function App() {
             <Route exact path="/projects" element={<ProjectTable />} />
             <Route exact path="/profile" element={<Profile />} />
             <Route exact path="/dashboard" element={<Dashboard />} />
-            <Route exact path="/projects/:id" element={<ProjectDetails />} />
+            <Route exact path="/projects/:pid" element={<ProjectDetails />} />
+            <Route
+              exact
+              path="/projects/:pid/:tab"
+              element={<ProjectDetails />}
+            />
           </Routes>
         </Router>
       </AuthProvider>

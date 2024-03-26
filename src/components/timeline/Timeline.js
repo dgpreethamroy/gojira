@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Issuedata, LinkIcon_Black } from "../../assets/CommonData";
+import { useParams } from "react-router-dom";
 export const Timeline = ({
   connectionMatrix,
   ids,
@@ -24,7 +25,7 @@ export const Timeline = ({
 
     return ref;
   });
-
+  const url = useParams();
   function getIndicesOfOnes(matrix, localrefs = refs) {
     const indices = [];
     for (let i = 0; i < matrix.length; i++) {
