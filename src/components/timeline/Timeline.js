@@ -43,8 +43,10 @@ export const Timeline = ({
   );
   let timeline = false;
   const handleDownTimeline = (e) => {
+    if (e.target.closest(".puller")) {
+      return;
+    }
     console.log("down");
-
     timeline = true;
     targetRef.current.style.display = "none";
 
@@ -193,13 +195,15 @@ export const Timeline = ({
     timeline = false;
   };
 
-  const handleLinkDown = (e) => {
-    console.log("grabbded");
+  const handleLinkDown = (e, rev = false) => {
+    console.log("grabbed");
     const startpos = e.currentTarget.closest(".draggable");
     const padding = e.currentTarget.closest(".timelineRef");
     const paddingX = padding.scrollLeft;
     const paddingY = padding.getBoundingClientRect().top - padding.scrollTop;
-    const startX = startpos.offsetLeft + startpos.offsetWidth;
+    const startX = rev
+      ? startpos.offsetLeft
+      : startpos.offsetLeft + startpos.offsetWidth;
     const startY = startpos.offsetTop + startpos.offsetHeight / 2;
     const handleLinkMove = (e) => {
       const MoveAt = (pageX, pageY) => {
@@ -211,19 +215,32 @@ export const Timeline = ({
       };
       MoveAt(e.pageX, e.pageY);
     };
-    const handleLinkUp = (e, startpos) => {
+    const handleLinkUp = (e, startpos, rev) => {
       console.log("released");
       if (e.target.closest(".draggable")?.id.indexOf("task") === 0) {
-        handleNewLinkConnection(startpos.id, e.target.closest(".draggable").id);
+        if (rev)
+          handleNewLinkConnection(
+            e.target.closest(".draggable").id,
+            startpos.id
+          );
+        else
+          handleNewLinkConnection(
+            startpos.id,
+            e.target.closest(".draggable").id
+          );
       }
       document.removeEventListener("mouseup", (e) => handleLinkUp(e, startpos));
       document.removeEventListener("mousemove", handleLinkMove);
       setLinkPathRef("");
     };
     document.addEventListener("mousemove", handleLinkMove);
-    document.addEventListener("mouseup", (e) => handleLinkUp(e, startpos), {
-      once: true,
-    });
+    document.addEventListener(
+      "mouseup",
+      (e) => handleLinkUp(e, startpos, rev),
+      {
+        once: true,
+      }
+    );
     e.preventDefault();
     e.stopPropagation();
   };
@@ -232,17 +249,25 @@ export const Timeline = ({
     console.log("Timeline useEffect");
     setPathRef([]);
     let attachEvent;
-    let attachLink;
+    let attachendLink;
+    let attachstartLink;
     ids.map((id) => {
       attachEvent = document.getElementById(id);
-      attachLink = document.getElementById(id + "Link");
+      attachendLink = document.getElementById(id + "endLink");
+      attachstartLink = document.getElementById(id + "startLink");
+
       if (attachEvent) {
         attachEvent.addEventListener("mousedown", handleDownTimeline);
         attachEvent.addEventListener("mouseup", handleUpTimeline);
       }
-      if (attachLink) {
-        attachLink.addEventListener("mousedown", handleLinkDown);
-      }
+      if (attachendLink)
+        attachendLink.addEventListener("mousedown", handleLinkDown);
+      if (attachstartLink)
+        attachstartLink.addEventListener(
+          "mousedown",
+          (e) => handleLinkDown(e, true),
+          { once: true }
+        );
     });
 
     targetRef.current.style.display = "none";
@@ -252,16 +277,20 @@ export const Timeline = ({
     ///cleanup
     return () => {
       let attachEvent;
-      let attachLink;
+      let attachendLink;
+      let attachstartLink;
       ids.map((id) => {
         attachEvent = document.getElementById(id);
+        attachendLink = document.getElementById(id + "endLink");
+        attachstartLink = document.getElementById(id + "startLink");
         if (attachEvent) {
           attachEvent.removeEventListener("mousedown", handleDownTimeline);
           attachEvent.removeEventListener("mouseup", handleUpTimeline);
         }
-        if (attachLink) {
-          attachLink.removeEventListener("mousedown", handleLinkDown);
-        }
+        if (attachendLink)
+          attachendLink.removeEventListener("mousedown", handleLinkDown);
+        if (attachstartLink)
+          attachstartLink.removeEventListener("mousedown", handleLinkDown);
       });
     };
   }, [connectionMatrix]);

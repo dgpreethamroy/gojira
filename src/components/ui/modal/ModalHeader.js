@@ -6,6 +6,7 @@ const ModalHeader = ({
   close,
   minimize,
   children,
+  handleClosed,
 }) => {
   const NestedModal = document.getElementsByClassName("inset-0").length;
   if (NestedModal) minimize = false;
@@ -20,6 +21,7 @@ const ModalHeader = ({
             <button
               onClick={() => {
                 setIsOpen(false);
+                handleClosed();
                 setTimeout(() => {
                   setIsMinimized(true);
                 }, 200);
@@ -36,7 +38,10 @@ const ModalHeader = ({
           )}
           {close && close === true && (
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleClosed();
+              }}
               className="pl-2 py-2 mr-2 bg-white rounded hover:cursor-pointer"
             >
               <svg

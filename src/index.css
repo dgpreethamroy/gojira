@@ -70,10 +70,13 @@ a:hover {
   .date-div {
     display: block;
   }
+  .hide-div {
+    display: block;
+  }
 }
 
 .hide-div {
-  opacity: 0;
+  display: none;
 }
 
 .hidenow {

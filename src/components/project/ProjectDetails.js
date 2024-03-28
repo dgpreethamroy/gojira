@@ -109,7 +109,12 @@ export default function ProjectDetails(props) {
     </div>
   );
   const Timeline = (
-    <Gnatt_Chart project_id={id} data={state} user={currentUser} />
+    <Gnatt_Chart
+      project_id={id}
+      data={state}
+      user={currentUser}
+      projectmembers={todos.projectmembers}
+    />
   );
   const Summary = (
     <h2 className="text-center text-slate-500">Not yet implemented</h2>
@@ -132,7 +137,13 @@ export default function ProjectDetails(props) {
   const ProjectSettings = (
     <h2 className="text-center text-slate-500">Not yet implemented</h2>
   );
-  const Calendar = <CalendarComponent tasks={state.tasks} user={currentUser} />;
+  const Calendar = (
+    <CalendarComponent
+      tasks={state.tasks}
+      user={currentUser}
+      projectmembers={todos.projectmembers}
+    />
+  );
   if (!currentUser)
     return (
       <div>

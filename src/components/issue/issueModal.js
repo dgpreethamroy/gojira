@@ -14,7 +14,12 @@ import Avatar from "react-avatar";
 import Calendar from "react-calendar";
 import Popover from "../ui/popover/Popover2";
 
-const IssueModal = ({ details, showIssue, setShowIssue }) => {
+const IssueModal = ({
+  details,
+  showIssue,
+  setShowIssue,
+  setSelectIssue = null,
+}) => {
   const [summary, setSummary] = useState(
     details?.task?.summary ? details.task.summary : "Summary"
   );
@@ -27,6 +32,7 @@ const IssueModal = ({ details, showIssue, setShowIssue }) => {
   const [isdetailsOpened, setDetailsOpen] = useState(true);
   const [value, onChange] = useState(new Date());
   const [isCalendarOpen, setIsCalendarOpen] = useState(true);
+
   const issueRef = useRef(null);
   const quillRef = useRef(null);
   const handleClickDescription = () => {
@@ -40,13 +46,24 @@ const IssueModal = ({ details, showIssue, setShowIssue }) => {
     setIsOpen(false);
   };
   const handleCalendar = (val, event) => {
-    debugger;
     onChange(val);
     setIsCalendarOpen(false);
     event.stopPropagation();
   };
   return (
-    <Modal isOpen={showIssue} setIsOpen={setShowIssue} large>
+    <Modal
+      isOpen={showIssue}
+      setIsOpen={setShowIssue}
+      handleClosed={() => {
+        if (setSelectIssue)
+          setSelectIssue((prev) => {
+            const newParams = new URLSearchParams(prev);
+            newParams.set("selectedIssue", false);
+            return newParams;
+          });
+      }}
+      large
+    >
       <Modal.Header close={true}>
         <div className="flex items-center justify-between">
           <div className="flex items-center ">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import Avatar from "react-avatar";
@@ -10,6 +10,7 @@ import {
 import customAxios from "../../api/axios";
 import IssueModal from "../issue/issueModal";
 import Menu from "../ui/menu/Menu";
+import { useParams, useSearchParams } from "react-router-dom";
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 7px;
@@ -27,15 +28,37 @@ const Container = styled.div`
 const Task = (props) => {
   const [showIssue, setShowIssue] = React.useState(false);
   const [showassignee, setShowassignee] = React.useState(false);
+  const [selectIssue, setSelectIssue] = useSearchParams({
+    selectedIssue: null,
+  });
   const assignee_name = props.projectmembers.filter(
     (obj) => obj.id === props.task.assignee
   )[0].name;
   const Icon = Issuedata.filter((obj) => obj.label === props.task.issuetype)[0]
     .icon;
-  // Icon.props.width = "20";
-  // Icon.props.height = "20";
 
-  // handle Delete Event
+  /// handle selectIssue Filter
+  const selectedIssue = selectIssue.get("selectedIssue");
+  useEffect(() => {
+    if (selectedIssue !== "null" && selectedIssue === props.task.id) {
+      setShowIssue(true);
+    }
+    // Check if the unwanted query parameter exists and remove it
+    if (
+      selectIssue.has("selectedIssue") &&
+      selectIssue.get("selectedIssue") === "false"
+    ) {
+      // const updatedParams = new URLSearchParams(selectIssue);
+      // updatedParams.delete("selectedIssue");
+      // // Update the URL without the selectedIssue
+      // window.history.replaceState(
+      //   {},
+      //   "",
+      //   `${window.location.pathname}?${updatedParams}`
+      // );
+      window.history.replaceState({}, "", `${window.location.pathname}`);
+    }
+  }, [selectedIssue, selectIssue]);
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -67,7 +90,7 @@ const Task = (props) => {
             onClick={(e) => {
               !["customMenu", "TaskMenu", "customMenuOption"].some(
                 (className) => e.target.classList.contains(className)
-              ) && setShowIssue(!showIssue);
+              ) && setSelectIssue({ selectedIssue: props.task.id });
             }}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -147,6 +170,7 @@ const Task = (props) => {
               details={props}
               showIssue={showIssue}
               setShowIssue={setShowIssue}
+              setSelectIssue={setSelectIssue}
             />
           )}
         </>

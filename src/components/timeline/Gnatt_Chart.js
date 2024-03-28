@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { XIcon, CheckIcon, PlusIcon } from "@heroicons/react/solid";
 import dayjs from "dayjs";
 import SearchBox from "../ui/filter/Search";
@@ -15,6 +15,10 @@ import {
   Rightarrow_Medium_Icon,
 } from "../../assets/CommonData";
 import { Timeline } from "../timeline/Timeline";
+import { useSearchParams } from "react-router-dom";
+import IssueModal from "../issue/issueModal";
+var customParseFormat = require("dayjs/plugin/customParseFormat");
+
 const Filters = ["Weeks", "Months", "Quaters"];
 const menu_icon_dotsWithText = (
   <div className="flex items-center dark:bg-white">
@@ -37,7 +41,8 @@ function getPreviousMonday(date = new Date()) {
     return previousMonday;
   }
 }
-export const Gnatt_Chart = ({ data, user }) => {
+export const Gnatt_Chart = ({ data, user, projectmembers }) => {
+  dayjs.extend(customParseFormat);
   console.log("Gnatt Component");
   const labelref = useRef(null);
   const timelineRef = useRef(null);
@@ -52,13 +57,25 @@ export const Gnatt_Chart = ({ data, user }) => {
   const [filterOptions, setFilterOptions] = useState([false, false, false]);
   const [initpos, setInitPos] = useState(0);
   const [open, close] = useState(false);
-  const [linkStart, setLinkStart] = useState("");
   const [chartdata, setChartData] = useState(data);
   const [endDate, setEndDate] = useState([]);
   const [startDate, setStartDate] = useState([]);
+  const [leftpuller, setLeftPuller] = useState(false);
+  const [rightpuller, setRightPuller] = useState(false);
+  const [iconsdisplay, setIconsdisplay] = useState(true);
+  const [showIssue, setShowIssue] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams({
+    rangemode: currentFilter,
+    selectedIssue: null,
+  });
 
+  const selectedIssue = searchParams.get("selectedIssue");
+  const searchfilter = searchParams.get("rangemode");
+  if (searchfilter !== currentFilter) {
+    setCurrentFilter(searchfilter);
+  }
   const handleToggleNew = (e) => {
-    console.log("handleToggleNew");
     document.getElementById("createColumn").style.display = "none";
     document.getElementById("createColumnDiv").style.display = "flex";
     document.getElementById("createColumnInput").focus();
@@ -105,6 +122,23 @@ export const Gnatt_Chart = ({ data, user }) => {
     timelineRef.current?.scrollTo({ left: initpos - 400 });
   };
   useEffect(() => {
+    if (
+      selectedIssue !== null &&
+      selectedIssue !== "null" &&
+      !showIssue &&
+      projectmembers
+    ) {
+      if (selectedIssue === "false") {
+        setSearchParams((prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete("selectedIssue");
+          return newParams;
+        });
+        return;
+      }
+      setSelectedTask(selectedIssue);
+      setShowIssue(true);
+    }
     if (
       Object.values(chartdata.tasks).length === 0 &&
       Object.values(data.tasks).length !== 0
@@ -250,7 +284,7 @@ export const Gnatt_Chart = ({ data, user }) => {
     setTimeout(() => {
       close(true);
     }, 200);
-  }, [currentFilter, data]);
+  }, [currentFilter, data, projectmembers, searchParams]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
     timelineRef.current.scrollTop = e.target.scrollTop;
@@ -258,6 +292,7 @@ export const Gnatt_Chart = ({ data, user }) => {
   };
   const handleFilters = (e) => {
     setCurrentFilter(e.target.innerText);
+    setSearchParams({ rangemode: e.target.innerText });
     close(false);
   };
 
@@ -274,7 +309,7 @@ export const Gnatt_Chart = ({ data, user }) => {
     button = e.currentTarget;
     if (e.target.classList.contains("rightButton")) rightButton = true;
     if (e.target.classList.contains("leftButton")) leftButton = true;
-
+    setIconsdisplay(false);
     buttonInitleft = Number(
       button.style.left.substring(0, button.style.left.length - 2)
     );
@@ -284,7 +319,15 @@ export const Gnatt_Chart = ({ data, user }) => {
 
     startX = e.clientX;
     document.addEventListener("mousemove", (e) => handleMove(e, targetindex));
-    document.addEventListener("mouseup", handleUp);
+    const taskid = e.target.closest(".draggable").id;
+
+    document.addEventListener(
+      "mouseup",
+      (e) => {
+        handleUp(e, taskid);
+      },
+      { once: true }
+    );
   };
 
   const handleMove = (e, targetindex) => {
@@ -292,11 +335,11 @@ export const Gnatt_Chart = ({ data, user }) => {
     if (!isDrag) return;
     const MoveAt = (pageX) => {
       if (!rightButton) {
-        if (buttonInitwidth - pageX + startX < 112) return;
+        if (buttonInitwidth - pageX + startX < 37) return;
 
         button.style.left = pageX - startX + buttonInitleft + "px";
       } else if (rightButton) {
-        if (pageX - startX + buttonInitwidth < 112) return;
+        if (pageX - startX + buttonInitwidth < 37) return;
 
         button.style.width = pageX - startX + buttonInitwidth + "px";
       }
@@ -329,13 +372,11 @@ export const Gnatt_Chart = ({ data, user }) => {
         createdAt: startdate,
         DueDate: enddate,
       });
-      console.log(result.data);
     } catch (error) {
       console.log(error);
     }
   };
   const getDatesfromPosition = (startpos, endpos) => {
-    console.log(startpos, endpos);
     let startdate, enddate;
     if (currentFilter === Filters[0]) {
       startdate = dayjs(start)
@@ -388,11 +429,10 @@ export const Gnatt_Chart = ({ data, user }) => {
     return [startdate, enddate];
   };
 
-  const handleUp = (e) => {
-    const taskid = e.target.closest(".draggable").id;
+  const handleUp = (e, taskid) => {
+    //const taskid = e.target.closest(".draggable").id;
     const startpos = document.getElementById(taskid).offsetLeft;
     const endpos = startpos + document.getElementById(taskid).offsetWidth;
-    console.log(taskid, startpos, endpos);
     const [startdate, enddate] = getDatesfromPosition(startpos, endpos);
 
     updateTaskPositions(taskid, startdate, enddate);
@@ -404,6 +444,9 @@ export const Gnatt_Chart = ({ data, user }) => {
     buttonInitleft = null;
     isDrag = false;
     button = null;
+    setIconsdisplay(true);
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   if (endDate.length === 0) {
@@ -494,7 +537,6 @@ export const Gnatt_Chart = ({ data, user }) => {
             (task) => task !== end
           ),
         });
-        console.log(result.data);
         setChartData((prev) => {
           let newdata = { ...prev };
           newdata.tasks[start]["linkedtasks"] = newdata.tasks[start][
@@ -730,22 +772,29 @@ export const Gnatt_Chart = ({ data, user }) => {
                   <div className="flex  hover-div">
                     <button
                       id={task.id}
-                      className="draggable hover-div  relative z-10 left-0 py-[2px] bg-blue-500 rounded  text-sm hover:cursor-pointer"
+                      className="draggable min-h-7 hover-div whitespace-nowrap text-ellipsis  relative z-10 left-0 py-[2px] bg-blue-500 rounded  text-sm hover:cursor-pointer"
                       style={{
                         left: leftpos,
                         width: widthpos,
                       }}
                       onMouseDown={(e) => handleDown(e, index)}
+                      onClick={(e) => {
+                        setSelectedTask(task.id);
+                        setSearchParams((prev) => {
+                          const newParams = new URLSearchParams(prev);
+                          newParams.set("selectedIssue", task.id);
+                          return newParams;
+                        });
+                      }}
                     >
-                      <div className="flex justify-between items-center">
-                        <div className="flex  ">
-                          <div className="left-[-85px] w-20 absolute  ">
+                      <div className="flex justify-between">
+                        <div className="flex flex-row  ">
+                          <div className="left-[-85px] w-20 absolute hide-div  ">
                             {startDate[index]}
                           </div>
                           <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
-                          <span className="">
-                            {document.getElementById(task.id)?.offsetWidth >
-                              28 && (
+                          {widthpos > 120 && (
+                            <span className={`${!iconsdisplay && "opacity-0"}`}>
                               <svg
                                 width="20"
                                 height="20"
@@ -758,21 +807,70 @@ export const Gnatt_Chart = ({ data, user }) => {
                                   <circle cx="12" cy="7" r="4"></circle>
                                 </g>
                               </svg>
+                            </span>
+                          )}
+                          <span
+                            id={task.id + "startLink"}
+                            className="absolute   hide-div top-[-17px] left-[8px] w-5 z-20 puller"
+                            onMouseEnter={(e) => {
+                              setLeftPuller(true);
+                            }}
+                            onMouseLeave={(e) => {
+                              setLeftPuller(false);
+                            }}
+                          >
+                            {leftpuller ? (
+                              LinkIcon
+                            ) : (
+                              <svg viewBox="0 0 100 100">
+                                <circle
+                                  cx="50"
+                                  cy="50"
+                                  r="100"
+                                  fill="transparent"
+                                />
+                                <circle cx="50" cy="50" r="25" fill="blue" />
+                              </svg>
                             )}
                           </span>
                         </div>
                         <div className="flex">
                           <div
-                            id={task.id + "Link"}
-                            className="hover:cursor-help z-50"
+                            className={` ${
+                              (!iconsdisplay || widthpos < 80) && "opacity-0"
+                            }  text-ellipsis `}
                           >
                             {LinkIcon}
                           </div>
 
-                          <div className="w-1 px-1 mx-1  rounded color-div rightButton hover:cursor-col-resize"></div>
-                          <div className=" w-20 right-[-90px] absolute z-0 ">
+                          <div className="w-1 px-1 mx-1  rounded color-div rightButton text-ellipsis hover:cursor-col-resize"></div>
+                          <div className=" w-20 right-[-90px] absolute z-0 hide-div">
                             {endDate[index]}
                           </div>
+                          <span
+                            id={task.id + "endLink"}
+                            className="absolute hide-div top-[24px] w-5 z-20 puller"
+                            onMouseEnter={(e) => {
+                              setRightPuller(true);
+                            }}
+                            onMouseLeave={(e) => {
+                              setRightPuller(false);
+                            }}
+                          >
+                            {rightpuller ? (
+                              LinkIcon
+                            ) : (
+                              <svg viewBox="0 0 100 100">
+                                <circle
+                                  cx="50"
+                                  cy="50"
+                                  r="100"
+                                  fill="transparent"
+                                />
+                                <circle cx="50" cy="50" r="25" fill="blue" />
+                              </svg>
+                            )}
+                          </span>
                         </div>
                       </div>
                     </button>
@@ -780,6 +878,17 @@ export const Gnatt_Chart = ({ data, user }) => {
                 </div>
               );
             })}
+            {showIssue && (
+              <IssueModal
+                details={{
+                  task: data.tasks[selectedTask],
+                  projectmembers: projectmembers,
+                }}
+                showIssue={showIssue}
+                setShowIssue={setShowIssue}
+                setSelectIssue={setSearchParams}
+              />
+            )}
             <div
               className={`h-[38px] ${
                 searchandfilter.length % 2 !== 0
@@ -812,8 +921,6 @@ export const Gnatt_Chart = ({ data, user }) => {
                 connectionMatrix={connectionMatrix}
                 ids={ids}
                 handleNewLinkConnection={handleNewLinkConnection}
-                linkStart={linkStart}
-                setLinkStart={setLinkStart}
                 handleLinkClick={handleLinkClick}
                 data={chartdata}
               />

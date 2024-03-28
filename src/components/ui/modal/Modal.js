@@ -11,6 +11,7 @@ const Modal = ({
   setIsOpen,
   small = false,
   large = false,
+  handleClosed,
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -37,7 +38,9 @@ const Modal = ({
       <Transition show={isOpen} as={Fragment}>
         <Dialog
           open={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+          }}
           className="relative"
         >
           <Dialog.Overlay
@@ -72,6 +75,7 @@ const Modal = ({
                               setIsOpen={setIsOpen}
                               setIsMinimized={setIsMinimized}
                               children={item.props.children}
+                              handleClosed={handleClosed}
                               {...item.props}
                             />
                           );
@@ -80,6 +84,7 @@ const Modal = ({
                         <ModalHeader
                           setIsMinimized={setIsMinimized}
                           setIsOpen={setIsOpen}
+                          handleClosed={handleClosed}
                           {...children.props}
                           children={children.props.children}
                         />
@@ -105,6 +110,7 @@ const Modal = ({
                           return (
                             <ModalFooter
                               setIsOpen={setIsOpen}
+                              handleClosed={handleClosed}
                               children={item.props.children}
                               {...item.props}
                             />
@@ -113,6 +119,7 @@ const Modal = ({
                     : children.type === "ModalFooter" && (
                         <ModalFooter
                           setIsOpen={setIsOpen}
+                          handleClosed={handleClosed}
                           {...children.props}
                           children={children.props.children}
                         />

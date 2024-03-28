@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBox from "../ui/filter/Search";
 import Popover from "../ui/popover/Popover";
 import dayjs from "dayjs"; // You can use any date library you prefer
@@ -15,6 +15,9 @@ import {
   blueCheck_Icon,
   Rightarrow_Medium_Icon,
 } from "../../assets/CommonData";
+import IssueModal from "../issue/issueModal";
+import { useSearchParams } from "react-router-dom";
+import { set } from "rsuite/esm/utils/dateUtils";
 // Set dayjs locale to English
 dayjs.locale("en");
 
@@ -112,7 +115,7 @@ function getPreviousMonday(date = new Date()) {
   }
 }
 
-const Calendar = ({ tasks, user }) => {
+const Calendar = ({ tasks, user, projectmembers }) => {
   console.log("Calendar Component");
   const [inputSearch, setSearchinput] = useState("");
   const currentDate = new Date();
@@ -120,6 +123,11 @@ const Calendar = ({ tasks, user }) => {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [filterOptions, setFilterOptions] = useState([false, false, false]);
+  const [searchParams, setSearchParams] = useSearchParams({
+    selectedIssue: null,
+  });
+  const [showIssue, setShowIssue] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const Filter_IconWithText = (
     <div className="flex items-center dark:bg-white">
       <span>{Filter_Icon}</span>
@@ -259,6 +267,14 @@ const Calendar = ({ tasks, user }) => {
                         ((1000 * 3600 * 24 * 7) / 100) +
                       "%",
                   }}
+                  onClick={() => {
+                    setSearchParams((prev) => {
+                      let newParams = new URLSearchParams(prev);
+                      newParams.set("selectedIssue", task.id);
+                      return newParams;
+                    });
+                    setSelectedTask(task);
+                  }}
                 >
                   <span className="py-2 ">
                     {Issuedata.map((data) => {
@@ -288,6 +304,28 @@ const Calendar = ({ tasks, user }) => {
   const handleClear = () => {
     setFilterOptions([false, false, false]);
   };
+  const selectedIssue = searchParams.get("selectedIssue");
+  useEffect(() => {
+    debugger;
+    if (
+      selectedIssue !== null &&
+      selectedIssue !== "null" &&
+      !showIssue &&
+      projectmembers
+    ) {
+      if (selectedIssue === "false") {
+        setSearchParams((prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete("selectedIssue");
+          return newParams;
+        });
+        return;
+      }
+      setShowIssue(true);
+      setSelectedTask(tasks[selectedIssue]);
+    }
+  }, [searchParams, tasks, projectmembers]);
+
   return (
     <>
       <div className="flex m-1 items-center justify-between ">
@@ -401,6 +439,17 @@ const Calendar = ({ tasks, user }) => {
           {renderCells()}
         </div>
       </div>
+      {showIssue && (
+        <IssueModal
+          details={{
+            task: selectedTask,
+            projectmembers: projectmembers,
+          }}
+          showIssue={showIssue}
+          setShowIssue={setShowIssue}
+          setSelectIssue={setSearchParams}
+        />
+      )}
     </>
   );
 };
