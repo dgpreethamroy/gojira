@@ -11,7 +11,9 @@ const Modal = ({
   setIsOpen,
   small = false,
   large = false,
-  handleClosed,
+  handleClosed = () => {
+    return null;
+  },
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -39,7 +41,7 @@ const Modal = ({
         <Dialog
           open={isOpen}
           onClose={() => {
-            setIsOpen(false);
+            //setIsOpen(false);
           }}
           className="relative"
         >

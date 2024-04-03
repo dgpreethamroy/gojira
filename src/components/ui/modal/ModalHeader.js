@@ -1,3 +1,4 @@
+import { className } from "gridjs";
 import React from "react";
 
 const ModalHeader = ({
@@ -7,16 +8,14 @@ const ModalHeader = ({
   minimize,
   children,
   handleClosed,
+  className,
 }) => {
   const NestedModal = document.getElementsByClassName("inset-0").length;
   if (NestedModal) minimize = false;
   return (
     <>
-      <div className="flex items-center py-4 ">
-        <div className="text-xl text-gray-700 font-semibold w-[90%]">
-          {children}
-        </div>
-        <div className="w-[10%] text-right">
+      <div className=" items-center ">
+        <div className=" text-right ">
           {minimize && (
             <button
               onClick={() => {
@@ -26,7 +25,7 @@ const ModalHeader = ({
                   setIsMinimized(true);
                 }, 200);
               }}
-              className="pl-2 pr-2 py-2 bg-white rounded outline-none hover:cursor-pointer"
+              className="px-2   bg-white rounded outline-none hover:cursor-pointer"
             >
               <img
                 width="24"
@@ -42,7 +41,7 @@ const ModalHeader = ({
                 setIsOpen(false);
                 handleClosed();
               }}
-              className="pl-2 py-2 mr-2 bg-white rounded hover:cursor-pointer"
+              className="pl-2  mr-2 bg-white rounded hover:cursor-pointer"
             >
               <svg
                 width="24"
@@ -57,6 +56,9 @@ const ModalHeader = ({
               </svg>
             </button>
           )}
+        </div>
+        <div className={`text-xl text-gray-700  ${className && className}`}>
+          {children}
         </div>
       </div>
     </>
