@@ -4,7 +4,6 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import axios from "../../api/axios";
 import { XIcon, CheckIcon } from "@heroicons/react/solid";
-import SearchBox from "../ui/filter/Search";
 
 const Container = styled.div`
   display: flex;

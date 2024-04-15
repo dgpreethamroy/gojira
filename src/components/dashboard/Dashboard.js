@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider";
 export const Dashboard = () => {
   const { currentUser } = useContext(AuthContext);
+  document.body.style.backgroundColor = "#FFF";
   return currentUser ? (
     <div className="mt-16">
       Dashboard not yet implemented
       <br />
       <Link to="/projects">Click here to go to projects</Link>
+      <br />
+      <Link to="/stocks">Click here to go to Stocks</Link>
     </div>
   ) : (
     <div>

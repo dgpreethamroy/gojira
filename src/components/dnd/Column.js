@@ -7,7 +7,7 @@ import Menu from "../ui/menu/Menu";
 const Container = styled.div`
   border-radius: 7px;
   background-color: #f2f2f2;
-  border: 2px solid lightgrey;
+  border: 2px solid transparent;
   border-top: 0px;
   min-height: 420px;
   min-width: 300px;
@@ -16,8 +16,8 @@ const Container = styled.div`
 `;
 
 const Title = styled.h5`
-  background-color: #f2f2f2;
-  border-top: 2px solid lightgrey;
+  background-color: #f9f6ee;
+  border-top: 2px solid transparent;
   padding-left: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -27,7 +27,7 @@ const TaskList = styled.div`
   border-radius: 7px;
   transition: background-color 0.2s ease;
   flex-grow: 1;
-  background-color: #f2f2f2;
+  background-color: #f9f6ee;
   align-items: center;
   min-height: 100px;
 `;
@@ -53,12 +53,12 @@ const Column = (props) => {
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
         <Container
-          className="hover-crap mx-2"
+          className={`hover-crap ${props.index === 0 ? "mr-2" : "mx-2"}`}
           {...provided.draggableProps}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
         >
-          <Title className="flex justify-between items-center border-b-2 border-gray-400 sticky top-0 ">
+          <Title className="flex justify-between items-center border-b-2 border-gray-400  rounded-t-lg  sticky top-0  z-10">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${

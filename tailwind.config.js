@@ -4,7 +4,17 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // myfont:[ 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue']
+        myfont: [
+          "Segoe UI",
+          "Roboto",
+          "Oxygen",
+          "Ubuntu",
+          "Fira Sans",
+          "Droid Sans",
+          "Helvetica Neue",
+          "Helvetica",
+          "Cossines",
+        ],
       },
     },
   },

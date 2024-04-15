@@ -29,7 +29,7 @@ export default function Header() {
   }, []);
   return (
     <>
-      <nav className=" fixed top-0 w-full  px-2 sm:px-4 py-1 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-900 text-sm rounded border dark:text-white">
+      <nav className=" fixed top-0 w-full py-[1px]  px-2 sm:px-4 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-900 text-sm rounded border dark:text-white">
         <div className=" mx-0 flex flex-wrap justify-between items-center   ">
           <div className="w-10">
             <button
@@ -53,8 +53,7 @@ export default function Header() {
           </div>
           <div>
             <Link to="/" className="flex">
-              <span className="text-5xl font-[fantasy] text-shadow-custom font-semibold whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
-                {" "}
+              <span className="text-4xl font-normal font-[monospace] whitespace-nowrap text-gray-900 dark:text-white hover:no-underline-important">
                 GOJIRA
               </span>
             </Link>

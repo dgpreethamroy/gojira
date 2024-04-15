@@ -9,6 +9,15 @@ import { Gnatt_Chart } from "../timeline/Gnatt_Chart";
 import Dnd from "../dnd/Dnd";
 import SearchBox from "../ui/filter/Search";
 import CalendarComponent from "../calendar/Calendar";
+import {
+  colorPallete,
+  closeIcon,
+  gradientColors,
+  solidColors,
+  solidColorsHexCodes,
+  gradientColorsHexCodes,
+} from "../../assets/CommonData";
+import Popover from "../ui/popover/Popover";
 const navItems = [
   "Board",
   "List",
@@ -43,6 +52,8 @@ export default function ProjectDetails(props) {
   const Parentref = useRef(null);
   const id = useParams();
   const navigate = useNavigate();
+  document.body.style.backgroundColor =
+    colorPallete[navItems.indexOf(defaultTab)];
   if (!id.tab) {
     console.log("Navigating to default Tab");
     navigate(`/projects/${id.pid}/${defaultTab}`);
@@ -72,19 +83,20 @@ export default function ProjectDetails(props) {
   }, [currentUser, issuecreated, id.pid]);
 
   const Board = (
-    <>
-      <div className="flex m-1 sticky top-0 ">
+    <div className="p-3">
+      <div className="flex sticky top-0 ">
         <SearchBox
           placeholder={"Board"}
           inputSearch={inputSearch}
           setSearchinput={setSearchinput}
         />
       </div>
+      <br />
       <div
         id="DnDParent"
         ref={Parentref}
         style={{ maxHeight: window.innerHeight - 200 }}
-        className={`pt-0 border-2 overflow-y-auto   border-gray-200  rounded-lg dark:border-gray-700`}
+        className={` overflow-y-auto  dark:border-gray-700 `}
       >
         <Dnd
           parent={Parentref}
@@ -96,10 +108,10 @@ export default function ProjectDetails(props) {
           setSearchinput={setSearchinput}
         />
       </div>
-    </>
+    </div>
   );
   const List = (
-    <div id="ListParent">
+    <div id="ListParent" className="p-3">
       <ListIssues
         state={state}
         setState={setState}
@@ -109,12 +121,14 @@ export default function ProjectDetails(props) {
     </div>
   );
   const Timeline = (
-    <Gnatt_Chart
-      project_id={id}
-      data={state}
-      user={currentUser}
-      projectmembers={todos.projectmembers}
-    />
+    <div className=" p-3">
+      <Gnatt_Chart
+        project_id={id}
+        data={state}
+        user={currentUser}
+        projectmembers={todos.projectmembers}
+      />
+    </div>
   );
   const Summary = (
     <h2 className="text-center text-slate-500">Not yet implemented</h2>
@@ -138,11 +152,13 @@ export default function ProjectDetails(props) {
     <h2 className="text-center text-slate-500">Not yet implemented</h2>
   );
   const Calendar = (
-    <CalendarComponent
-      tasks={state.tasks}
-      user={currentUser}
-      projectmembers={todos.projectmembers}
-    />
+    <div className="p-3">
+      <CalendarComponent
+        tasks={state.tasks}
+        user={currentUser}
+        projectmembers={todos.projectmembers}
+      />
+    </div>
   );
   if (!currentUser)
     return (
@@ -154,7 +170,39 @@ export default function ProjectDetails(props) {
         </Link>
       </div>
     );
+  const colorPalletehtml = (
+    <span className="rounded-full p-1 hover:bg-gray-400  ">
+      <svg width="30" height="30" viewBox="0 0 24 24" role="presentation">
+        <path
+          d="M7.818 12.56l4.243 4.243 4.242-4.242-4.242-4.243-4.243 4.243zm-1.414 1.415a1.995 1.995 0 010-2.828l4.243-4.243a1.995 1.995 0 012.828 0l4.243 4.243c.78.78.786 2.041 0 2.828l-4.243 4.243a1.996 1.996 0 01-2.828 0l-4.243-4.243zM6.5 13h11l-5.44 5.218L6.5 13zm2.732-8.925a1 1 0 011.414 0l3.536 3.536-1.414 1.414L9.232 5.49a1 1 0 010-1.415zM18 16s1.5 2 1.5 3.5c0 1-1 1.5-1.5 1.5s-1.5-.4-1.5-1.5C16.5 18 18 16 18 16z"
+          fill="purple"
+        ></path>
+      </svg>
+    </span>
+  );
+  const handleColorChange = (e) => {
+    if (e.target.closest(".colorPalle")) {
+      const color = e.target
+        .closest(".colorPalle")
+        .getAttribute("for")
+        .split("-");
 
+      document.getElementById("main").style.backgroundImage = "none";
+
+      if (color[0] === "solidColors")
+        document.getElementById("main").style.backgroundColor =
+          solidColorsHexCodes[parseInt(color[1])];
+      else if (color[0] === "gradientColors")
+        document.getElementById(
+          "main"
+        ).style.backgroundImage = `linear-gradient(to bottom right, ${
+          gradientColorsHexCodes[color[1]].start
+        },${gradientColorsHexCodes[color[1]].middle}, ${
+          gradientColorsHexCodes[color[1]].end
+        })`;
+      else document.getElementById("main").style.backgroundColor = "white";
+    }
+  };
   return (
     <div className="pt-[60px] bg-white-800">
       <aside
@@ -185,12 +233,78 @@ export default function ProjectDetails(props) {
               >
                 <span>{todos.projectname}</span>
               </a>
-            </li>{" "}
+            </li>
           </ol>
-          <div className="flex items-center">
-            <h2 className="py-2 text-2xl text-black dark:text-white font-semibold">
+          <div className="flex items-center ">
+            <h2 className="py-2 text-2xl text-black dark:text-white font-semibold items-center">
               SCRUM SPRINT 1
             </h2>
+            <Popover label={colorPalletehtml} plain width="w-[350px]">
+              <div>
+                <div className="px-2 justify-between flex items-center">
+                  <p className="font-semibold text-base px-1">
+                    Project background
+                  </p>
+                  <span className="closePopover">{closeIcon}</span>
+                </div>
+                <div className="px-2 text-sm font-medium">
+                  <p className="p-1">GRADIENTS</p>
+
+                  <div className="flex flex-wrap p-1">
+                    {gradientColors.map((color, index) => (
+                      <div className="flex" onClick={handleColorChange}>
+                        <input
+                          id={"gradientColors-" + index}
+                          type="radio"
+                          className="hidden "
+                        />
+                        <label
+                          htmlFor={"gradientColors-" + index}
+                          className={`w-6 h-6 colorPalle bg-gradient-to-br ${color.start} ${color.middle} ${color.end} border-[1px] rounded border-gray-300 flex justify-center items-center cursor-pointer mr-2`}
+                        ></label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <br />
+                <div className="px-2 text-sm font-medium">
+                  <p className="px-1">COLORS</p>
+                  <div className="flex flex-wrap p-1">
+                    {solidColors.map((color, index) => (
+                      <div
+                        className="flex py-1 items-center "
+                        onClick={handleColorChange}
+                      >
+                        <input
+                          id={"solidColors-" + index}
+                          type="radio"
+                          className="hidden "
+                        />
+                        <label
+                          htmlFor={"solidColors-" + index}
+                          className={`w-6 h-6 colorPalle ${color} border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}
+                        ></label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="px-2 text-sm font-medium mb-5">
+                  <div className="flex flex-wrap">
+                    <div
+                      className="flex p-1 items-center"
+                      onClick={handleColorChange}
+                    >
+                      <input id={"nocolor"} type="radio" className="hidden " />
+                      <label
+                        htmlFor={"nocolor"}
+                        className={`w-6 h-6 colorPalle bg-white border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}
+                      ></label>
+                      <p className="font-medium text-xs">No background</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Popover>
             <button
               type="button"
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -216,11 +330,14 @@ export default function ProjectDetails(props) {
             {navItems.map((item, index) => (
               <button
                 className={`py-2 px-5 hover:cursor-pointer ${
-                  item === defaultTab
-                    ? "border-b-2 border-orange-800 text-orange-800 "
-                    : "dark:text-white"
-                }`}
+                  item === defaultTab ? "border-b-2 " : "dark:text-white"
+                } `}
+                style={{
+                  borderColor: colorPallete[index],
+                  color: item === defaultTab ? colorPallete[index] : "inherit",
+                }}
                 onClick={() => {
+                  document.body.style.backgroundColor = colorPallete[index];
                   navigate(`/projects/${id.pid}/${item}`);
                 }}
               >

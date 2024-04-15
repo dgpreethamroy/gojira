@@ -136,7 +136,7 @@ export default function Profile() {
   };
   return currentUser ? (
     <>
-      <div className="h-screen  py-5 mt-16 px-3 bg-white dark:bg-gray-800 items-center">
+      <div className="h-screen  py-5 mt-12 px-3 bg-white dark:bg-gray-800 items-center">
         <div className="bg-white dark:bg-gray-800">
           <h4 className="flex justify-center p-3 text-[22px] dark:text-white">
             Profile Details

@@ -69,6 +69,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
     rangemode: currentFilter,
     selectedIssue: null,
   });
+  const [targetindex, setTargetIndex] = useState(null);
 
   const selectedIssue = searchParams.get("selectedIssue");
   const searchfilter = searchParams.get("rangemode");
@@ -146,7 +147,6 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
       setChartData(data);
     if (data.length === 0) return;
     console.log("Gnatt useEffect");
-    document.body.style.backgroundColor = "antiquewhite";
     let currentMonth = dayjs().add(1, "years");
     let names = [];
     let initPos = 0;
@@ -304,7 +304,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
   let buttonInitwidth;
   let leftButton = false;
   let rightButton = false;
-  const handleDown = (e, targetindex) => {
+  const handleDown = (e) => {
     isDrag = true;
     button = e.currentTarget;
     if (e.target.classList.contains("rightButton")) rightButton = true;
@@ -318,7 +318,8 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
     );
 
     startX = e.clientX;
-    document.addEventListener("mousemove", (e) => handleMove(e, targetindex));
+
+    document.addEventListener("mousemove", handleMove);
     const taskid = e.target.closest(".draggable").id;
 
     document.addEventListener(
@@ -330,7 +331,8 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
     );
   };
 
-  const handleMove = (e, targetindex) => {
+  const handleMove = (e) => {
+    console.log("handle move");
     e.preventDefault();
     if (!isDrag) return;
     const MoveAt = (pageX) => {
@@ -436,6 +438,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
     const [startdate, enddate] = getDatesfromPosition(startpos, endpos);
 
     updateTaskPositions(taskid, startdate, enddate);
+    //document.removeEventListener("mousemove", handleMove);
     document.removeEventListener("mousemove", handleMove);
     document.removeEventListener("mouseup", handleUp);
     leftButton = false;
@@ -555,16 +558,16 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
 
   return (
     <>
-      <div className="flex m-1 mx-5 items-center justify-between ">
+      <div className="flex items-center justify-between ">
         <SearchBox
           inputSearch={inputSearch}
           setSearchinput={setSearchinput}
-          placeholder={"Calendar"}
+          placeholder={"Timeline"}
         />
 
         <div id="filter" className="flex items-center dark:text-white">
           <button
-            className="px-2 py-2 bg-blue-300 hover:bg-blue-500 rounded m-2"
+            className="p-2  bg-blue-300 hover:bg-blue-500 rounded "
             onClick={handleTodayButton}
           >
             <span className="text-black font-semibold">TODAY</span>
@@ -641,9 +644,10 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
           </Popover>
         </div>
       </div>
+      <br />
       <div
         ref={container}
-        className="w-auto bg-white  flex flex-rows  overflow-y-auto   mx-5  rounded-2xl"
+        className="w-auto bg-white  flex flex-rows  overflow-y-auto  rounded-lg"
       >
         <div
           ref={labelref}
@@ -652,7 +656,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         >
           <div
             key="labelheader"
-            className="  p-2 pt-3 border-[.25px] h-12 text-start text-sm rounded-tl-2xl sticky top-0 border-gray-500 bg-slate-200"
+            className=" px-4  pt-3  h-12 text-start text-normal rounded-tl-lg sticky top-0 border-gray-500 bg-slate-200"
           >
             Items
           </div>
@@ -708,13 +712,14 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         </div>
         <div
           ref={timelineRef}
-          className="w-[75%] timelineRef overflow-x-auto scroll-pb-10 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 scrollbar-track-hover:slate-900 h-[375px]"
+          className="w-[75%] timelineRef overflow-x-auto  customScrollbar  h-[360px]"
+          style={{ overflow: "overlay" }}
           onScroll={handleScroll}
         >
           <div
             key="timelineheader"
             ref={timelineheaderRef}
-            className="bg-slate-200  z-[15] flex sticky top-0"
+            className="bg-slate-200 z-[15] flex sticky top-0"
           >
             {timelineheader}
           </div>
@@ -777,7 +782,10 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                         left: leftpos,
                         width: widthpos,
                       }}
-                      onMouseDown={(e) => handleDown(e, index)}
+                      onMouseDown={(e) => {
+                        setTargetIndex(index);
+                        handleDown(e);
+                      }}
                       onClick={(e) => {
                         setSelectedTask(task.id);
                         setSearchParams((prev) => {

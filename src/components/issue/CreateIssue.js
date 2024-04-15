@@ -11,7 +11,6 @@ export default function CreateIssue({
   setIssuecreated,
 }) {
   console.log("Create Issue");
-  console.log(status_data);
 
   const assignee = projectinfo?.projectmembers?.map((member) => {
     return { label: member.name, value: member.id, email: member.email };

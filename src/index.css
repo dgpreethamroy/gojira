@@ -39,6 +39,8 @@ h1 {
   .text-shadow-custom {
     text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
   }
+  .customScrollbar {
+  }
 }
 
 a {
@@ -61,6 +63,12 @@ a:hover {
   opacity: 1;
 }
 
+.hover-div:hover .toggle-div {
+  opacity: 0.5;
+}
+.hover-div:hover .thumb-div {
+  background-color: #4b5563;
+}
 .hover-div:hover {
   min-width: 50px;
 
@@ -108,13 +116,19 @@ a:hover {
   }
 }
 
-/* 
-.scrollbar1::-webkit-scrollbar
-{
-	width: 10px;
-	background-color: #F5F5F5;
+.scrollbar1::-webkit-scrollbar {
+  width: 10px;
+  height: 0px;
+  background: transparent;
 }
-
+.scrollbar1::-webkit-scrollbar-thumb {
+  background: rgb(156 163 175);
+  border-radius: 10px;
+}
+.scrollbar1::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}
+/* 
 .scrollbar1::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;

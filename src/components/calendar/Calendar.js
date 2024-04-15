@@ -17,7 +17,6 @@ import {
 } from "../../assets/CommonData";
 import IssueModal from "../issue/issueModal";
 import { useSearchParams } from "react-router-dom";
-import { set } from "rsuite/esm/utils/dateUtils";
 // Set dayjs locale to English
 dayjs.locale("en");
 
@@ -328,7 +327,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
 
   return (
     <>
-      <div className="flex m-1 items-center justify-between ">
+      <div className="flex items-center justify-between ">
         <SearchBox
           inputSearch={inputSearch}
           setSearchinput={setSearchinput}
@@ -355,7 +354,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
             <span>{Rightarrow_Icon}</span>
           </button>
           <button
-            className="px-2 py-2 bg-blue-300 hover:bg-blue-500 rounded m-2"
+            className="p-2  bg-blue-300 hover:bg-blue-500 rounded "
             onClick={handleTodayButton}
           >
             <span className="text-black font-semibold">TODAY</span>
@@ -432,7 +431,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
           </Popover>
         </div>
       </div>
-
+      <br />
       <div className="bg-gray-100 rounded-lg">
         <div className="px-2 h-96 overflow-y-auto overflow-x-hidden">
           {renderDays()}

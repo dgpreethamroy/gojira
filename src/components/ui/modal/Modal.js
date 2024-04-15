@@ -11,6 +11,7 @@ const Modal = ({
   setIsOpen,
   small = false,
   large = false,
+  medium = false,
   handleClosed = () => {
     return null;
   },
@@ -65,7 +66,13 @@ const Modal = ({
             >
               <div
                 className={`bg-white p-4 rounded shadow-lg ${
-                  small ? "w-[35%] " : large ? "w-[90%] " : " w-[60%]"
+                  small
+                    ? "w-[35%] "
+                    : large
+                    ? "w-[90%] "
+                    : medium
+                    ? "w-[50%]"
+                    : " w-[60%]"
                 }  `}
               >
                 <div className="Header">
