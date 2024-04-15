@@ -39,8 +39,8 @@ h1 {
   .text-shadow-custom {
     text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
   }
-  .customScrollbar {
-  }
+
+  .customScrollbar {}
 }
 
 a {
@@ -59,25 +59,29 @@ a:hover {
   }
 }
 
-.hover-div:hover + .hide-div {
+.hover-div:hover+.hide-div {
   opacity: 1;
 }
 
 .hover-div:hover .toggle-div {
   opacity: 0.5;
 }
+
 .hover-div:hover .thumb-div {
   background-color: #4b5563;
 }
+
 .hover-div:hover {
   min-width: 50px;
 
   .color-div {
     background-color: lightblue;
   }
+
   .date-div {
     display: block;
   }
+
   .hide-div {
     display: block;
   }
@@ -116,18 +120,31 @@ a:hover {
   }
 }
 
+/* 
 .scrollbar1::-webkit-scrollbar {
+  position: fixed;
+  top: 0px;
+  left: 0px;
   width: 10px;
-  height: 0px;
+  height: 10px;
   background: transparent;
+  background-color: transparent;
+  background-image: none;
 }
+
 .scrollbar1::-webkit-scrollbar-thumb {
   background: rgb(156 163 175);
   border-radius: 10px;
 }
+
 .scrollbar1::-webkit-scrollbar-thumb:hover {
   background: rgb(107 114 128);
 }
+
+.scrollbar1::-webkit-scrollbar-track-piece {
+  background: transparent;
+} */
+
 /* 
 .scrollbar1::-webkit-scrollbar-thumb
 {
@@ -169,7 +186,7 @@ a:hover {
   padding: 0;
 }
 
-.sticky + .content {
+.sticky+.content {
   padding-top: 102px;
 }
 

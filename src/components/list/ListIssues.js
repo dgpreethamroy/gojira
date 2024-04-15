@@ -14,6 +14,7 @@ import {
 import Modal from "../ui/modal/Modal";
 import customAxios from "../../api/axios";
 import { useNotification } from "../Notifications/NotificationProvider";
+import { Scrollbar } from "react-scrollbars-custom";
 
 export const ListIssues = (props) => {
   console.log("ListIssues");
@@ -97,8 +98,8 @@ export const ListIssues = (props) => {
       listResponse?.columns?.length > 0
         ? listResponse?.columns
         : listResponse
-        ? Object.keys(Object.values(listResponse?.tasks)[0])
-        : null,
+          ? Object.keys(Object.values(listResponse?.tasks)[0])
+          : null,
 
     rows: listResponse && Object.values(listResponse?.tasks),
   };
@@ -134,9 +135,8 @@ export const ListIssues = (props) => {
     navigator.clipboard.writeText(csvContent);
     dispatch({
       type: "SUCCESS",
-      message: ` ${selectedData.length} ${
-        selectedData.length > 1 ? "items" : "item"
-      } copied to Clipboard`,
+      message: ` ${selectedData.length} ${selectedData.length > 1 ? "items" : "item"
+        } copied to Clipboard`,
     });
   };
 
@@ -167,9 +167,8 @@ export const ListIssues = (props) => {
     deleterows();
     dispatch({
       type: "Fail",
-      message: ` ${selectedRows.length} ${
-        selectedRows.length > 1 ? "items" : "item"
-      } deleted`,
+      message: ` ${selectedRows.length} ${selectedRows.length > 1 ? "items" : "item"
+        } deleted`,
     });
   };
 
@@ -291,199 +290,230 @@ export const ListIssues = (props) => {
         </button>
       </div>
       <br />
-      <div
-        className="rounded-lg  bg-white border border-gray-300  w-full overflow-x-scroll scrollbar1  "
-        style={{ height: window.innerHeight - 300 }}
+      <Scrollbar style={{ height: window.innerHeight - 300 }}
+        trackYProps={{
+          renderer: (props) => {
+            let newprops = { ...props }
+            newprops.style.top = 50
+            newprops.style.right = 10
+            newprops.style.height = window.innerHeight - 360
+
+            const { elementRef, ...restProps } = newprops;
+            return <span {...restProps} ref={elementRef} className="trackY" />;
+          },
+        }}
+        trackXProps={{
+          renderer: (props) => {
+            let newprops = { ...props }
+            newprops.style.left = 0
+            newprops.style.bottom = 10
+            newprops.style.width = window.innerWidth - 66
+            const { elementRef, ...restProps } = newprops;
+
+            return <span {...restProps} ref={elementRef} className="TrackX" />;
+          },
+        }}
       >
-        <table style={{ width: tablewidth + "px" }}>
-          <thead className="sticky top-0 bg-slate-100">
-            <tr>
-              <th className="m-2 p-3 items-center w-12 text-center">
-                <input
-                  type="checkbox"
-                  checked={selectedRows?.length === data?.rows?.length}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedRows(data.rows.map((row) => row.id));
-                    } else {
-                      setSelectedRows([]);
-                    }
-                  }}
-                />
-              </th>
-              {data?.columns?.map((column) => (
-                <th
-                  key={column}
-                  draggable
-                  onDragStart={(e) => onDragStart(e, { id: column }, "columns")}
-                  onDragOver={onDragOver}
-                  onDrop={(e) => onDrop(e, { id: column }, "columns")}
-                  className={`m-1 border border-t-0 border-gray-300 font-normal hover:cursor-grab hover-div text-gray-700 items-center text-center
-                    `}
-                  style={{ width: getColumnWidth(column) }}
-                >
-                  <div className="flex justify-start pl-1">
-                    {listIssuesLabelIcons[column]}
-                    {column === "issuetype"
-                      ? "Type"
-                      : column === "id"
-                      ? "Key"
-                      : column.charAt(0).toUpperCase() + column.slice(1)}
-                    {(column !== "labels") ^
-                    (column !== "linkedtasks") ? null : (
-                      <div
-                        onClick={() => handleSort(column)}
-                        className={`${
-                          label === column
-                            ? "opacity-100"
-                            : "opacity-0 toggle-div"
-                        }  cursor-pointer  `}
-                      >
-                        {arrow === "asec" ? downArrow : upArrow}
-                      </div>
-                    )}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="bg-slate-50 h-10">
-            {search_sorted_results()?.map((row) => (
-              <tr
-                key={row.id}
-                // draggable
-                // onDragStart={(e) => onDragStart(e, { id: row.id }, "rows")}
-                // onDragOver={onDragOver}
-                // onDrop={(e) => onDrop(e, { id: row.id }, "rows")}
-                style={{
-                  backgroundColor: isRowSelected(row.id)
-                    ? "lightblue"
-                    : "inherit",
-                }}
-                className=" h-10"
-              >
-                <td className="border border-gray-300 border-l-0 m-1 p-2  items-center text-center">
+
+        <div
+          className="rounded-lg  bg-white border border-gray-300 "
+
+        >
+          {
+            // document.getElementsByClassName('ScrollbarsCustom-Track ScrollbarsCustom-TrackY')[0].style.top = '50px'
+          }
+
+          <table style={{ width: tablewidth + "px" }}
+          >
+            <thead className="sticky top-0 bg-slate-100">
+              <tr>
+                <th className="m-2 p-3 items-center w-12 text-center">
                   <input
                     type="checkbox"
-                    checked={isRowSelected(row.id)}
-                    onChange={() => toggleRowSelection(row.id)}
-                    onClick={(e) => e.stopPropagation()} // Prevent the row selection from being toggled by the checkbox
+                    checked={selectedRows?.length === data?.rows?.length}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedRows(data.rows.map((row) => row.id));
+                      } else {
+                        setSelectedRows([]);
+                      }
+                    }}
                   />
-                </td>
-                {data.columns.map((column) => (
-                  <td key={column} className="border border-gray-300 p-2 m-1 ">
-                    {column === "labels" ? (
-                      <div className="flex justify-start">
-                        {row[column].map((label) => (
-                          <span className="bg-gray-300 rounded mx-1  ">
-                            <p className="px-2">{label}</p>
-                          </span>
-                        ))}
-                      </div>
-                    ) : column === "linkedtasks" ? (
-                      <div className="flex justify-center">
-                        {row[column].map((linkedtask) => (
-                          <span className="bg-gray-300 rounded mx-1 items-center ">
-                            <p className="px-2">{linkedtask}</p>
-                          </span>
-                        ))}
-                      </div>
-                    ) : column === "id" ? (
-                      <button
-                        onClick={() => {
-                          setSelectedTask(row[column]);
-                          setSearchParams((prev) => {
-                            const newParams = new URLSearchParams(prev);
-                            newParams.set("selectedIssue", row[column]);
-                            return newParams;
-                          });
-                        }}
-                      >
-                        <p className="underline">{row[column]}</p>
-                      </button>
-                    ) : (
-                      row[column]
-                    )}
-                  </td>
+                </th>
+                {data?.columns?.map((column) => (
+                  <th
+                    key={column}
+                    draggable
+                    onDragStart={(e) => onDragStart(e, { id: column }, "columns")}
+                    onDragOver={onDragOver}
+                    onDrop={(e) => onDrop(e, { id: column }, "columns")}
+                    className={`m-1 border border-t-0 border-gray-300 font-normal hover:cursor-grab hover-div text-gray-700 items-center text-center
+                    `}
+                    style={{ width: getColumnWidth(column) }}
+                  >
+                    <div className="flex justify-start pl-1">
+                      {listIssuesLabelIcons[column]}
+                      {column === "issuetype"
+                        ? "Type"
+                        : column === "id"
+                          ? "Key"
+                          : column.charAt(0).toUpperCase() + column.slice(1)}
+                      {(column !== "labels") ^
+                        (column !== "linkedtasks") ? null : (
+                        <div
+                          onClick={() => handleSort(column)}
+                          className={`${label === column
+                            ? "opacity-100"
+                            : "opacity-0 toggle-div"
+                            }  cursor-pointer  `}
+                        >
+                          {arrow === "asec" ? downArrow : upArrow}
+                        </div>
+                      )}
+                    </div>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <Modal isOpen={isOpen} setIsOpen={setIsOpen} medium>
-          <Modal.Header className="h-12">
-            <p className="font-semibold flex items-center">
-              {waring_Icon}
-              Delete {selectedRows.length}{" "}
-              {selectedRows.length > 1 ? "items" : "item"} ?
-            </p>
-          </Modal.Header>
-          <p>
-            You’re about to permanently delete this {selectedRows.length}{" "}
-            {selectedRows.length > 1 ? "items" : "item"}. All comments,
-            attachments, data and associated subtasks will be deleted.
-          </p>
-          <br />
-          <p>
-            If you’re not sure, you can resolve or close these items instead.
-          </p>
-          <Modal.Footer>
-            <button
-              className="p-2 m-2 rounded font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              className="py-2 px-3 bg-red-700 text-white rounded"
-              onClick={handleDeleteRows}
-            >
-              Delete
-            </button>
-          </Modal.Footer>
-        </Modal>
+            </thead>
+            <tbody className="bg-slate-50 h-10">
+              {search_sorted_results()?.map((row) => (
+                <tr
+                  key={row.id}
+                  // draggable
+                  // onDragStart={(e) => onDragStart(e, { id: row.id }, "rows")}
+                  // onDragOver={onDragOver}
+                  // onDrop={(e) => onDrop(e, { id: row.id }, "rows")}
+                  style={{
+                    backgroundColor: isRowSelected(row.id)
+                      ? "lightblue"
+                      : "inherit",
+                  }}
+                  className=" h-10"
+                >
+                  <td className="border border-gray-300 border-l-0 m-1 p-2  items-center text-center">
+                    <input
+                      type="checkbox"
+                      checked={isRowSelected(row.id)}
+                      onChange={() => toggleRowSelection(row.id)}
+                      onClick={(e) => e.stopPropagation()} // Prevent the row selection from being toggled by the checkbox
+                    />
+                  </td>
+                  {data.columns.map((column) => (
+                    <td key={column} className="border border-gray-300 p-2 m-1 ">
+                      {column === "labels" ? (
+                        <div className="flex justify-start">
+                          {row[column].map((label) => (
+                            <span className="bg-gray-300 rounded mx-1  ">
+                              <p className="px-2"
 
-        {showIssue && (
-          <IssueModal
-            details={{
-              task: props.state.tasks[selectedTask],
-              projectmembers: props.info.projectmembers,
-            }}
-            showIssue={showIssue}
-            setShowIssue={setShowIssue}
-            setSelectIssue={setSearchParams}
-          />
-        )}
-        {selectedRows.length > 0 && (
-          <div className="fixed bottom-5 left-1/2 transform  translate-x-[-50%] bg-white border p-5 rounded-xl shadow-2xl z-50 flex justify-between items-center">
-            <div className="border-r-2 border-gray-800 px-2">{`${
-              selectedRows.length
-            } ${selectedRows.length > 1 ? "rows" : "row"}  selected`}</div>
-            <div style={{ display: "flex" }}>
+                              >{label}</p>
+                            </span>
+                          ))}
+                        </div>
+                      ) : column === "linkedtasks" ? (
+                        <div className="flex justify-center">
+                          {row[column].map((linkedtask) => (
+                            <span className="bg-gray-300 rounded mx-1 items-center ">
+                              <p className="px-2">{linkedtask}</p>
+                            </span>
+                          ))}
+                        </div>
+                      ) : column === "id" ? (
+                        <button
+                          onClick={() => {
+                            setSelectedTask(row[column]);
+                            setSearchParams((prev) => {
+                              const newParams = new URLSearchParams(prev);
+                              newParams.set("selectedIssue", row[column]);
+                              return newParams;
+                            });
+                          }}
+                        >
+                          <p className="underline">{row[column]}</p>
+                        </button>
+                      ) : (
+                        row[column]
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <Modal isOpen={isOpen} setIsOpen={setIsOpen} medium>
+            <Modal.Header className="h-12">
+              <p className="font-semibold flex items-center">
+                {waring_Icon}
+                Delete {selectedRows.length}{" "}
+                {selectedRows.length > 1 ? "items" : "item"} ?
+              </p>
+            </Modal.Header>
+            <p>
+              You’re about to permanently delete this {selectedRows.length}{" "}
+              {selectedRows.length > 1 ? "items" : "item"}. All comments,
+              attachments, data and associated subtasks will be deleted.
+            </p>
+            <br />
+            <p>
+              If you’re not sure, you can resolve or close these items instead.
+            </p>
+            <Modal.Footer>
               <button
-                style={{ display: "flex", alignItems: "center" }}
-                className="px-2"
-                onClick={handleCopyToClipboard}
+                className="p-2 m-2 rounded font-medium"
+                onClick={() => setIsOpen(false)}
               >
-                <AiOutlineCopy />
-                Copy to Clipboard
+                Cancel
               </button>
               <button
-                className="px-2"
-                style={{ display: "flex", alignItems: "center" }}
-                onClick={() => setIsOpen(true)}
+                className="py-2 px-3 bg-red-700 text-white rounded"
+                onClick={handleDeleteRows}
               >
-                <AiOutlineDelete />
                 Delete
               </button>
+            </Modal.Footer>
+          </Modal>
+
+          {showIssue && (
+            <IssueModal
+              details={{
+                task: props.state.tasks[selectedTask],
+                projectmembers: props.info.projectmembers,
+              }}
+              showIssue={showIssue}
+              setShowIssue={setShowIssue}
+              setSelectIssue={setSearchParams}
+            />
+          )}
+          {selectedRows.length > 0 && (
+            <div className="fixed bottom-5 left-1/2 transform  translate-x-[-50%] bg-white border p-5 rounded-xl shadow-2xl z-50 flex justify-between items-center">
+              <div className="border-r-2 border-gray-800 px-2">{`${selectedRows.length
+                } ${selectedRows.length > 1 ? "rows" : "row"}  selected`}</div>
+              <div style={{ display: "flex" }}>
+                <button
+                  style={{ display: "flex", alignItems: "center" }}
+                  className="px-2"
+                  onClick={handleCopyToClipboard}
+                >
+                  <AiOutlineCopy />
+                  Copy to Clipboard
+                </button>
+                <button
+                  className="px-2"
+                  style={{ display: "flex", alignItems: "center" }}
+                  onClick={() => setIsOpen(true)}
+                >
+                  <AiOutlineDelete />
+                  Delete
+                </button>
+              </div>
+              <button onClick={() => setSelectedRows([])} className="px-2">
+                <AiOutlineClose />
+              </button>
             </div>
-            <button onClick={() => setSelectedRows([])} className="px-2">
-              <AiOutlineClose />
-            </button>
-          </div>
-        )}
-      </div>
-      <div id="cc" className="relative top-[-10px] ">
+          )}
+        </div>
+        {/* <div id="cc" className="relative top-[-10px] ">
         <div
           className="absolute track rounded-2xl w-full h-[10px] z-10 bg-transparent hover:bg-gray-300 hover-div hover:opacity-50"
           onClick={(e) => {
@@ -492,11 +522,14 @@ export const ListIssues = (props) => {
           }}
         >
           <div
-            className=" absolute thumb rounded-2xl w-[100px] h-[10px] thumb-div bg-gray-400 z-10"
+            className=" absolute thumb rounded-2xl w-[100px] h-[10px] thumb-div bg-gray-400 z-10 "
+           
             onMouseDown={handlecustomScroll}
           ></div>
         </div>
-      </div>
+      </div> */}
+      </Scrollbar>
     </div>
+
   );
 };
