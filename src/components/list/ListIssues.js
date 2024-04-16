@@ -293,13 +293,13 @@ export const ListIssues = (props) => {
       </div>
       <br />
       <Scrollbar
-        style={{ height: window.innerHeight - 285, borderRadius: "8px" }}
+        style={{ height: window.innerHeight - 260 - 28, borderRadius: "8px" }}
         trackYProps={{
           renderer: (props) => {
             let newprops = { ...props };
-            newprops.style.top = 50;
+            newprops.style.top = 48.5;
             newprops.style.right = 10;
-            newprops.style.height = window.innerHeight - 345;
+            newprops.style.height = window.innerHeight - 260 - 28 - 48.5 - 10;
 
             const { elementRef, ...restProps } = newprops;
             return <span {...restProps} ref={elementRef} className="trackY" />;

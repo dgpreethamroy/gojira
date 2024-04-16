@@ -17,6 +17,7 @@ import {
 } from "../../assets/CommonData";
 import IssueModal from "../issue/issueModal";
 import { useSearchParams } from "react-router-dom";
+import { Scrollbar } from "react-scrollbars-custom";
 // Set dayjs locale to English
 dayjs.locale("en");
 
@@ -432,12 +433,30 @@ const Calendar = ({ tasks, user, projectmembers }) => {
         </div>
       </div>
       <br />
-      <div className="bg-gray-100 rounded-lg">
-        <div className="px-2 h-96 overflow-y-auto overflow-x-hidden">
-          {renderDays()}
-          {renderCells()}
+      <Scrollbar
+        style={{ height: window.innerHeight - 260 - 28 - 10 }}
+        trackYProps={{
+          renderer: (props) => {
+            let newprops = { ...props };
+            newprops.style.top = 40.5;
+            newprops.style.right = 10;
+            newprops.style.height = window.innerHeight - 260 - 28 - 40.5 - 10;
+            // 48- shift in header 10 trackXshift
+            newprops.style.zIndex = 10;
+
+            const { elementRef, ...restProps } = newprops;
+            return <span {...restProps} ref={elementRef} className="trackY" />;
+          },
+        }}
+      >
+        <div className="bg-gray-100 rounded-lg">
+          <div className="px-2  overflow-y-auto overflow-x-hidden">
+            {renderDays()}
+            {renderCells()}
+          </div>
         </div>
-      </div>
+      </Scrollbar>
+
       {showIssue && (
         <IssueModal
           details={{

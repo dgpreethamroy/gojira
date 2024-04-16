@@ -80,6 +80,9 @@ export default function ProjectDetails(props) {
       }
     };
     getProjects();
+    document.getElementById(
+      "main"
+    ).style.backgroundImage = `linear-gradient(to bottom right, ${gradientColorsHexCodes[4].start},${gradientColorsHexCodes[4].middle}, ${gradientColorsHexCodes[4].end})`;
   }, [currentUser, issuecreated, id.pid]);
 
   const Board = (
@@ -111,7 +114,7 @@ export default function ProjectDetails(props) {
     </div>
   );
   const List = (
-    <div id="ListParent" className="py-3 pl-3 pr-2">
+    <div id="ListParent" className="p-3">
       <ListIssues
         state={state}
         setState={setState}

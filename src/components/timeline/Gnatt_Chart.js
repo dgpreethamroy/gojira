@@ -123,7 +123,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
     setFilterOptions(newFilterOptions);
   };
   const handleTodayButton = () => {
-    timelineRef.current?.scrollTo({ left: initpos - 400 });
+    customScrollbarRef.current?.scrollTo(initpos - 400, null);
   };
   useEffect(() => {
     if (
@@ -182,7 +182,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
       setTimelineHeader(names.reverse());
       timelineheaderRef.current.style.width = 25 * 200 + "px";
       timelineBodyRef.current.style.width = 25 * 200 + "px";
-      timelineRef.current.scrollTo({ left: initPos - 400 });
+      customScrollbarRef.current.scrollTo(initPos - 400, null);
     } else if (currentFilter === Filters[2]) {
       ///  Quaters Filters
       let currentMonth = dayjs().$d.getMonth();
@@ -218,7 +218,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
       timelineBodyRef.current.style.width = 13 * 250 + "px";
       let daydiff = (dayjs().diff(dayjs().startOf("month"), "days") * 250) / 90;
       setInitPos(750 - daydiff + 500);
-      timelineRef.current.scrollTo({ left: 750 });
+      customScrollbarRef.current.scrollTo(750, null);
     } else {
       /// Weeks Filter
       let lastyear = dayjs(getPreviousMonday(dayjs().subtract(1, "years").$d));
@@ -281,7 +281,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
       timelineheaderRef.current.style.width = length + "px";
       timelineBodyRef.current.style.width = length + "px";
 
-      timelineRef.current.scrollTo({ left: initPos - 400 });
+      customScrollbarRef.current.scrollTo(initPos - 400, null);
     }
     //close(true);
     setTimeout(() => {
@@ -290,7 +290,6 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
   }, [currentFilter, data, projectmembers, searchParams]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
-
     if (e.scrollTop !== undefined) {
       labelref.current.scrollTop = e.scrollTop;
     } else customScrollbarRef.current.scrollTop = e.target.scrollTop;
@@ -577,10 +576,11 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 return (
                   <button
                     key={filter}
-                    className={`px-2 py-1 mx-[2px] rounded ${currentFilter === filter
-                      ? "bg-blue-100 text-blue-500 "
-                      : "hover:bg-gray-300"
-                      } `}
+                    className={`px-2 py-1 mx-[2px] rounded ${
+                      currentFilter === filter
+                        ? "bg-blue-100 text-blue-500 "
+                        : "hover:bg-gray-300"
+                    } `}
                     onClick={handleFilters}
                   >
                     {filter}
@@ -673,7 +673,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         <div
           ref={labelref}
           className={`w-[25%] overflow-x-hidden   scrollbar-none  border-[.25px] border-gray-500 rounded-l-lg   `}
-          style={{ height: window.innerHeight - 260 - 28 - 10 }}  // 260 height from top to component start  28 for bottom padding, 10 for trackX Shift
+          style={{ height: window.innerHeight - 260 - 28 - 10 }} // 260 height from top to component start  28 for bottom padding, 10 for trackX Shift
           onScroll={handleScroll}
         >
           <div
@@ -686,8 +686,9 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
             return (
               <div
                 key={"label" + task.id}
-                className={`p-2   border-gray-500 ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                  }`}
+                className={`p-2   border-gray-500 ${
+                  index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                }`}
               >
                 <div className="flex">
                   <span className="px-2 text-nowrap">
@@ -734,14 +735,18 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         <Scrollbar
           ref={customScrollbarRef}
           onScroll={handleScroll}
-          style={{ height: window.innerHeight - 260 - 28, width: 'calc(75% + 18px)' }}
+          style={{
+            height: window.innerHeight - 260 - 28,
+            width: "calc(75% + 18px)",
+          }}
           trackYProps={{
             renderer: (props) => {
               let newprops = { ...props };
               newprops.style.top = 48;
               newprops.style.right = 10;
               newprops.style.height = window.innerHeight - 260 - 28 - 48 - 10;
-              // 48- shift in header 10 trackXshift  
+              // 48- shift in header 10 trackXshift
+              newprops.style.zIndex = 10;
 
               const { elementRef, ...restProps } = newprops;
               return (
@@ -755,6 +760,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
               newprops.style.left = 0;
               newprops.style.bottom = 10;
               newprops.style.width = (window.innerWidth - 66) * 0.75;
+              newprops.style.zIndex = 10;
               const { elementRef, ...restProps } = newprops;
 
               return (
@@ -812,31 +818,32 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 let leftpos =
                   currentFilter === Filters[0]
                     ? (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
-                    28 +
-                    (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
+                        28 +
+                      (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
                     : currentFilter === Filters[1]
-                      ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
+                    ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
                       (dayjs(task.createdAt).$d.getDate() /
                         dayjs(task.createdAt).endOf("month").$d.getDate()) *
-                      200
-                      : (daysDiffCreated * 1000) / 365;
+                        200
+                    : (daysDiffCreated * 1000) / 365;
                 let widthpos =
                   currentFilter === Filters[0]
                     ? (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
-                      1) *
-                    28
+                        1) *
+                      28
                     : currentFilter === Filters[1]
-                      ? monthsDiffDue * 200 +
+                    ? monthsDiffDue * 200 +
                       (daysInMonthDue / endOfMonthDue) * 200 -
                       monthsDiffCreated * 200 -
                       (daysInMonthCreated / endOfMonthCreated) * 200
-                      : (daysDiff * 1000) / 365;
+                    : (daysDiff * 1000) / 365;
 
                 return (
                   <div
                     key={"timeline" + task.id}
-                    className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                      }`}
+                    className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
+                      index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                    }`}
                   >
                     <div className="flex  hover-div">
                       <button
@@ -910,8 +917,9 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                           </div>
                           <div className="flex">
                             <div
-                              className={` ${(!iconsdisplay || widthpos < 80) && "opacity-0"
-                                }  text-ellipsis `}
+                              className={` ${
+                                (!iconsdisplay || widthpos < 80) && "opacity-0"
+                              }  text-ellipsis `}
                             >
                               {LinkIcon}
                             </div>
@@ -963,10 +971,11 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 />
               )}
               <div
-                className={`h-[38px] ${searchandfilter.length % 2 !== 0
-                  ? "bg-slate-200"
-                  : "bg-slate-50"
-                  }`}
+                className={`h-[38px] ${
+                  searchandfilter.length % 2 !== 0
+                    ? "bg-slate-200"
+                    : "bg-slate-50"
+                }`}
               ></div>
               {/* here */}
 
@@ -979,7 +988,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                   data={chartdata}
                 />
               )}
-              {/* <div className="absolute top-0  z-10" style={{ left: initpos }}>
+              <div className="absolute top-0  z-10" style={{ left: initpos }}>
                 <div className=" sticky top-12  w-0 h-0 border-[6px] border-transparent border-t-orange-500 border-b-0"></div>
                 <div
                   className=" ml-[5px] w-[2px] bg-orange-500"
@@ -989,7 +998,7 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                   }}
                 ></div>
                 <div></div>
-              </div> */}
+              </div>
             </div>
           </div>
         </Scrollbar>
