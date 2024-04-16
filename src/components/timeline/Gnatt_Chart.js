@@ -290,7 +290,6 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
   }, [currentFilter, data, projectmembers, searchParams]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
-    debugger;
 
     if (e.scrollTop !== undefined) {
       labelref.current.scrollTop = e.scrollTop;
@@ -578,11 +577,10 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 return (
                   <button
                     key={filter}
-                    className={`px-2 py-1 mx-[2px] rounded ${
-                      currentFilter === filter
-                        ? "bg-blue-100 text-blue-500 "
-                        : "hover:bg-gray-300"
-                    } `}
+                    className={`px-2 py-1 mx-[2px] rounded ${currentFilter === filter
+                      ? "bg-blue-100 text-blue-500 "
+                      : "hover:bg-gray-300"
+                      } `}
                     onClick={handleFilters}
                   >
                     {filter}
@@ -674,12 +672,13 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
       <div ref={container} className="w-auto  flex flex-rows   rounded-lg">
         <div
           ref={labelref}
-          className="w-[25%] overflow-x-hidden   scrollbar-none h-[420px] border-[.25px] border-gray-500 rounded-l-lg   "
+          className={`w-[25%] overflow-x-hidden   scrollbar-none  border-[.25px] border-gray-500 rounded-l-lg   `}
+          style={{ height: window.innerHeight - 260 - 28 - 10 }}  // 260 height from top to component start  28 for bottom padding, 10 for trackX Shift
           onScroll={handleScroll}
         >
           <div
             key="labelheader"
-            className=" px-4  pt-3  h-12 text-start   border-gray-500 text-normal rounded-tl-lg sticky top-0 bg-slate-200"
+            className=" px-4  pt-[11px] border-b  h-[47px] text-start   border-gray-500 text-normal rounded-tl-lg sticky top-0 bg-slate-200"
           >
             Items
           </div>
@@ -687,9 +686,8 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
             return (
               <div
                 key={"label" + task.id}
-                className={`p-2   border-gray-500 ${
-                  index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                }`}
+                className={`p-2   border-gray-500 ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                  }`}
               >
                 <div className="flex">
                   <span className="px-2 text-nowrap">
@@ -736,13 +734,14 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         <Scrollbar
           ref={customScrollbarRef}
           onScroll={handleScroll}
-          style={{ height: 430, width: 1048 }}
+          style={{ height: window.innerHeight - 260 - 28, width: 'calc(75% + 18px)' }}
           trackYProps={{
             renderer: (props) => {
               let newprops = { ...props };
-              newprops.style.top = 50;
+              newprops.style.top = 48;
               newprops.style.right = 10;
-              newprops.style.height = window.innerHeight - 360;
+              newprops.style.height = window.innerHeight - 260 - 28 - 48 - 10;
+              // 48- shift in header 10 trackXshift  
 
               const { elementRef, ...restProps } = newprops;
               return (
@@ -813,32 +812,31 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 let leftpos =
                   currentFilter === Filters[0]
                     ? (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
-                        28 +
-                      (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
+                    28 +
+                    (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
                     : currentFilter === Filters[1]
-                    ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
+                      ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
                       (dayjs(task.createdAt).$d.getDate() /
                         dayjs(task.createdAt).endOf("month").$d.getDate()) *
-                        200
-                    : (daysDiffCreated * 1000) / 365;
+                      200
+                      : (daysDiffCreated * 1000) / 365;
                 let widthpos =
                   currentFilter === Filters[0]
                     ? (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
-                        1) *
-                      28
+                      1) *
+                    28
                     : currentFilter === Filters[1]
-                    ? monthsDiffDue * 200 +
+                      ? monthsDiffDue * 200 +
                       (daysInMonthDue / endOfMonthDue) * 200 -
                       monthsDiffCreated * 200 -
                       (daysInMonthCreated / endOfMonthCreated) * 200
-                    : (daysDiff * 1000) / 365;
+                      : (daysDiff * 1000) / 365;
 
                 return (
                   <div
                     key={"timeline" + task.id}
-                    className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
-                      index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                    }`}
+                    className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                      }`}
                   >
                     <div className="flex  hover-div">
                       <button
@@ -912,9 +910,8 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                           </div>
                           <div className="flex">
                             <div
-                              className={` ${
-                                (!iconsdisplay || widthpos < 80) && "opacity-0"
-                              }  text-ellipsis `}
+                              className={` ${(!iconsdisplay || widthpos < 80) && "opacity-0"
+                                }  text-ellipsis `}
                             >
                               {LinkIcon}
                             </div>
@@ -966,11 +963,10 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
                 />
               )}
               <div
-                className={`h-[38px] ${
-                  searchandfilter.length % 2 !== 0
-                    ? "bg-slate-200"
-                    : "bg-slate-50"
-                }`}
+                className={`h-[38px] ${searchandfilter.length % 2 !== 0
+                  ? "bg-slate-200"
+                  : "bg-slate-50"
+                  }`}
               ></div>
               {/* here */}
 
