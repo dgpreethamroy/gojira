@@ -17,8 +17,9 @@ import {
 import { Timeline } from "../timeline/Timeline";
 import { useSearchParams } from "react-router-dom";
 import IssueModal from "../issue/issueModal";
-var customParseFormat = require("dayjs/plugin/customParseFormat");
+import { Scrollbar } from "react-scrollbars-custom";
 
+var customParseFormat = require("dayjs/plugin/customParseFormat");
 const Filters = ["Weeks", "Months", "Quaters"];
 const menu_icon_dotsWithText = (
   <div className="flex items-center dark:bg-white">
@@ -45,6 +46,8 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
   dayjs.extend(customParseFormat);
   console.log("Gnatt Component");
   const labelref = useRef(null);
+  const customScrollbarRef = useRef(null);
+
   const timelineRef = useRef(null);
   const container = useRef(null);
   const timelineheaderRef = useRef(null);
@@ -287,8 +290,11 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
   }, [currentFilter, data, projectmembers, searchParams]);
   if (data.length === 0) return;
   const handleScroll = (e) => {
-    timelineRef.current.scrollTop = e.target.scrollTop;
-    labelref.current.scrollTop = e.target.scrollTop;
+    debugger;
+
+    if (e.scrollTop !== undefined) {
+      labelref.current.scrollTop = e.scrollTop;
+    } else customScrollbarRef.current.scrollTop = e.target.scrollTop;
   };
   const handleFilters = (e) => {
     setCurrentFilter(e.target.innerText);
@@ -566,6 +572,25 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         />
 
         <div id="filter" className="flex items-center dark:text-white">
+          <div className="  mx-2 Filters  rounded  border-2  shadow-2xl ">
+            <div className="  px-1 py-[2px] bg-white  rounded  flex">
+              {Filters.map((filter) => {
+                return (
+                  <button
+                    key={filter}
+                    className={`px-2 py-1 mx-[2px] rounded ${
+                      currentFilter === filter
+                        ? "bg-blue-100 text-blue-500 "
+                        : "hover:bg-gray-300"
+                    } `}
+                    onClick={handleFilters}
+                  >
+                    {filter}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <button
             className="p-2  bg-blue-300 hover:bg-blue-500 rounded "
             onClick={handleTodayButton}
@@ -645,18 +670,16 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
         </div>
       </div>
       <br />
-      <div
-        ref={container}
-        className="w-auto bg-white  flex flex-rows  overflow-y-auto  rounded-lg"
-      >
+
+      <div ref={container} className="w-auto  flex flex-rows   rounded-lg">
         <div
           ref={labelref}
-          className="w-[25%] overflow-x-hidden   scrollbar-none h-[360px] border-r border-slate-400"
+          className="w-[25%] overflow-x-hidden   scrollbar-none h-[420px] border-[.25px] border-gray-500 rounded-l-lg   "
           onScroll={handleScroll}
         >
           <div
             key="labelheader"
-            className=" px-4  pt-3  h-12 text-start text-normal rounded-tl-lg sticky top-0 border-gray-500 bg-slate-200"
+            className=" px-4  pt-3  h-12 text-start   border-gray-500 text-normal rounded-tl-lg sticky top-0 bg-slate-200"
           >
             Items
           </div>
@@ -710,242 +733,270 @@ export const Gnatt_Chart = ({ data, user, projectmembers }) => {
             </div>
           </div>
         </div>
-        <div
-          ref={timelineRef}
-          className="w-[75%] timelineRef overflow-x-auto  customScrollbar  h-[360px]"
-          style={{ overflow: "overlay" }}
+        <Scrollbar
+          ref={customScrollbarRef}
           onScroll={handleScroll}
-        >
-          <div
-            key="timelineheader"
-            ref={timelineheaderRef}
-            className="bg-slate-200 z-[15] flex sticky top-0"
-          >
-            {timelineheader}
-          </div>
-          <div
-            ref={timelineBodyRef}
-            className="relative"
-            style={{ width: timelineheaderRef.current?.style.width }}
-          >
-            {searchandfilter.map((task, index) => {
-              let dueDate = dayjs(task.DueDate);
-              let createdAt = dayjs(task.createdAt);
-              let startDayjs = dayjs(start);
+          style={{ height: 430, width: 1048 }}
+          trackYProps={{
+            renderer: (props) => {
+              let newprops = { ...props };
+              newprops.style.top = 50;
+              newprops.style.right = 10;
+              newprops.style.height = window.innerHeight - 360;
 
-              let monthsDiffDue = dueDate.diff(startDayjs, "months");
-              let daysInMonthDue = dueDate.$d.getDate();
-              let endOfMonthDue = dueDate.endOf("month").$d.getDate();
-
-              let monthsDiffCreated = createdAt.diff(startDayjs, "months");
-              let daysInMonthCreated = createdAt.$d.getDate();
-              let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
-
-              let daysDiffCreated = createdAt.diff(startDayjs, "days");
-              let daysDiff = dueDate.diff(createdAt, "days");
-
-              let leftpos =
-                currentFilter === Filters[0]
-                  ? (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
-                      28 +
-                    (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
-                  : currentFilter === Filters[1]
-                  ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
-                    (dayjs(task.createdAt).$d.getDate() /
-                      dayjs(task.createdAt).endOf("month").$d.getDate()) *
-                      200
-                  : (daysDiffCreated * 1000) / 365;
-              let widthpos =
-                currentFilter === Filters[0]
-                  ? (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
-                      1) *
-                    28
-                  : currentFilter === Filters[1]
-                  ? monthsDiffDue * 200 +
-                    (daysInMonthDue / endOfMonthDue) * 200 -
-                    monthsDiffCreated * 200 -
-                    (daysInMonthCreated / endOfMonthCreated) * 200
-                  : (daysDiff * 1000) / 365;
+              const { elementRef, ...restProps } = newprops;
+              return (
+                <span {...restProps} ref={elementRef} className="trackY" />
+              );
+            },
+          }}
+          trackXProps={{
+            renderer: (props) => {
+              let newprops = { ...props };
+              newprops.style.left = 0;
+              newprops.style.bottom = 10;
+              newprops.style.width = (window.innerWidth - 66) * 0.75;
+              const { elementRef, ...restProps } = newprops;
 
               return (
-                <div
-                  key={"timeline" + task.id}
-                  className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
-                    index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
-                  }`}
-                >
-                  <div className="flex  hover-div">
-                    <button
-                      id={task.id}
-                      className="draggable min-h-7 hover-div whitespace-nowrap text-ellipsis  relative z-10 left-0 py-[2px] bg-blue-500 rounded  text-sm hover:cursor-pointer"
-                      style={{
-                        left: leftpos,
-                        width: widthpos,
-                      }}
-                      onMouseDown={(e) => {
-                        setTargetIndex(index);
-                        handleDown(e);
-                      }}
-                      onClick={(e) => {
-                        setSelectedTask(task.id);
-                        setSearchParams((prev) => {
-                          const newParams = new URLSearchParams(prev);
-                          newParams.set("selectedIssue", task.id);
-                          return newParams;
-                        });
-                      }}
-                    >
-                      <div className="flex justify-between">
-                        <div className="flex flex-row  ">
-                          <div className="left-[-85px] w-20 absolute hide-div  ">
-                            {startDate[index]}
-                          </div>
-                          <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
-                          {widthpos > 120 && (
-                            <span className={`${!iconsdisplay && "opacity-0"}`}>
-                              <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                role="presentation"
-                                className="border rounded-full ml-1"
-                              >
-                                <g fill="white" fill-rule="evenodd">
-                                  <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
-                                  <circle cx="12" cy="7" r="4"></circle>
-                                </g>
-                              </svg>
-                            </span>
-                          )}
-                          <span
-                            id={task.id + "startLink"}
-                            className="absolute   hide-div top-[-17px] left-[8px] w-5 z-20 puller"
-                            onMouseEnter={(e) => {
-                              setLeftPuller(true);
-                            }}
-                            onMouseLeave={(e) => {
-                              setLeftPuller(false);
-                            }}
-                          >
-                            {leftpuller ? (
-                              LinkIcon
-                            ) : (
-                              <svg viewBox="0 0 100 100">
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="100"
-                                  fill="transparent"
-                                />
-                                <circle cx="50" cy="50" r="25" fill="blue" />
-                              </svg>
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex">
-                          <div
-                            className={` ${
-                              (!iconsdisplay || widthpos < 80) && "opacity-0"
-                            }  text-ellipsis `}
-                          >
-                            {LinkIcon}
-                          </div>
-
-                          <div className="w-1 px-1 mx-1  rounded color-div rightButton text-ellipsis hover:cursor-col-resize"></div>
-                          <div className=" w-20 right-[-90px] absolute z-0 hide-div">
-                            {endDate[index]}
-                          </div>
-                          <span
-                            id={task.id + "endLink"}
-                            className="absolute hide-div top-[24px] w-5 z-20 puller"
-                            onMouseEnter={(e) => {
-                              setRightPuller(true);
-                            }}
-                            onMouseLeave={(e) => {
-                              setRightPuller(false);
-                            }}
-                          >
-                            {rightpuller ? (
-                              LinkIcon
-                            ) : (
-                              <svg viewBox="0 0 100 100">
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="100"
-                                  fill="transparent"
-                                />
-                                <circle cx="50" cy="50" r="25" fill="blue" />
-                              </svg>
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-                </div>
+                <span {...restProps} ref={elementRef} className="TrackX" />
               );
-            })}
-            {showIssue && (
-              <IssueModal
-                details={{
-                  task: data.tasks[selectedTask],
-                  projectmembers: projectmembers,
-                }}
-                showIssue={showIssue}
-                setShowIssue={setShowIssue}
-                setSelectIssue={setSearchParams}
-              />
-            )}
+            },
+          }}
+          wrapperProps={{
+            renderer: (props) => {
+              let newprops = { ...props };
+              newprops.style.borderTopRightRadius = 8;
+              newprops.style.borderBottomRightRadius = 8;
+
+              newprops.style.paddingLeft = 10;
+              const { elementRef, ...restProps } = newprops;
+              return (
+                <span
+                  {...restProps}
+                  ref={elementRef}
+                  className="MyAwesomeScrollbarsWrapper"
+                />
+              );
+            },
+          }}
+        >
+          <div ref={timelineRef} className="w-[75%] timelineRef  h-[360px] ">
             <div
-              className={`h-[38px] ${
-                searchandfilter.length % 2 !== 0
-                  ? "bg-slate-200"
-                  : "bg-slate-50"
-              }`}
-            ></div>
-            {/* here */}
-            <div className=" z-10 fixed right-0 bottom-0 Filters  shadow-2xl ">
-              <div className="  p-1 bg-white rounded-lg  flex">
-                {Filters.map((filter) => {
-                  return (
-                    <button
-                      key={filter}
-                      className={`px-2 py-1 mx-[2px] rounded ${
-                        currentFilter === filter
-                          ? "bg-blue-100 text-blue-500 "
-                          : "hover:bg-gray-300"
-                      } `}
-                      onClick={handleFilters}
-                    >
-                      {filter}
-                    </button>
-                  );
-                })}
-              </div>
+              key="timelineheader"
+              ref={timelineheaderRef}
+              className="bg-slate-200 z-[15] flex sticky top-0"
+            >
+              {timelineheader}
             </div>
-            {open && (
-              <Timeline
-                connectionMatrix={connectionMatrix}
-                ids={ids}
-                handleNewLinkConnection={handleNewLinkConnection}
-                handleLinkClick={handleLinkClick}
-                data={chartdata}
-              />
-            )}
-            <div className="absolute top-0  z-10" style={{ left: initpos }}>
-              <div className=" sticky top-12  w-0 h-0 border-[6px] border-transparent border-t-orange-500 border-b-0"></div>
+            <div
+              ref={timelineBodyRef}
+              className="relative"
+              style={{ width: timelineheaderRef.current?.style.width }}
+            >
+              {searchandfilter.map((task, index) => {
+                let dueDate = dayjs(task.DueDate);
+                let createdAt = dayjs(task.createdAt);
+                let startDayjs = dayjs(start);
+
+                let monthsDiffDue = dueDate.diff(startDayjs, "months");
+                let daysInMonthDue = dueDate.$d.getDate();
+                let endOfMonthDue = dueDate.endOf("month").$d.getDate();
+
+                let monthsDiffCreated = createdAt.diff(startDayjs, "months");
+                let daysInMonthCreated = createdAt.$d.getDate();
+                let endOfMonthCreated = createdAt.endOf("month").$d.getDate();
+
+                let daysDiffCreated = createdAt.diff(startDayjs, "days");
+                let daysDiff = dueDate.diff(createdAt, "days");
+
+                let leftpos =
+                  currentFilter === Filters[0]
+                    ? (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) *
+                        28 +
+                      (dayjs(task.createdAt).diff(dayjs(start), "days") + 1) / 7
+                    : currentFilter === Filters[1]
+                    ? dayjs(task.createdAt).diff(dayjs(start), "months") * 200 +
+                      (dayjs(task.createdAt).$d.getDate() /
+                        dayjs(task.createdAt).endOf("month").$d.getDate()) *
+                        200
+                    : (daysDiffCreated * 1000) / 365;
+                let widthpos =
+                  currentFilter === Filters[0]
+                    ? (dayjs(task.DueDate).diff(dayjs(task.createdAt), "days") +
+                        1) *
+                      28
+                    : currentFilter === Filters[1]
+                    ? monthsDiffDue * 200 +
+                      (daysInMonthDue / endOfMonthDue) * 200 -
+                      monthsDiffCreated * 200 -
+                      (daysInMonthCreated / endOfMonthCreated) * 200
+                    : (daysDiff * 1000) / 365;
+
+                return (
+                  <div
+                    key={"timeline" + task.id}
+                    className={`py-2 w-full border-t-0 border-b-0  h-10 border-[0.25px] border-gray-500  ${
+                      index % 2 === 0 ? "bg-slate-50" : "bg-slate-200"
+                    }`}
+                  >
+                    <div className="flex  hover-div">
+                      <button
+                        id={task.id}
+                        className="draggable min-h-7 hover-div whitespace-nowrap text-ellipsis  relative z-10 left-0 py-[2px] bg-blue-500 rounded  text-sm hover:cursor-pointer"
+                        style={{
+                          left: leftpos,
+                          width: widthpos,
+                        }}
+                        onMouseDown={(e) => {
+                          setTargetIndex(index);
+                          handleDown(e);
+                        }}
+                        onClick={(e) => {
+                          setSelectedTask(task.id);
+                          setSearchParams((prev) => {
+                            const newParams = new URLSearchParams(prev);
+                            newParams.set("selectedIssue", task.id);
+                            return newParams;
+                          });
+                        }}
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex flex-row  ">
+                            <div className="left-[-85px] w-20 absolute hide-div  ">
+                              {startDate[index]}
+                            </div>
+                            <div className="w-1  px-1 mx-1 rounded leftButton color-div hover:cursor-col-resize "></div>
+                            {widthpos > 120 && (
+                              <span
+                                className={`${!iconsdisplay && "opacity-0"}`}
+                              >
+                                <svg
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  role="presentation"
+                                  className="border rounded-full ml-1"
+                                >
+                                  <g fill="white" fill-rule="evenodd">
+                                    <path d="M6 14c0-1.105.902-2 2.009-2h7.982c1.11 0 2.009.894 2.009 2.006v4.44c0 3.405-12 3.405-12 0V14z"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                  </g>
+                                </svg>
+                              </span>
+                            )}
+                            <span
+                              id={task.id + "startLink"}
+                              className="absolute   hide-div top-[-17px] left-[8px] w-5 z-20 puller"
+                              onMouseEnter={(e) => {
+                                setLeftPuller(true);
+                              }}
+                              onMouseLeave={(e) => {
+                                setLeftPuller(false);
+                              }}
+                            >
+                              {leftpuller ? (
+                                LinkIcon
+                              ) : (
+                                <svg viewBox="0 0 100 100">
+                                  <circle
+                                    cx="50"
+                                    cy="50"
+                                    r="100"
+                                    fill="transparent"
+                                  />
+                                  <circle cx="50" cy="50" r="25" fill="blue" />
+                                </svg>
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex">
+                            <div
+                              className={` ${
+                                (!iconsdisplay || widthpos < 80) && "opacity-0"
+                              }  text-ellipsis `}
+                            >
+                              {LinkIcon}
+                            </div>
+
+                            <div className="w-1 px-1 mx-1  rounded color-div rightButton text-ellipsis hover:cursor-col-resize"></div>
+                            <div className=" w-20 right-[-90px] absolute z-0 hide-div">
+                              {endDate[index]}
+                            </div>
+                            <span
+                              id={task.id + "endLink"}
+                              className="absolute hide-div top-[24px] w-5 z-20 puller"
+                              onMouseEnter={(e) => {
+                                setRightPuller(true);
+                              }}
+                              onMouseLeave={(e) => {
+                                setRightPuller(false);
+                              }}
+                            >
+                              {rightpuller ? (
+                                LinkIcon
+                              ) : (
+                                <svg viewBox="0 0 100 100">
+                                  <circle
+                                    cx="50"
+                                    cy="50"
+                                    r="100"
+                                    fill="transparent"
+                                  />
+                                  <circle cx="50" cy="50" r="25" fill="blue" />
+                                </svg>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+              {showIssue && (
+                <IssueModal
+                  details={{
+                    task: data.tasks[selectedTask],
+                    projectmembers: projectmembers,
+                  }}
+                  showIssue={showIssue}
+                  setShowIssue={setShowIssue}
+                  setSelectIssue={setSearchParams}
+                />
+              )}
               <div
-                className=" ml-[5px] w-[2px] bg-orange-500"
-                style={{
-                  height: (searchandfilter.length + 1) * 40 + "px",
-                  minHeight: "305px",
-                }}
+                className={`h-[38px] ${
+                  searchandfilter.length % 2 !== 0
+                    ? "bg-slate-200"
+                    : "bg-slate-50"
+                }`}
               ></div>
-              <div></div>
+              {/* here */}
+
+              {open && (
+                <Timeline
+                  connectionMatrix={connectionMatrix}
+                  ids={ids}
+                  handleNewLinkConnection={handleNewLinkConnection}
+                  handleLinkClick={handleLinkClick}
+                  data={chartdata}
+                />
+              )}
+              {/* <div className="absolute top-0  z-10" style={{ left: initpos }}>
+                <div className=" sticky top-12  w-0 h-0 border-[6px] border-transparent border-t-orange-500 border-b-0"></div>
+                <div
+                  className=" ml-[5px] w-[2px] bg-orange-500"
+                  style={{
+                    height: (searchandfilter.length + 1) * 40 + "px",
+                    minHeight: "305px",
+                  }}
+                ></div>
+                <div></div>
+              </div> */}
             </div>
           </div>
-        </div>
+        </Scrollbar>
       </div>
     </>
   );

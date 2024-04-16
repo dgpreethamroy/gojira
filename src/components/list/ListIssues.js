@@ -98,8 +98,8 @@ export const ListIssues = (props) => {
       listResponse?.columns?.length > 0
         ? listResponse?.columns
         : listResponse
-          ? Object.keys(Object.values(listResponse?.tasks)[0])
-          : null,
+        ? Object.keys(Object.values(listResponse?.tasks)[0])
+        : null,
 
     rows: listResponse && Object.values(listResponse?.tasks),
   };
@@ -135,8 +135,9 @@ export const ListIssues = (props) => {
     navigator.clipboard.writeText(csvContent);
     dispatch({
       type: "SUCCESS",
-      message: ` ${selectedData.length} ${selectedData.length > 1 ? "items" : "item"
-        } copied to Clipboard`,
+      message: ` ${selectedData.length} ${
+        selectedData.length > 1 ? "items" : "item"
+      } copied to Clipboard`,
     });
   };
 
@@ -167,8 +168,9 @@ export const ListIssues = (props) => {
     deleterows();
     dispatch({
       type: "Fail",
-      message: ` ${selectedRows.length} ${selectedRows.length > 1 ? "items" : "item"
-        } deleted`,
+      message: ` ${selectedRows.length} ${
+        selectedRows.length > 1 ? "items" : "item"
+      } deleted`,
     });
   };
 
@@ -290,13 +292,14 @@ export const ListIssues = (props) => {
         </button>
       </div>
       <br />
-      <Scrollbar style={{ height: window.innerHeight - 300 }}
+      <Scrollbar
+        style={{ height: window.innerHeight - 285, borderRadius: "8px" }}
         trackYProps={{
           renderer: (props) => {
-            let newprops = { ...props }
-            newprops.style.top = 50
-            newprops.style.right = 10
-            newprops.style.height = window.innerHeight - 360
+            let newprops = { ...props };
+            newprops.style.top = 50;
+            newprops.style.right = 10;
+            newprops.style.height = window.innerHeight - 345;
 
             const { elementRef, ...restProps } = newprops;
             return <span {...restProps} ref={elementRef} className="trackY" />;
@@ -304,30 +307,40 @@ export const ListIssues = (props) => {
         }}
         trackXProps={{
           renderer: (props) => {
-            let newprops = { ...props }
-            newprops.style.left = 0
-            newprops.style.bottom = 10
-            newprops.style.width = window.innerWidth - 66
+            let newprops = { ...props };
+            newprops.style.left = 0;
+            newprops.style.bottom = 10;
+            newprops.style.width = window.innerWidth - 66;
             const { elementRef, ...restProps } = newprops;
 
             return <span {...restProps} ref={elementRef} className="TrackX" />;
           },
         }}
+        wrapperProps={{
+          renderer: (props) => {
+            let newprops = { ...props };
+            newprops.style.borderRadius = 8;
+            newprops.style.paddingLeft = 10;
+            const { elementRef, ...restProps } = newprops;
+            return (
+              <span
+                {...restProps}
+                ref={elementRef}
+                className="MyAwesomeScrollbarsWrapper"
+              />
+            );
+          },
+        }}
       >
-
-        <div
-          className="rounded-lg  bg-white border border-gray-300 "
-
-        >
+        <div className="rounded-lg  bg-white border border-gray-300 ">
           {
             // document.getElementsByClassName('ScrollbarsCustom-Track ScrollbarsCustom-TrackY')[0].style.top = '50px'
           }
 
-          <table style={{ width: tablewidth + "px" }}
-          >
+          <table style={{ width: tablewidth + "px" }}>
             <thead className="sticky top-0 bg-slate-100">
               <tr>
-                <th className="m-2 p-3 items-center w-12 text-center">
+                <th className="m-2 p-3 items-center w-12  text-center">
                   <input
                     type="checkbox"
                     checked={selectedRows?.length === data?.rows?.length}
@@ -344,7 +357,9 @@ export const ListIssues = (props) => {
                   <th
                     key={column}
                     draggable
-                    onDragStart={(e) => onDragStart(e, { id: column }, "columns")}
+                    onDragStart={(e) =>
+                      onDragStart(e, { id: column }, "columns")
+                    }
                     onDragOver={onDragOver}
                     onDrop={(e) => onDrop(e, { id: column }, "columns")}
                     className={`m-1 border border-t-0 border-gray-300 font-normal hover:cursor-grab hover-div text-gray-700 items-center text-center
@@ -356,16 +371,17 @@ export const ListIssues = (props) => {
                       {column === "issuetype"
                         ? "Type"
                         : column === "id"
-                          ? "Key"
-                          : column.charAt(0).toUpperCase() + column.slice(1)}
+                        ? "Key"
+                        : column.charAt(0).toUpperCase() + column.slice(1)}
                       {(column !== "labels") ^
-                        (column !== "linkedtasks") ? null : (
+                      (column !== "linkedtasks") ? null : (
                         <div
                           onClick={() => handleSort(column)}
-                          className={`${label === column
-                            ? "opacity-100"
-                            : "opacity-0 toggle-div"
-                            }  cursor-pointer  `}
+                          className={`${
+                            label === column
+                              ? "opacity-100"
+                              : "opacity-0 toggle-div"
+                          }  cursor-pointer  `}
                         >
                           {arrow === "asec" ? downArrow : upArrow}
                         </div>
@@ -399,14 +415,15 @@ export const ListIssues = (props) => {
                     />
                   </td>
                   {data.columns.map((column) => (
-                    <td key={column} className="border border-gray-300 p-2 m-1 ">
+                    <td
+                      key={column}
+                      className="border border-gray-300 p-2 m-1 "
+                    >
                       {column === "labels" ? (
                         <div className="flex justify-start">
                           {row[column].map((label) => (
                             <span className="bg-gray-300 rounded mx-1  ">
-                              <p className="px-2"
-
-                              >{label}</p>
+                              <p className="px-2">{label}</p>
                             </span>
                           ))}
                         </div>
@@ -487,8 +504,9 @@ export const ListIssues = (props) => {
           )}
           {selectedRows.length > 0 && (
             <div className="fixed bottom-5 left-1/2 transform  translate-x-[-50%] bg-white border p-5 rounded-xl shadow-2xl z-50 flex justify-between items-center">
-              <div className="border-r-2 border-gray-800 px-2">{`${selectedRows.length
-                } ${selectedRows.length > 1 ? "rows" : "row"}  selected`}</div>
+              <div className="border-r-2 border-gray-800 px-2">{`${
+                selectedRows.length
+              } ${selectedRows.length > 1 ? "rows" : "row"}  selected`}</div>
               <div style={{ display: "flex" }}>
                 <button
                   style={{ display: "flex", alignItems: "center" }}
@@ -530,6 +548,5 @@ export const ListIssues = (props) => {
       </div> */}
       </Scrollbar>
     </div>
-
   );
 };

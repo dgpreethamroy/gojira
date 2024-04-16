@@ -111,7 +111,7 @@ export default function ProjectDetails(props) {
     </div>
   );
   const List = (
-    <div id="ListParent" className="p-3">
+    <div id="ListParent" className="py-3 pl-3 pr-2">
       <ListIssues
         state={state}
         setState={setState}
