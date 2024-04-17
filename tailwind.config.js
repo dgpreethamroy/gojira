@@ -4,17 +4,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        myfont: [
-          "Segoe UI",
-          "Roboto",
-          "Oxygen",
-          "Ubuntu",
-          "Fira Sans",
-          "Droid Sans",
-          "Helvetica Neue",
-          "Helvetica",
-          "Cossines",
-        ],
+        myfont: ["Noto Sans Telugu"],
+
+        myfont2: ["Roboto"],
       },
     },
   },

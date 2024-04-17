@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,7 +41,8 @@ h1 {
     text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
   }
 
-  .customScrollbar {}
+  .customScrollbar {
+  }
 }
 
 a {
@@ -58,9 +60,17 @@ a:hover {
     opacity: 1;
   }
 }
-
-.hover-div:hover+.hide-div {
+.transition-max-height {
+  max-height: 100px;
+  transition: max-height 1000ms ease-in;
+}
+.hover-div:hover + .hide-div {
   opacity: 1;
+}
+
+.hover-div:hover .svgHovered {
+  width: 32px;
+  height: 32px;
 }
 
 .hover-div:hover .toggle-div {
@@ -186,7 +196,7 @@ a:hover {
   padding: 0;
 }
 
-.sticky+.content {
+.sticky + .content {
   padding-top: 102px;
 }
 

@@ -9,6 +9,7 @@ import { Gnatt_Chart } from "../timeline/Gnatt_Chart";
 import Dnd from "../dnd/Dnd";
 import SearchBox from "../ui/filter/Search";
 import CalendarComponent from "../calendar/Calendar";
+import { TestSummary } from "../summary/TestSummary";
 import {
   colorPallete,
   closeIcon,
@@ -80,9 +81,9 @@ export default function ProjectDetails(props) {
       }
     };
     getProjects();
-    document.getElementById(
-      "main"
-    ).style.backgroundImage = `linear-gradient(to bottom right, ${gradientColorsHexCodes[4].start},${gradientColorsHexCodes[4].middle}, ${gradientColorsHexCodes[4].end})`;
+    const mainDiv = document.getElementById("main");
+    if (mainDiv)
+      mainDiv.style.backgroundImage = `linear-gradient(to bottom right, ${gradientColorsHexCodes[4].start},${gradientColorsHexCodes[4].middle}, ${gradientColorsHexCodes[4].end})`;
   }, [currentUser, issuecreated, id.pid]);
 
   const Board = (
@@ -126,7 +127,6 @@ export default function ProjectDetails(props) {
   const Timeline = (
     <div className=" p-3">
       <Gnatt_Chart
-        project_id={id}
         data={state}
         user={currentUser}
         projectmembers={todos.projectmembers}
@@ -134,7 +134,14 @@ export default function ProjectDetails(props) {
     </div>
   );
   const Summary = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
+    <div className=" p-3 overflow-y-auto flex-grow">
+      <TestSummary
+        data={state}
+        user={currentUser}
+        project_id={id.pid}
+        username={auth?.info?.name}
+      />
+    </div>
   );
   const Approvals = (
     <h2 className="text-center text-slate-500">Not yet implemented</h2>
@@ -349,7 +356,14 @@ export default function ProjectDetails(props) {
             ))}
           </div>
           <div className="  w-full border-[1px] z-0 border-gray-400"></div>
-          <div>{eval(defaultTab)}</div>
+          <div
+            style={{
+              height: window.innerHeight - 192,
+              ...(defaultTab === "Summary" && { overflowY: "scroll" }),
+            }}
+          >
+            {eval(defaultTab)}
+          </div>
         </div>
       </div>
     </div>
