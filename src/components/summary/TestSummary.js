@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RetractIcon, expandDownIcon } from "../../assets/CommonData";
 import Avatar from "react-avatar";
 import ReactECharts from "echarts-for-react";
-import classNames from "classnames";
-import Position from "rsuite/esm/internals/Overlay/Position";
+import customAxios from "../../api/axios";
 export const TestSummary = ({ data, user, project_id, username }) => {
   const [pdetails, setPdetails] = useState(false);
+  const [recentData, setRecentData] = useState(null);
+  useEffect(() => {
+    console.log("Summary useEffect");
+    async function fetchRecords() {
+      console.log("fetch Called");
+      const records = await customAxios.get(`/requestrecords?max_results=20`);
+      debugger;
+      console.log("response", records.data);
+      setRecentData(records.data);
+    }
+    if (user && !recentData) fetchRecords();
+  }, []);
+
   return (
     <div className=" mx-20  rounded">
       <div className="py-2 my-2 flex flex-col items-center">
@@ -155,6 +167,12 @@ export const TestSummary = ({ data, user, project_id, username }) => {
             <br />
             Stay up to date with what's happening across the project.
             <div className="w-full h-[2px] bg-gray-600 mt-2" />
+            {recentData?.map((item, index) => (
+              <div key={index} className="flex justify-between p-1">
+                <p className="text-gray-700">{item.username}</p>
+                <p className="text-gray-700">{item.path}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -177,6 +195,10 @@ const PieChart = () => {
       trigger: "item",
       formatter: "{a} <br/>{b} : {c} ({d}%)",
     },
+    // legend: {
+    //   orient: "vertical",
+    //   left: "left",
+    // },
     series: [
       {
         name: "Dummy Data",
@@ -205,6 +227,7 @@ const PieChart = () => {
             fontSize: 20,
             fontWeight: "bold",
           },
+
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
@@ -216,7 +239,7 @@ const PieChart = () => {
   };
 
   return (
-    <div className=" flex justify-center items-center h-[200px] overflow-hidden">
+    <div className=" flex justify-center items-center h-[400px] overflow-hidden">
       <div className="w-1/2">
         <ReactECharts option={option} />
       </div>

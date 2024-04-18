@@ -134,7 +134,7 @@ export default function ProjectDetails(props) {
     </div>
   );
   const Summary = (
-    <div className=" p-3 overflow-y-auto flex-grow">
+    <div className=" p-3  overflow-y-auto flex-grow">
       <TestSummary
         data={state}
         user={currentUser}
