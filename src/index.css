@@ -60,6 +60,7 @@ a:hover {
     opacity: 1;
   }
 }
+
 .transition-max-height {
   max-height: 100px;
   transition: max-height 1000ms ease-in;

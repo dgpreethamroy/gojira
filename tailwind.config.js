@@ -8,6 +8,10 @@ module.exports = {
 
         myfont2: ["Roboto"],
       },
+      transitionProperty: {
+        height: "height",
+        spacing: "margin, padding",
+      },
     },
   },
   darkMode: "class",

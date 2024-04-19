@@ -42,27 +42,30 @@ export const TestSummary = ({ data, user, project_id, username }) => {
               {pdetails ? RetractIcon : expandDownIcon}
             </div>
           </button>
-          {pdetails && (
-            <div className=" rounded-full bg-slate-200 transition-max-height">
-              <div className="p-2 flex rounded-full items-center">
-                <Avatar
-                  name={username}
-                  size="40"
-                  round={true}
-                  textSizeRatio={1.75}
-                />
-                <div className="flex flex-col">
-                  <p className="ml-2 text-blue-500">{username}</p>
-                  <p className="ml-2">Project Lead</p>
-                </div>
-                <div className="w-[2px] h-10 mx-5 bg-gray-300 "></div>
-                <div className="flex flex-col pr-2">
-                  <p className="ml-2 ">Project Key</p>
-                  <p className="ml-2 ">{project_id}</p>
-                </div>
+          <div
+            className={` transition-all duration-1000 overflow-hidden   ease-in-out ${
+              pdetails ? " h-16" : " h-0"
+            } bg-white rounded-full `}
+          >
+            {" "}
+            <div className="p-2 flex rounded-full items-center">
+              <Avatar
+                name={username}
+                size="40"
+                round={true}
+                textSizeRatio={1.75}
+              />
+              <div className="flex flex-col">
+                <p className="ml-2 text-blue-500">{username}</p>
+                <p className="ml-2">Project Lead</p>
+              </div>
+              <div className="w-[2px] h-10 mx-5 bg-gray-300 "></div>
+              <div className="flex flex-col pr-2">
+                <p className="ml-2 ">Project Key</p>
+                <p className="ml-2 ">{project_id}</p>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
       <div className="grid lg:grid-cols-4 grid-cols-2 gap-6">
