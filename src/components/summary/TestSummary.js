@@ -105,9 +105,8 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
           </button>
           {true && (
             <div
-              className={` transition-all duration-1000 overflow-hidden   ease-in-out ${
-                pdetails ? " h-16" : " h-0"
-              } bg-white rounded-full `}>
+              className={` transition-all duration-1000 overflow-hidden   ease-in-out ${pdetails ? " h-16" : " h-0"
+                } bg-white rounded-full `}>
               <div className="p-2 flex rounded-full items-center">
                 <Avatar name={username} size="40" round={true} textSizeRatio={1.75} />
                 <div className="flex flex-col">
@@ -183,15 +182,15 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
                           {item.method === "DELETE"
                             ? " removed "
                             : item.method === "PUT"
-                            ? " updated "
-                            : item.method === "POST"
-                            ? " created a new"
-                            : " viewed "}
+                              ? " updated "
+                              : item.method === "POST"
+                                ? " created a new"
+                                : " viewed "}
                           {item.path === "/issues/"
                             ? " task "
                             : item.path === "/projects"
-                            ? " Project "
-                            : " item "}
+                              ? " Project "
+                              : " item "}
                           {item.body?.id || item.body.project_id}
                         </p>
                       </div>
