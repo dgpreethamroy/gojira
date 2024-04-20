@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "../ui/modal/Modal";
-import { Issuedata, status_data, labels_data } from "../../assets/CommonData";
+import { Issuedata, labels_data } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
 import Dropdown from "../ui/dropdown/Dropdown";
 export default function CreateIssue({
@@ -16,11 +16,18 @@ export default function CreateIssue({
     return { label: member.name, value: member.id, email: member.email };
   });
   const [warn, setWarn] = useState(false);
-  const [status, setStatus] = useState(status_data[0]);
+  const [status, setStatus] = useState(null);
   const [issuetype, setIssuetype] = useState(Issuedata[0]);
   const [Assignee, setAssignee] = useState("UnAssigned");
   const [labels, setLabels] = useState([]);
+  const status_data = projectinfo.projectissues
+    ? Object.values(projectinfo.projectissues.columns).map((item) => ({
+        option: item.title,
+        label: item.title,
+      }))
+    : null;
 
+  if (!status && status_data) setStatus(status_data[0]);
   const URL = "/issues/";
 
   const handleCreateIssue = async () => {
@@ -140,7 +147,7 @@ export default function CreateIssue({
           </span>
         </div>
         <br />
-        <p className="font-semibold">Labels</p>
+        <p classNcame="font-semibold">Labels</p>
         <Dropdown
           data={labels_data}
           drop={labels}

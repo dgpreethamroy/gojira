@@ -26,7 +26,6 @@ customAxios.interceptors.request.use((request) => {
       JSON.parse(local_auth).accessToken
     }`;
   }
-  debugger;
   if (cancelToken[request.url]) {
     cancelToken[request.url].cancel("Request canceled due to new request.");
   }

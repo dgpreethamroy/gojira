@@ -199,18 +199,20 @@ export default function ProjectDetails(props) {
 
       document.getElementById("main").style.backgroundImage = "none";
 
-      if (color[0] === "solidColors")
+      if (color[0] === "solidColors") {
         document.getElementById("main").style.backgroundColor =
           solidColorsHexCodes[parseInt(color[1])];
-      else if (color[0] === "gradientColors")
+      } else if (color[0] === "gradientColors") {
         document.getElementById(
           "main"
         ).style.backgroundImage = `linear-gradient(to bottom right, ${
           gradientColorsHexCodes[color[1]].start
-        },${gradientColorsHexCodes[color[1]].middle}, ${
-          gradientColorsHexCodes[color[1]].end
-        })`;
-      else document.getElementById("main").style.backgroundColor = "white";
+        }, ${
+          gradientColorsHexCodes[color[1]].middle !== undefined
+            ? gradientColorsHexCodes[color[1]].middle + " ,"
+            : ""
+        } ${gradientColorsHexCodes[color[1]].end})`;
+      } else document.getElementById("main").style.backgroundColor = "white";
     }
   };
   return (
@@ -238,7 +240,7 @@ export default function ProjectDetails(props) {
             </li>
             <li className="inline-block">
               <a
-                href={`/projects/${id.id}`}
+                href={`/projects/${id.pid}`}
                 className="text-black dark:text-white"
               >
                 <span>{todos.projectname}</span>

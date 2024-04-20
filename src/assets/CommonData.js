@@ -1,4 +1,5 @@
 import React from "react";
+import "../index.css";
 
 const menu_icon_dots = (
   <svg
@@ -712,6 +713,11 @@ const gradientColors = [
     middle: "via-indigo-600",
     end: "to-red-800",
   },
+  {
+    start: "from-blue-900",
+    middle: "",
+    end: "to-blue-500",
+  },
 ];
 const gradientColorsHexCodes = [
   {
@@ -738,6 +744,10 @@ const gradientColorsHexCodes = [
     start: "#4fd1c5",
     middle: "#667eea",
     end: "#881388",
+  },
+  {
+    start: "#001F4A",
+    end: "#0033B7",
   },
 ];
 
@@ -857,6 +867,72 @@ const RetractIcon = (
   </svg>
 );
 
+const SummaryIconArray = [
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 24 24"
+    role="presentation"
+    className=" skeleton group-hover:size-10 group-hover:transition-all duration-150  "
+  >
+    <path
+      d="M7.356 10.942a.497.497 0 00-.713 0l-.7.701a.501.501 0 00-.003.71l3.706 3.707a.501.501 0 00.705.003l7.712-7.712a.493.493 0 00-.006-.708l-.7-.7a.504.504 0 00-.714 0l-6.286 6.286a.506.506 0 01-.713 0l-2.288-2.287z"
+      fill="rgb(22 101 52)"
+    ></path>
+  </svg>,
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 24 24"
+    role="presentation"
+    className=" skeleton group-hover:size-10 group-hover:transition-all duration-150"
+  >
+    <path
+      d="M4.02 19.23a1 1 0 001.18 1.18l3.81-.78-4.21-4.21-.78 3.81zM19.844 6.707l-2.12-2.122A1.997 1.997 0 0016.308 4c-.512 0-1.024.195-1.415.585l-9.757 9.758 4.95 4.95 9.757-9.758a2 2 0 000-2.828z"
+      fill="rgb(29 78 216)"
+      fill-rule="evenodd"
+    ></path>
+  </svg>,
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 24 24"
+    role="presentation"
+    className=" skeleton group-hover:size-10 group-hover:transition-all duration-150"
+  >
+    <path
+      d="M13 11V7a1 1 0 00-2 0v4H7a1 1 0 000 2h4v4a1 1 0 002 0v-4h4a1 1 0 000-2h-4z"
+      fill="rgb(168 85 247)"
+      fill-rule="evenodd"
+    ></path>
+  </svg>,
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 24 24"
+    role="presentation"
+    className="skeleton group-hover:size-10 group-hover:transition-all duration-150 "
+  >
+    <path
+      d="M4.995 5h14.01C20.107 5 21 5.895 21 6.994v12.012A1.994 1.994 0 0119.005 21H4.995A1.995 1.995 0 013 19.006V6.994C3 5.893 3.892 5 4.995 5zM5 9v9a1 1 0 001 1h12a1 1 0 001-1V9H5zm1-5a1 1 0 012 0v1H6V4zm10 0a1 1 0 012 0v1h-2V4zm-9 9v-2.001h2V13H7zm8 0v-2.001h2V13h-2zm-4 0v-2.001h2.001V13H11zm-4 4v-2h2v2H7zm4 0v-2h2.001v2H11zm4 0v-2h2v2h-2z"
+      fill="rgb(239 68 68)"
+      fill-rule="evenodd"
+    ></path>
+  </svg>,
+];
+
+const piechartColors = [
+  "#5470c6",
+  "#91cc75",
+  "#fac858",
+  "#ee6666",
+  "#73c0de",
+  "#3ba272",
+  "#fc8452",
+  "#9a60b4",
+  "#ea7ccc",
+];
+
 export {
   Issuedata,
   status_data,
@@ -889,5 +965,7 @@ export {
   gradientColorsHexCodes,
   expandDownIcon,
   RetractIcon,
+  SummaryIconArray,
+  piechartColors,
 };
 // Path: src/assets/CommonData.js

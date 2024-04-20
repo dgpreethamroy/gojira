@@ -60,7 +60,42 @@ a:hover {
     opacity: 1;
   }
 }
+.skeleton {
+  color: inherit;
+  border-radius: 10px;
+  animation: skeleton-loading;
 
+  animation-duration: 300ms;
+  animation-iteration-count: 1;
+
+  animation-direction: alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 80%);
+    color: transparent;
+  }
+
+  100% {
+    background-color: hsl(200, 20%, 95%);
+    color: transparent;
+  }
+}
+
+.skeleton path {
+  animation: skeleton-svg-loading 2s alternate;
+}
+
+@keyframes skeleton-svg-loading {
+  0% {
+    fill-opacity: 0;
+  }
+
+  100% {
+    fill-opacity: 0;
+  }
+}
 .transition-max-height {
   max-height: 100px;
   transition: max-height 1000ms ease-in;

@@ -1,31 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { RetractIcon, expandDownIcon } from "../../assets/CommonData";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  RetractIcon,
+  expandDownIcon,
+  SummaryIconArray,
+  piechartColors,
+} from "../../assets/CommonData";
 import Avatar from "react-avatar";
 import ReactECharts from "echarts-for-react";
 import customAxios from "../../api/axios";
+
+import dayjs from "dayjs";
+dayjs.locale("en");
+
 export const TestSummary = ({ data, user, project_id, username }) => {
   const [pdetails, setPdetails] = useState(false);
   const [recentData, setRecentData] = useState(null);
+  const [loader, setLoader] = useState(true);
+  const RecentActivityRef = useRef(null);
+  const colors = [
+    "bg-purple-200",
+    "text-purple-800",
+    "text-green-800",
+    "text-red-800",
+  ];
   useEffect(() => {
     console.log("Summary useEffect");
     async function fetchRecords() {
       console.log("fetch Called");
       const records = await customAxios.get(`/requestrecords?max_results=20`);
-      debugger;
-      console.log("response", records.data);
       setRecentData(records.data);
     }
     if (user && !recentData) fetchRecords();
+    function onScrollEnd() {
+      // Your code here
+      console.log("Reached the end of the div!");
+    }
+    const addscroll = () => {
+      if (
+        RecentActivityRef.current.scrollHeight -
+          RecentActivityRef.current.scrollTop ===
+        RecentActivityRef.current.clientHeight
+      ) {
+        onScrollEnd();
+      }
+    };
+
+    RecentActivityRef.current?.addEventListener("scroll", addscroll);
+
+    return () => {
+      RecentActivityRef.current?.removeEventListener("scroll", addscroll);
+    };
   }, []);
 
   return (
-    <div className=" mx-20  rounded">
-      <div className="py-2 my-2 flex flex-col items-center">
-        <p className="text-center text-xl font-semibold font-myfont">
+    <div className=" mx-20  rounded  ">
+      <div className="py-2 my-2 flex flex-col items-center   ">
+        <p className="text-center text-xl font-semibold font-myfont skeleton ">
           శుభోదయం, {username.toLowerCase()} ☕️
         </p>
         <br />
-        <p className="text-center text-base ">
+        <p className="text-center text-base skeleton ">
           Here's where you'll view a summary of Go to market sample's status,
           priorities, workload, and more.
         </p>
@@ -37,145 +71,135 @@ export const TestSummary = ({ data, user, project_id, username }) => {
               setPdetails((prev) => !prev);
             }}
           >
-            <div className="flex ">
+            <div className="flex skeleton ">
               <p>Project Details</p>
               {pdetails ? RetractIcon : expandDownIcon}
             </div>
           </button>
-          <div
-            className={` transition-all duration-1000 overflow-hidden   ease-in-out ${
-              pdetails ? " h-16" : " h-0"
-            } bg-white rounded-full `}
-          >
-            {" "}
-            <div className="p-2 flex rounded-full items-center">
-              <Avatar
-                name={username}
-                size="40"
-                round={true}
-                textSizeRatio={1.75}
-              />
-              <div className="flex flex-col">
-                <p className="ml-2 text-blue-500">{username}</p>
-                <p className="ml-2">Project Lead</p>
+          {true && (
+            <div
+              className={` transition-all duration-1000 overflow-hidden   ease-in-out ${
+                pdetails ? " h-16" : " h-0"
+              } bg-white rounded-full `}
+            >
+              <div className="p-2 flex rounded-full items-center">
+                <Avatar
+                  name={username}
+                  size="40"
+                  round={true}
+                  textSizeRatio={1.75}
+                />
+                <div className="flex flex-col">
+                  <p className="ml-2 text-blue-500">{username}</p>
+                  <p className="ml-2">Project Lead</p>
+                </div>
+                <div className="w-[2px] h-10 mx-5 bg-gray-300 "></div>
+                <div className="flex flex-col pr-2">
+                  <p className="ml-2 ">Project Key</p>
+                  <p className="ml-2 ">{project_id}</p>
+                </div>
               </div>
-              <div className="w-[2px] h-10 mx-5 bg-gray-300 "></div>
-              <div className="flex flex-col pr-2">
-                <p className="ml-2 ">Project Key</p>
-                <p className="ml-2 ">{project_id}</p>
-              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="grid lg:grid-cols-4 grid-cols-2 gap-6   ">
+        {[
+          { done: 0, bgcolor: "green" },
+          { updated: 0, bgcolor: "blue" },
+          { created: 1, bgcolor: "purple" },
+          { due: 1, bgcolor: "red" },
+        ].map((item, index) => (
+          <div className="flex bg-white group rounded-lg py-5 px-7 items-center  ">
+            <span
+              className={`  justify-center items-center flex rounded-full w-14 h-14  bg-${item["bgcolor"]}-200  `}
+            >
+              {SummaryIconArray[index]}
+            </span>
+            <div className="flex flex-col pl-4  skeleton ">
+              <p
+                className={`text-xl text-${item["bgcolor"]}-800 font-[500] skeleton `}
+              >
+                {item[Object.keys(item)[0]]} {Object.keys(item)[0]}
+              </p>
+              <p className=""> in the last 7 days</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <br />
+      <div className=" grid grid-cols-2 gap-6 ">
+        <div className="bg-white rounded ">
+          <div className="p-8">
+            <p className="font-semibold text-gray-900 mb-2  skeleton">
+              Status overview
+            </p>
+            <p className=" skeleton">
+              Get a snapshot of the status of your items. View all items
+            </p>
+
+            <div className="h-[250px]">
+              <PieChart data={data} />
             </div>
           </div>
         </div>
-      </div>
-      <div className="grid lg:grid-cols-4 grid-cols-2 gap-6">
-        <div className="flex bg-white hover-div rounded-lg py-5 px-7 items-center">
-          <span className=" justify-center items-center flex rounded-full w-14 h-14  bg-green-200">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              role="presentation"
-              className="svgHovered"
-            >
-              <path
-                d="M7.356 10.942a.497.497 0 00-.713 0l-.7.701a.501.501 0 00-.003.71l3.706 3.707a.501.501 0 00.705.003l7.712-7.712a.493.493 0 00-.006-.708l-.7-.7a.504.504 0 00-.714 0l-6.286 6.286a.506.506 0 01-.713 0l-2.288-2.287z"
-                fill="rgb(22 101 52)"
-              ></path>
-            </svg>
-          </span>
-          <div className="flex flex-col pl-4 pr-8 ">
-            <p className="text-xl text-green-800 font-[500]">0 done</p>
-            <p>in the last 7 days</p>
-          </div>
-        </div>
-        <div className="flex bg-white  hover-div rounded-lg py-5 px-7 items-center">
-          <span className=" justify-center items-center flex rounded-full w-14 h-14  bg-blue-200">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              role="presentation"
-              className="svgHovered"
-            >
-              <path
-                d="M4.02 19.23a1 1 0 001.18 1.18l3.81-.78-4.21-4.21-.78 3.81zM19.844 6.707l-2.12-2.122A1.997 1.997 0 0016.308 4c-.512 0-1.024.195-1.415.585l-9.757 9.758 4.95 4.95 9.757-9.758a2 2 0 000-2.828z"
-                fill="rgb(29 78 216)"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </span>
-          <div className="flex flex-col pl-4 pr-8">
-            <p className="text-xl text-blue-800 font-[500]">0 updated</p>
-            <p>in the last 7 days</p>
-          </div>
-        </div>
-        <div className="flex bg-white  hover-div rounded-lg py-5 px-7 items-center">
-          <span className=" justify-center items-center flex rounded-full w-14 h-14  bg-purple-200">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              role="presentation"
-              className="svgHovered"
-            >
-              <path
-                d="M13 11V7a1 1 0 00-2 0v4H7a1 1 0 000 2h4v4a1 1 0 002 0v-4h4a1 1 0 000-2h-4z"
-                fill="rgb(168 85 247)"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </span>
-          <div className="flex flex-col pl-4 pr-8">
-            <p className="text-xl text-purple-800 font-[500]">0 created</p>
-            <p>in the last 7 days</p>
-          </div>
-        </div>
-        <div className="flex bg-white  hover-div rounded-lg py-5 px-7 items-center">
-          <span className=" justify-center items-center flex rounded-full w-14 h-14  bg-red-200">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              role="presentation"
-              className="svgHovered"
-            >
-              <path
-                d="M4.995 5h14.01C20.107 5 21 5.895 21 6.994v12.012A1.994 1.994 0 0119.005 21H4.995A1.995 1.995 0 013 19.006V6.994C3 5.893 3.892 5 4.995 5zM5 9v9a1 1 0 001 1h12a1 1 0 001-1V9H5zm1-5a1 1 0 012 0v1H6V4zm10 0a1 1 0 012 0v1h-2V4zm-9 9v-2.001h2V13H7zm8 0v-2.001h2V13h-2zm-4 0v-2.001h2.001V13H11zm-4 4v-2h2v2H7zm4 0v-2h2.001v2H11zm4 0v-2h2v2h-2z"
-                fill="rgb(239 68 68)"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </span>
-          <div className="flex flex-col pl-4 pr-8">
-            <p className="text-xl text-red-800 font-[500]">0 due</p>
-            <p>in the last 7 days</p>
-          </div>
-        </div>
-      </div>
-      <br />
-      <div className=" grid grid-cols-2 gap-6  ">
         <div className="bg-white rounded">
           <div className="p-8">
-            <p className="font-semibold text-gray-700">Status overview</p>
-            <br />
-            <p>Get a snapshot of the status of your items. View all items</p>
-            <br />
-            <PieChart />
-          </div>
-        </div>
-        <div className="bg-rose-300 rounded">
-          <div className="p-8">
-            <p className="text-black font-semibold ">Recent Activity</p>
-            <br />
-            Stay up to date with what's happening across the project.
-            <div className="w-full h-[2px] bg-gray-600 mt-2" />
-            {recentData?.map((item, index) => (
-              <div key={index} className="flex justify-between p-1">
-                <p className="text-gray-700">{item.username}</p>
-                <p className="text-gray-700">{item.path}</p>
-              </div>
-            ))}
+            <p className="text-gray-900 font-semibold mb-2 skeleton ">
+              Recent Activity
+            </p>
+
+            <p className="skeleton">
+              Stay up to date with what's happening across the project.
+            </p>
+
+            <div className="w-full h-[1px] bg-gray-600 mt-2 " />
+            <div ref={RecentActivityRef} className="h-[250px] overflow-y-auto ">
+              {recentData?.map((item, index) => {
+                let diff = dayjs()
+                  .startOf("day")
+                  .diff(dayjs(item.timestamp).startOf("day"), "days");
+                return (
+                  <div key={index} className=" flex items-center p-1 ">
+                    <Avatar
+                      name={item.name}
+                      round
+                      size="35"
+                      textSizeRatio={2}
+                      className=" skeleton  font-myfont2"
+                    />
+                    <div className="text-gray-700 flex flex-col m-2 skeleton">
+                      <div className="flex  ">
+                        <p className=" ">
+                          <span className="text-[#0052CC] lowercase skeleton">
+                            {item.name}
+                          </span>
+                          {item.method === "DELETE"
+                            ? " removed "
+                            : item.method === "PUT"
+                            ? " updated "
+                            : item.method === "POST"
+                            ? " created a new"
+                            : " viewed "}
+                          {item.path === "/issues/"
+                            ? " task "
+                            : item.path === "/projects"
+                            ? " Project "
+                            : " item "}
+                          {item.body?.id || item.body.project_id}
+                        </p>
+                      </div>
+
+                      <div className=" text-xs skeleton">
+                        {diff > 0
+                          ? `${diff} ${diff === 1 ? "day" : "days"} ago `
+                          : "today"}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -183,31 +207,34 @@ export const TestSummary = ({ data, user, project_id, username }) => {
   );
 };
 
-const PieChart = () => {
-  // Dummy data
-  const data = [
-    { name: "Category 1", value: 60 },
-    { name: "Category 2", value: 80 },
-    { name: "Category 3", value: 40 },
-    { name: "Category 4", value: 20 },
-  ];
+const PieChart = ({ data }) => {
+  const chartRef = useRef(null);
+
+  const chartData = Object.keys(data.columns).map((item) => {
+    let newObj = {};
+    newObj.name = data.columns[item]["title"];
+    newObj.value = data.columns[item]["taskIds"].length;
+    return newObj;
+  });
 
   // ECharts options
   const option = {
-    tooltip: {
-      trigger: "item",
-      formatter: "{a} <br/>{b} : {c} ({d}%)",
-    },
+    // tooltip: {
+    //   trigger: "item",
+    //   formatter: "{a} <br/>{b} : {c} ({d}%)",
+
+    // },
     // legend: {
     //   orient: "vertical",
-    //   left: "left",
+    //   left: "right",
+    //   formatter: "{a}",
     // },
     series: [
       {
         name: "Dummy Data",
         type: "pie",
-        radius: ["40%", "70%"],
-        data: data.map((item) => ({
+        radius: ["50%", "80%"],
+        data: chartData.map((item) => ({
           value: item.value,
           name: item.name,
         })),
@@ -241,22 +268,63 @@ const PieChart = () => {
     ],
   };
 
+  const triggerHoverOnSlice = (sliceName) => {
+    const echartsInstance = chartRef.current.getEchartsInstance();
+
+    // Find the index of the slice with the given name
+    // const dataIndex = echartsInstance.getModel().getSeries()[0].data.findIndex(dataItem => dataItem.name === sliceName);
+    const dataIndex = chartData.findIndex(
+      (dataItem) => dataItem.name === sliceName
+    );
+
+    // Trigger hover event on the slice
+    echartsInstance.dispatchAction({
+      type: "highlight",
+      seriesIndex: 0,
+      dataIndex,
+    });
+  };
+
+  const handleMouseEnter = (sliceName) => {
+    triggerHoverOnSlice(sliceName);
+  };
+
+  const handleMouseLeave = () => {
+    const echartsInstance = chartRef.current.getEchartsInstance();
+    echartsInstance.dispatchAction({
+      type: "downplay",
+    });
+  };
+
   return (
-    <div className=" flex justify-center items-center h-[400px] overflow-hidden">
-      <div className="w-1/2">
-        <ReactECharts option={option} />
+    <div className=" flex justify-center items-center overflow-hidden">
+      <div className="w-1/2 ">
+        <ReactECharts ref={chartRef} option={option} />
       </div>
       <div className="w-1/2 ">
         <div className="flex flex-col p-5">
-          {data.map((item, index) => (
-            <div key={index} className="flex justify-between p-1">
-              <p className="text-gray-700">{item.name}</p>
-              <p className="text-blue-700">{item.value}</p>
+          {chartData.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between p-1 hover:bg-gray-200 rounded "
+              onMouseEnter={() => handleMouseEnter(item.name)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="flex items-center ">
+                <div
+                  className=" size-4 rounded  mr-2"
+                  style={{ backgroundColor: piechartColors[index] }}
+                />
+                <p className="text-gray-700 skeleton">{item.name}</p>
+              </div>
+              <p className="text-blue-700 skeleton">{item.value}</p>
             </div>
           ))}
-          <div className="flex justify-between p-1">
-            <p className=" font-bold">Total</p>
-            <p className=" font-bold text-blue-700">200</p>
+          <div className="flex justify-between p-1 ">
+            <p className=" font-bold skeleton">Total</p>
+            <p className=" font-bold text-blue-700 skeleton ">
+              {Object.keys(data?.tasks).length}
+            </p>
           </div>
         </div>
       </div>

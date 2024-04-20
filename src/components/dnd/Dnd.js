@@ -89,11 +89,12 @@ const Dnd = ({
     console.log("newState", newState);
     try {
       const response = await axios.put("/projects", {
-        project_id: project_id.id,
+        project_id: project_id.pid,
         issues: newState,
       });
       console.log("response", response);
     } catch (error) {
+      alert("Changes not made, Server Error, Reload to get previous State");
       console.log(error);
     }
   };
