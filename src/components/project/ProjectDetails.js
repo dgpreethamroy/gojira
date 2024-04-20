@@ -134,12 +134,13 @@ export default function ProjectDetails(props) {
     </div>
   );
   const Summary = (
-    <div className=" p-3 overflow-y-auto flex-grow">
+    <div className=" p-3 overflow-hidden flex-grow">
       <TestSummary
         data={state}
         user={currentUser}
         project_id={id.pid}
         username={auth?.info?.name}
+        projectmembers={todos.projectmembers}
       />
     </div>
   );

@@ -24,6 +24,7 @@ export default function CreateIssue({
     ? Object.values(projectinfo.projectissues.columns).map((item) => ({
         option: item.title,
         label: item.title,
+        value: item.title,
       }))
     : null;
 

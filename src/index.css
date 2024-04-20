@@ -61,7 +61,6 @@ a:hover {
   }
 }
 .skeleton {
-  color: inherit;
   border-radius: 10px;
   animation: skeleton-loading;
 
@@ -84,7 +83,7 @@ a:hover {
 }
 
 .skeleton path {
-  animation: skeleton-svg-loading 2s alternate;
+  animation: skeleton-svg-loading 300ms alternate;
 }
 
 @keyframes skeleton-svg-loading {

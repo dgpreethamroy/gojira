@@ -28,6 +28,7 @@ customAxios.interceptors.request.use((request) => {
   }
   if (cancelToken[request.url]) {
     cancelToken[request.url].cancel("Request canceled due to new request.");
+    console.log("Request Cancelled due to new request");
   }
 
   cancelToken[request.url] = axios.CancelToken.source();
