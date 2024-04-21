@@ -2,8 +2,10 @@ import React from "react";
 // Modal Footer Component
 const ModalFooter = ({ setIsOpen, close, children, handleClosed }) => {
   return (
-    <div className="flex justify-end py-1 items-center">
-      <div className={`${close ? "w-[90%]" : "w-full"}`}> {children}</div>
+    <div className={`flex ${close ? "justify-between" : " justify-end"}  items-center`}>
+      <div
+      > {children}
+      </div>
       {close && (
         <div className="text-right text-white ">
           <button

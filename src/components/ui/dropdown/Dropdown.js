@@ -18,14 +18,14 @@ export default function Dropdown({
     query === ""
       ? data
       : data.filter((item) =>
-          item[option]
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
-        );
+        item[option]
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(query.toLowerCase().replace(/\s+/g, ""))
+      );
 
   return (
-    <div className="w-1/3 min-w-[300px] ] ">
+    <div className="w-1/3 min-w-[150px] ] ">
       <Combobox value={drop} onChange={setDrop} multiple={multiple}>
         <div className="relative mt-1">
           <div className="relative w-full border-2 items-center pl-2 flex cursor-default overflow-hidden rounded-md bg-white text-left  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -74,8 +74,7 @@ export default function Dropdown({
                   <Combobox.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4   ${
-                        active ? "bg-gray-500 text-white" : "text-gray-900"
+                      `relative cursor-default select-none py-2 pl-10 pr-4   ${active ? "bg-gray-500 text-white" : "text-gray-900"
                       }`
                     }
                     value={item}
@@ -83,9 +82,8 @@ export default function Dropdown({
                     {({ selected, active }) => (
                       <>
                         <span
-                          className={`block truncate ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
+                          className={`block truncate ${selected ? "font-medium" : "font-normal"
+                            }`}
                         >
                           <div className="flex justify-start  items-center">
                             {icon && <span className="px-2">{item.icon}</span>}
@@ -110,9 +108,8 @@ export default function Dropdown({
                         </span>
                         {selected || item[option] === drop[option] ? (
                           <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? "text-white" : "text-teal-600"
-                            }`}
+                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-teal-600"
+                              }`}
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>

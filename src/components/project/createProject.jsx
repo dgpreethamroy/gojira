@@ -43,7 +43,7 @@ const CreateProject = () => {
   ];
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex ">
       <button
         onClick={() => setIsOpen(true)}
         className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"

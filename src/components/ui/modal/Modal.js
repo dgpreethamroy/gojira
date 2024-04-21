@@ -12,6 +12,7 @@ const Modal = ({
   small = false,
   large = false,
   medium = false,
+  bodyHeight = null,
   handleClosed = () => {
     return null;
   },
@@ -60,79 +61,83 @@ const Modal = ({
             leaveTo="transform scale-0"
           >
             <div
-              className={`flex justify-center items-center fixed inset-0 z-50  ${
-                small && "top-[-340px]"
-              }`}
+              className={`flex justify-center items-center fixed inset-0 z-50  ${small && "top-[-340px]"
+                }`}
             >
               <div
-                className={`bg-white p-4 rounded shadow-lg ${
-                  small
-                    ? "w-[35%] "
-                    : large
+                className={` bg-white  p-4 rounded   ${small
+                  ? "w-[35%] "
+                  : large
                     ? "w-[90%] "
                     : medium
-                    ? "w-[50%]"
-                    : " w-[60%]"
-                }  `}
+                      ? "w-[50%]"
+                      : " w-[75%]"
+                  }  `}
               >
-                <div className="Header">
+                <div className="Header bg-white rounded-lg ">
                   {children.length
                     ? children?.map((item) => {
-                        if (item.type === "ModalHeader")
-                          return (
-                            <ModalHeader
-                              setIsOpen={setIsOpen}
-                              setIsMinimized={setIsMinimized}
-                              children={item.props.children}
-                              handleClosed={handleClosed}
-                              {...item.props}
-                            />
-                          );
-                      })
+                      if (item.type === "ModalHeader")
+                        return (
+                          <ModalHeader
+                            setIsOpen={setIsOpen}
+                            setIsMinimized={setIsMinimized}
+                            children={item.props.children}
+                            handleClosed={handleClosed}
+                            {...item.props}
+                          />
+                        );
+                    })
                     : children.type === "ModalHeader" && (
-                        <ModalHeader
-                          setIsMinimized={setIsMinimized}
-                          setIsOpen={setIsOpen}
-                          handleClosed={handleClosed}
-                          {...children.props}
-                          children={children.props.children}
-                        />
-                      )}
+                      <ModalHeader
+                        setIsMinimized={setIsMinimized}
+                        setIsOpen={setIsOpen}
+                        handleClosed={handleClosed}
+                        {...children.props}
+                        children={children.props.children}
+                      />
+                    )}
                 </div>
 
-                <div className="max-h-96 overflow-y-auto " id="modalbody">
+                <div className=" bg-white rounded-lg px-2 my-4"
+                  style={{
+                    height: bodyHeight ? bodyHeight : 'auto',
+                    maxHeight: bodyHeight ? '' : 384,
+                    overflowY: bodyHeight ? 'hidden' : 'auto'
+                  }}
+                  id="modalbody">
                   {children.length
                     ? children?.filter((item) => {
-                        return (
-                          item.type !== "ModalHeader" &&
-                          item.type !== "ModalFooter"
-                        );
-                      })
+                      return (
+                        item.type !== "ModalHeader" &&
+                        item.type !== "ModalFooter"
+                      );
+                    })
                     : children.type !== "ModalFooter" &&
-                      children.type !== "ModalHeader" &&
-                      children}
+                    children.type !== "ModalHeader" &&
+                    children}
                 </div>
-                <div className="Footer">
+                <div className="Footer bg-white rounded-lg  ">
                   {children.length
                     ? children?.map((item) => {
-                        if (item.type === "ModalFooter")
-                          return (
-                            <ModalFooter
-                              setIsOpen={setIsOpen}
-                              handleClosed={handleClosed}
-                              children={item.props.children}
-                              {...item.props}
-                            />
-                          );
-                      })
+                      if (item.type === "ModalFooter")
+                        return (
+                          <ModalFooter
+                            setIsOpen={setIsOpen}
+                            handleClosed={handleClosed}
+                            children={item.props.children}
+                            {...item.props}
+                          />
+                        );
+                    })
                     : children.type === "ModalFooter" && (
-                        <ModalFooter
-                          setIsOpen={setIsOpen}
-                          handleClosed={handleClosed}
-                          {...children.props}
-                          children={children.props.children}
-                        />
-                      )}
+                      <ModalFooter
+                        setIsOpen={setIsOpen}
+                        handleClosed={handleClosed}
+                        {...children.props}
+                        children={children.props.children}
+                      />
+                    )}
                 </div>
               </div>
             </div>

@@ -93,8 +93,8 @@ export const ListIssues = (props) => {
       listResponse?.columns?.length > 0
         ? listResponse?.columns
         : listResponse
-        ? Object.keys(Object.values(listResponse?.tasks)[0])
-        : null,
+          ? Object.keys(Object.values(listResponse?.tasks)[0])
+          : null,
 
     rows: listResponse && Object.values(listResponse?.tasks),
   };
@@ -128,9 +128,8 @@ export const ListIssues = (props) => {
     navigator.clipboard.writeText(csvContent);
     dispatch({
       type: "SUCCESS",
-      message: ` ${selectedData.length} ${
-        selectedData.length > 1 ? "items" : "item"
-      } copied to Clipboard`,
+      message: ` ${selectedData.length} ${selectedData.length > 1 ? "items" : "item"
+        } copied to Clipboard`,
     });
   };
 
@@ -290,7 +289,9 @@ export const ListIssues = (props) => {
             // document.getElementsByClassName('ScrollbarsCustom-Track ScrollbarsCustom-TrackY')[0].style.top = '50px'
           }
 
-          <table style={{ width: tablewidth + "px" }}>
+          <table
+            style={{ width: tablewidth }}
+          >
             <thead className="sticky top-0 bg-slate-100">
               <tr>
                 <th className="m-2 p-3 items-center w-12  text-center">
@@ -321,14 +322,13 @@ export const ListIssues = (props) => {
                       {column === "issuetype"
                         ? "Type"
                         : column === "id"
-                        ? "Key"
-                        : column.charAt(0).toUpperCase() + column.slice(1)}
+                          ? "Key"
+                          : column.charAt(0).toUpperCase() + column.slice(1)}
                       {(column !== "labels") ^ (column !== "linkedtasks") ? null : (
                         <div
                           onClick={() => handleSort(column)}
-                          className={`${
-                            label === column ? "opacity-100" : "opacity-0 toggle-div"
-                          }  cursor-pointer  `}>
+                          className={`${label === column ? "opacity-100" : "opacity-0 toggle-div"
+                            }  cursor-pointer  `}>
                           {arrow === "asec" ? downArrow : upArrow}
                         </div>
                       )}
@@ -358,7 +358,9 @@ export const ListIssues = (props) => {
                     />
                   </td>
                   {data.columns.map((column) => (
-                    <td key={column} className="border border-gray-300 p-2 m-1 ">
+                    <td key={column} className="border border-gray-300 p-2 m-1 "
+                      style={{ width: getColumnWidth(column) }}
+                    >
                       {column === "labels" ? (
                         <div className="flex truncate justify-start gap-1">
                           {row[column].map((label) => (
@@ -436,9 +438,8 @@ export const ListIssues = (props) => {
           )}
           {selectedRows.length > 0 && (
             <div className="fixed bottom-5 left-1/2 transform  translate-x-[-50%] bg-white border p-5 rounded-xl shadow-2xl z-50 flex justify-between items-center">
-              <div className="border-r-2 border-gray-800 px-2">{`${selectedRows.length} ${
-                selectedRows.length > 1 ? "rows" : "row"
-              }  selected`}</div>
+              <div className="border-r-2 border-gray-800 px-2">{`${selectedRows.length} ${selectedRows.length > 1 ? "rows" : "row"
+                }  selected`}</div>
               <div style={{ display: "flex" }}>
                 <button
                   style={{ display: "flex", alignItems: "center" }}

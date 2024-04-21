@@ -3,8 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 h1 {
   @apply text-3xl font-bold;
+}
+
+h2 {
+  @apply text-2xl
 }
 
 .search-input {
@@ -41,8 +47,7 @@ h1 {
     text-shadow: 0 0 20px #00fffb, 0 0 40px #0081bc;
   }
 
-  .customScrollbar {
-  }
+  .customScrollbar {}
 }
 
 a {
@@ -60,6 +65,7 @@ a:hover {
     opacity: 1;
   }
 }
+
 .skeleton {
   border-radius: 10px;
   animation: skeleton-loading;
@@ -95,11 +101,13 @@ a:hover {
     fill-opacity: 0;
   }
 }
+
 .transition-max-height {
   max-height: 100px;
   transition: max-height 1000ms ease-in;
 }
-.hover-div:hover + .hide-div {
+
+.hover-div:hover+.hide-div {
   opacity: 1;
 }
 
@@ -231,7 +239,7 @@ a:hover {
   padding: 0;
 }
 
-.sticky + .content {
+.sticky+.content {
   padding-top: 102px;
 }
 

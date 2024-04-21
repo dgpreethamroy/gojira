@@ -429,24 +429,25 @@ const BarChart = ({ data }) => {
     xAxis: {
       type: "category",
       data: barData.map((item) => item.name),
-      axisLabel: {
-        rotate: -45,
-        formatter: function (value, index) {
-          // Access the icon corresponding to the day
-          var icon = PriorityIcons[index];
-          // Return the formatted label with icon
-          return "{title|" + value + "}";
-        },
-        rich: {
-          title: {
-            lineHeight: 30,
-            align: "center",
-            color: "blue",
-            fontSize: 14,
-          },
-        },
-      },
-    },
+      // axisLabel: {
+      //   rotate: -45,
+      //   formatter: function (value, index) {
+      //     // Access the icon corresponding to the day
+      //     var icon = PriorityIcons[index];
+      //     // Return the formatted label with icon
+      //     return "{title|" + value + "}";
+      //   },
+      //   rich: {
+      //     title: {
+      //       lineHeight: 30,
+      //       align: "center",
+      //       color: "blue",
+      //       fontSize: 14,
+      //     },
+      //   },
+      // },
+    }
+    ,
     yAxis: {
       type: "value",
     },
@@ -465,3 +466,13 @@ const BarChart = ({ data }) => {
 
   return <ReactECharts option={options} className="overflow-hidden" />;
 };
+
+
+
+// implement issue modal
+// implement Create new Project
+// mini map
+// show priority in task across all tabs
+// dragging task to end of main
+// List table width not working
+// Timeline dragend automatically clicking

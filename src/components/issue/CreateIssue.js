@@ -22,10 +22,10 @@ export default function CreateIssue({
   const [labels, setLabels] = useState([]);
   const status_data = projectinfo.projectissues
     ? Object.values(projectinfo.projectissues.columns).map((item) => ({
-        option: item.title,
-        label: item.title,
-        value: item.title,
-      }))
+      option: item.title,
+      label: item.title,
+      value: item.title,
+    }))
     : null;
 
   if (!status && status_data) setStatus(status_data[0]);
@@ -92,8 +92,10 @@ export default function CreateIssue({
 
   return (
     <Modal isOpen={modal} setIsOpen={setModal}>
-      <Modal.Header close={true} minimize={true}>
-        Create issue
+      <Modal.Header close={true} minimize={true}  >
+        <h2 className="  text-black">
+          Create issue
+        </h2>
       </Modal.Header>
       <>
         <div className="after:content-['*'] after:text-red-800">
@@ -125,7 +127,7 @@ export default function CreateIssue({
           id="description"
           name="description"
           placeholder="Description"
-          className="w-full p-2 border-2 border-gray-200 rounded-md"
+          className="w-full p-2 border-2 h-40 border-gray-200 rounded-md resize-none"
         ></textarea>
         <br />
         <div className="flex flex-col">
@@ -158,7 +160,7 @@ export default function CreateIssue({
         />
         <br />
       </>
-      <Modal.Footer>
+      <Modal.Footer >
         <button
           className=" bg-white text-gray-600 px-2 py-1 rounded font-bold text-lg"
           onClick={() => setWarn(true)}

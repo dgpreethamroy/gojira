@@ -115,12 +115,12 @@ const Task = (props) => {
               </div>
             </div>
 
-            <div className="py-2">
+            <div className=" flex flex-wrap gap-2 py-2">
               {props.task.labels.map(
                 (label) =>
                   label && (
                     <span
-                      className="bg-gray-200 text-black px-2 mx-1 py-1 rounded"
+                      className="bg-gray-200 text-black px-2 mx-[1px] rounded"
                       key={label}
                     >
                       {label}
@@ -133,9 +133,8 @@ const Task = (props) => {
                 <div className="flex items-center">
                   <div className="h-5 w-5 flex items-center">{Icon}</div>
                   <span
-                    className={`font-semibold text-black text-sm px-1 ${
-                      props.parenttitle === "Done" && "line-through"
-                    }`}
+                    className={`font-semibold text-black text-sm px-1 ${props.parenttitle === "Done" && "line-through"
+                      }`}
                   >
                     {props.task.id.toUpperCase()}
                   </span>
@@ -145,7 +144,7 @@ const Task = (props) => {
                   onMouseLeave={() => setShowassignee(false)}
                 >
                   <Avatar
-                    className="hover-div"
+                    className=" cursor-pointer"
                     name={assignee_name}
                     textSizeRatio={2}
                     size="28"
