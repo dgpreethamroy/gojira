@@ -12,8 +12,6 @@ import ReactECharts from "echarts-for-react";
 import customAxios from "../../api/axios";
 
 import dayjs from "dayjs";
-import { COLOR } from "rsuite/esm/utils/constants";
-import { validate } from "uuid";
 dayjs.locale("en");
 
 export const TestSummary = ({ data, user, project_id, username, projectmembers }) => {
@@ -22,6 +20,7 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
   const RecentActivityRef = useRef(null);
   const [maxResults, setMaxResults] = useState(10);
   const [resultsFullyLoaded, setResultsFullyLoaded] = useState(false);
+  const [issueStats, setIssueStats] = useState(null);
   const loaderRef = useRef(null);
   const colors = ["bg-purple-200", "text-purple-800", "text-green-800", "text-red-800"];
   useEffect(() => {
@@ -29,11 +28,19 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
 
     if (user && !recentData) fetchRecords().then((res) => setRecentData(res.data));
 
-    // RecentActivityRef.current?.addEventListener("scroll", addscroll);
-
-    // return () => {
-    //   RecentActivityRef.current?.removeEventListener("scroll", addscroll);
-    // };
+    if (user && !issueStats) {
+      async function loadStats() {
+        await customAxios.get(`/issues/stats`).then((res, err) => {
+          if (res.status === 200 && !err) {
+            setIssueStats(res.data);
+          } else {
+            alert("Error fetching data");
+            console.log(err);
+          }
+        });
+      }
+      loadStats();
+    }
   }, []);
   async function fetchRecords(maxResults = 10) {
     console.log("fetch Called");
@@ -118,12 +125,7 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
         </div>
       </div>
       <div className="grid lg:grid-cols-4 grid-cols-2 gap-6   ">
-        {[
-          { done: 0, bgcolor: "green" },
-          { updated: 0, bgcolor: "blue" },
-          { created: 1, bgcolor: "purple" },
-          { due: 1, bgcolor: "red" },
-        ].map((item, index) => (
+        {issueStats?.map((item, index) => (
           <div className="flex bg-white group rounded-lg py-5 px-7 items-center  ">
             <span
               className={`  justify-center items-center flex rounded-full w-14 h-14  bg-${item["bgcolor"]}-200  `}>
@@ -133,7 +135,7 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
               <p className={`text-xl text-${item["bgcolor"]}-800 font-[500] skeleton `}>
                 {item[Object.keys(item)[0]]} {Object.keys(item)[0]}
               </p>
-              <p className=""> in the last 7 days</p>
+              <p className=""> in the {Object.keys(item)[0] === "due" ? "next" : "last"} 7 days</p>
             </div>
           </div>
         ))}

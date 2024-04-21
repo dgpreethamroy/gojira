@@ -3,7 +3,7 @@ import React from "react";
 const ModalFooter = ({ setIsOpen, close, children, handleClosed }) => {
   return (
     <div className="flex justify-end py-1 items-center">
-      <div className={`${close ? "w-[90%]" : "w-auto"}`}> {children}</div>
+      <div className={`${close ? "w-[90%]" : "w-full"}`}> {children}</div>
       {close && (
         <div className="text-right text-white ">
           <button
@@ -11,8 +11,7 @@ const ModalFooter = ({ setIsOpen, close, children, handleClosed }) => {
               setIsOpen(false);
               handleClosed();
             }}
-            className=" px-4 py-2 text-gray-500  rounded font-bold text-lg"
-          >
+            className=" px-4 py-2 text-gray-500  rounded font-bold text-lg">
             Cancel
           </button>
         </div>

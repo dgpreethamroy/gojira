@@ -5,12 +5,7 @@ import AuthContext from "../../context/AuthProvider";
 import IssueModal from "../issue/issueModal";
 import { useSearchParams } from "react-router-dom";
 import { AiOutlineClose, AiOutlineCopy, AiOutlineDelete } from "react-icons/ai";
-import {
-  upArrow,
-  downArrow,
-  waring_Icon,
-  listIssuesLabelIcons,
-} from "../../assets/CommonData";
+import { upArrow, downArrow, waring_Icon, listIssuesLabelIcons } from "../../assets/CommonData";
 import Modal from "../ui/modal/Modal";
 import customAxios from "../../api/axios";
 import { useNotification } from "../Notifications/NotificationProvider";
@@ -105,9 +100,7 @@ export const ListIssues = (props) => {
   };
   if (!data && listResponse) {
     setData(listData);
-    setTableWidth(
-      listData?.columns?.reduce((acc, curr) => acc + getColumnWidth(curr), 48)
-    );
+    setTableWidth(listData?.columns?.reduce((acc, curr) => acc + getColumnWidth(curr), 48));
   }
 
   if (!props.state.tasks) return <div>Loading...</div>;
@@ -168,9 +161,7 @@ export const ListIssues = (props) => {
     deleterows();
     dispatch({
       type: "Fail",
-      message: ` ${selectedRows.length} ${
-        selectedRows.length > 1 ? "items" : "item"
-      } deleted`,
+      message: ` ${selectedRows.length} ${selectedRows.length > 1 ? "items" : "item"} deleted`,
     });
   };
 
@@ -186,24 +177,16 @@ export const ListIssues = (props) => {
     const newData = { ...data };
 
     if (draggedItem.type === "columns") {
-      const draggedIndex = newData.columns.findIndex(
-        (column) => column === draggedItem.id
-      );
-      const targetIndex = newData.columns.findIndex(
-        (column) => column === targetItem.id
-      );
+      const draggedIndex = newData.columns.findIndex((column) => column === draggedItem.id);
+      const targetIndex = newData.columns.findIndex((column) => column === targetItem.id);
 
       // Reorder columns
       const tempColumn = newData.columns[draggedIndex];
       newData.columns.splice(draggedIndex, 1);
       newData.columns.splice(targetIndex, 0, tempColumn);
     } else if (draggedItem.type === "rows") {
-      const draggedIndex = newData.rows.findIndex(
-        (row) => row.id === draggedItem.id
-      );
-      const targetIndex = newData.rows.findIndex(
-        (row) => row.id === targetItem.id
-      );
+      const draggedIndex = newData.rows.findIndex((row) => row.id === draggedItem.id);
+      const targetIndex = newData.rows.findIndex((row) => row.id === targetItem.id);
 
       const tempRow = newData.rows[draggedIndex];
       newData.rows.splice(draggedIndex, 1);
@@ -241,35 +224,12 @@ export const ListIssues = (props) => {
     }
   };
 
-  const handlecustomScroll = (e) => {
-    const initPos = { left: e.clientX };
-    const shiftX = initPos.left - e.currentTarget.getBoundingClientRect().left;
-    const target = e.target; //initPos.left+100-shiftX
-    const handleMove = (e) => {
-      function moveAt(pageX) {
-        if (pageX - shiftX > 0 && window.innerWidth - 60 > pageX + 100 - shiftX)
-          target.style.left = pageX - shiftX + "px";
-      }
-      moveAt(e.pageX);
-    };
-
-    const handleUp = (e) => {
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseup", handleUp);
-    };
-    document.addEventListener("mousemove", handleMove);
-    document.addEventListener("mouseup", handleUp);
-  };
   if (!currentUser) return <div>Loading...</div>;
 
   return (
     <div>
       <div id="Filters" className="flex ">
-        <SearchBox
-          placeholder="List"
-          inputSearch={inputSearch}
-          setSearchinput={setSearchinput}
-        />
+        <SearchBox placeholder="List" inputSearch={inputSearch} setSearchinput={setSearchinput} />
         {props.info?.projectmembers.map((item) => {
           return (
             <button className="rounded-full hover:bg-gray-300 p-1">
@@ -322,16 +282,9 @@ export const ListIssues = (props) => {
             newprops.style.borderRadius = 8;
             newprops.style.paddingLeft = 10;
             const { elementRef, ...restProps } = newprops;
-            return (
-              <span
-                {...restProps}
-                ref={elementRef}
-                className="MyAwesomeScrollbarsWrapper"
-              />
-            );
+            return <span {...restProps} ref={elementRef} className="MyAwesomeScrollbarsWrapper" />;
           },
-        }}
-      >
+        }}>
         <div className="rounded-lg  bg-white border border-gray-300 ">
           {
             // document.getElementsByClassName('ScrollbarsCustom-Track ScrollbarsCustom-TrackY')[0].style.top = '50px'
@@ -357,15 +310,12 @@ export const ListIssues = (props) => {
                   <th
                     key={column}
                     draggable
-                    onDragStart={(e) =>
-                      onDragStart(e, { id: column }, "columns")
-                    }
+                    onDragStart={(e) => onDragStart(e, { id: column }, "columns")}
                     onDragOver={onDragOver}
                     onDrop={(e) => onDrop(e, { id: column }, "columns")}
                     className={`m-1 border border-t-0 border-gray-300 font-normal hover:cursor-grab hover-div text-gray-700 items-center text-center
                     `}
-                    style={{ width: getColumnWidth(column) }}
-                  >
+                    style={{ width: getColumnWidth(column) }}>
                     <div className="flex justify-start pl-1">
                       {listIssuesLabelIcons[column]}
                       {column === "issuetype"
@@ -373,16 +323,12 @@ export const ListIssues = (props) => {
                         : column === "id"
                         ? "Key"
                         : column.charAt(0).toUpperCase() + column.slice(1)}
-                      {(column !== "labels") ^
-                      (column !== "linkedtasks") ? null : (
+                      {(column !== "labels") ^ (column !== "linkedtasks") ? null : (
                         <div
                           onClick={() => handleSort(column)}
                           className={`${
-                            label === column
-                              ? "opacity-100"
-                              : "opacity-0 toggle-div"
-                          }  cursor-pointer  `}
-                        >
+                            label === column ? "opacity-100" : "opacity-0 toggle-div"
+                          }  cursor-pointer  `}>
                           {arrow === "asec" ? downArrow : upArrow}
                         </div>
                       )}
@@ -400,12 +346,9 @@ export const ListIssues = (props) => {
                   // onDragOver={onDragOver}
                   // onDrop={(e) => onDrop(e, { id: row.id }, "rows")}
                   style={{
-                    backgroundColor: isRowSelected(row.id)
-                      ? "lightblue"
-                      : "inherit",
+                    backgroundColor: isRowSelected(row.id) ? "lightblue" : "inherit",
                   }}
-                  className=" h-10"
-                >
+                  className=" h-10">
                   <td className="border border-gray-300 border-l-0 m-1 p-2  items-center text-center">
                     <input
                       type="checkbox"
@@ -415,15 +358,12 @@ export const ListIssues = (props) => {
                     />
                   </td>
                   {data.columns.map((column) => (
-                    <td
-                      key={column}
-                      className="border border-gray-300 p-2 m-1 "
-                    >
+                    <td key={column} className="border border-gray-300 p-2 m-1 ">
                       {column === "labels" ? (
-                        <div className="flex justify-start">
+                        <div className="flex truncate justify-start gap-1">
                           {row[column].map((label) => (
                             <span className="bg-gray-300 rounded mx-1  ">
-                              <p className="px-2">{label}</p>
+                              <p className="px-2 truncate">{label}</p>
                             </span>
                           ))}
                         </div>
@@ -444,8 +384,7 @@ export const ListIssues = (props) => {
                               newParams.set("selectedIssue", row[column]);
                               return newParams;
                             });
-                          }}
-                        >
+                          }}>
                           <p className="underline">{row[column]}</p>
                         </button>
                       ) : (
@@ -462,30 +401,23 @@ export const ListIssues = (props) => {
             <Modal.Header className="h-12">
               <p className="font-semibold flex items-center">
                 {waring_Icon}
-                Delete {selectedRows.length}{" "}
-                {selectedRows.length > 1 ? "items" : "item"} ?
+                Delete {selectedRows.length} {selectedRows.length > 1 ? "items" : "item"} ?
               </p>
             </Modal.Header>
             <p>
               You’re about to permanently delete this {selectedRows.length}{" "}
-              {selectedRows.length > 1 ? "items" : "item"}. All comments,
-              attachments, data and associated subtasks will be deleted.
+              {selectedRows.length > 1 ? "items" : "item"}. All comments, attachments, data and
+              associated subtasks will be deleted.
             </p>
             <br />
-            <p>
-              If you’re not sure, you can resolve or close these items instead.
-            </p>
+            <p>If you’re not sure, you can resolve or close these items instead.</p>
             <Modal.Footer>
-              <button
-                className="p-2 m-2 rounded font-medium"
-                onClick={() => setIsOpen(false)}
-              >
+              <button className="p-2 m-2 rounded font-medium" onClick={() => setIsOpen(false)}>
                 Cancel
               </button>
               <button
                 className="py-2 px-3 bg-red-700 text-white rounded"
-                onClick={handleDeleteRows}
-              >
+                onClick={handleDeleteRows}>
                 Delete
               </button>
             </Modal.Footer>
@@ -504,23 +436,21 @@ export const ListIssues = (props) => {
           )}
           {selectedRows.length > 0 && (
             <div className="fixed bottom-5 left-1/2 transform  translate-x-[-50%] bg-white border p-5 rounded-xl shadow-2xl z-50 flex justify-between items-center">
-              <div className="border-r-2 border-gray-800 px-2">{`${
-                selectedRows.length
-              } ${selectedRows.length > 1 ? "rows" : "row"}  selected`}</div>
+              <div className="border-r-2 border-gray-800 px-2">{`${selectedRows.length} ${
+                selectedRows.length > 1 ? "rows" : "row"
+              }  selected`}</div>
               <div style={{ display: "flex" }}>
                 <button
                   style={{ display: "flex", alignItems: "center" }}
                   className="px-2"
-                  onClick={handleCopyToClipboard}
-                >
+                  onClick={handleCopyToClipboard}>
                   <AiOutlineCopy />
                   Copy to Clipboard
                 </button>
                 <button
                   className="px-2"
                   style={{ display: "flex", alignItems: "center" }}
-                  onClick={() => setIsOpen(true)}
-                >
+                  onClick={() => setIsOpen(true)}>
                   <AiOutlineDelete />
                   Delete
                 </button>
