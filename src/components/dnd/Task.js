@@ -2,11 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import Avatar from "react-avatar";
-import {
-  Issuedata,
-  menu_icon_dots,
-  Delete_Icon,
-} from "../../assets/CommonData";
+import { Issuedata, menu_icon_dots, Delete_Icon } from "../../assets/CommonData";
 import customAxios from "../../api/axios";
 import IssueModal from "../issue/issueModal";
 import Menu from "../ui/menu/Menu";
@@ -17,8 +13,7 @@ const Container = styled.div`
   padding: 8px;
   padding-bottom: 0px;
   margin-bottom: 8px;
-  background-color: ${(props) =>
-    props.isDragging ? "#b3ffb3" : "rgb(250,250,250)"};
+  background-color: ${(props) => (props.isDragging ? "#b3ffb3" : "rgb(250,250,250)")};
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.02);
   &:hover {
     background-color: #99ccff;
@@ -31,11 +26,9 @@ const Task = (props) => {
   const [selectIssue, setSelectIssue] = useSearchParams({
     selectedIssue: null,
   });
-  const assignee_name = props.projectmembers.filter(
-    (obj) => obj.id === props.task.assignee
-  )[0].name;
-  const Icon = Issuedata.filter((obj) => obj.label === props.task.issuetype)[0]
-    .icon;
+  const assignee_name = props.projectmembers.filter((obj) => obj.id === props.task.assignee)[0]
+    .name;
+  const Icon = Issuedata.filter((obj) => obj.label === props.task.issuetype)[0].icon;
 
   /// handle selectIssue Filter
   const selectedIssue = selectIssue.get("selectedIssue");
@@ -44,10 +37,7 @@ const Task = (props) => {
       setShowIssue(true);
     }
     // Check if the unwanted query parameter exists and remove it
-    if (
-      selectIssue.has("selectedIssue") &&
-      selectIssue.get("selectedIssue") === "false"
-    ) {
+    if (selectIssue.has("selectedIssue") && selectIssue.get("selectedIssue") === "false") {
       // const updatedParams = new URLSearchParams(selectIssue);
       // updatedParams.delete("selectedIssue");
       // // Update the URL without the selectedIssue
@@ -88,19 +78,16 @@ const Task = (props) => {
           <Container
             className="shake hover-crap" //shake here
             onClick={(e) => {
-              !["customMenu", "TaskMenu", "customMenuOption"].some(
-                (className) => e.target.classList.contains(className)
+              !["customMenu", "TaskMenu", "customMenuOption"].some((className) =>
+                e.target.classList.contains(className)
               ) && setSelectIssue({ selectedIssue: props.task.id });
             }}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
-          >
+            isDragging={snapshot.isDragging}>
             <div className="flex items-center justify-between">
-              <p className="text-black font-semibold py-2">
-                {props.task.summary}
-              </p>
+              <p className="text-black font-semibold py-2">{props.task.summary}</p>
               <div className=" hidenow">
                 <Menu
                   name={menu_icon_dots}
@@ -119,10 +106,7 @@ const Task = (props) => {
               {props.task.labels.map(
                 (label) =>
                   label && (
-                    <span
-                      className="bg-gray-200 text-black px-2 mx-[1px] rounded"
-                      key={label}
-                    >
+                    <span className="bg-gray-200 text-black px-2 mx-[1px] rounded" key={label}>
                       {label}
                     </span>
                   )
@@ -133,16 +117,15 @@ const Task = (props) => {
                 <div className="flex items-center">
                   <div className="h-5 w-5 flex items-center">{Icon}</div>
                   <span
-                    className={`font-semibold text-black text-sm px-1 ${props.parenttitle === "Done" && "line-through"
-                      }`}
-                  >
+                    className={`font-semibold text-black text-sm px-1 ${
+                      props.parenttitle === "Done" && "line-through"
+                    }`}>
                     {props.task.id.toUpperCase()}
                   </span>
                 </div>
                 <div
                   onMouseEnter={() => setShowassignee(true)}
-                  onMouseLeave={() => setShowassignee(false)}
-                >
+                  onMouseLeave={() => setShowassignee(false)}>
                   <Avatar
                     className=" cursor-pointer"
                     name={assignee_name}
@@ -155,8 +138,7 @@ const Task = (props) => {
               {showassignee ? (
                 <span
                   className=" flex  justify-end py-1  text-black italic font-bold"
-                  id="assignee"
-                >
+                  id="assignee">
                   Assignee: {assignee_name}
                 </span>
               ) : (
@@ -170,6 +152,7 @@ const Task = (props) => {
               showIssue={showIssue}
               setShowIssue={setShowIssue}
               setSelectIssue={setSelectIssue}
+              state={props.state}
             />
           )}
         </>

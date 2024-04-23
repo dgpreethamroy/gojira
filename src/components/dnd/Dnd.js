@@ -21,28 +21,18 @@ const handleCancelEdit = (e) => {
   document.getElementById("createColumn").style.display = "block";
   document.getElementById("createColumnDiv").style.display = "none";
 };
-const Dnd = ({
-  state,
-  setState,
-  project_id,
-  projectmembers,
-  inputSearch,
-  parent,
-}) => {
+const Dnd = ({ state, setState, project_id, projectmembers, inputSearch, parent }) => {
   const [minimapwidth, setMiniMapWidth] = useState(0);
   const miniMap = useRef(null);
 
   useEffect(() => {
-    const mapwidth =
-      parent?.current?.clientWidth / parent?.current?.scrollWidth;
+    const mapwidth = parent?.current?.clientWidth / parent?.current?.scrollWidth;
     if (mapwidth !== NaN) setMiniMapWidth(mapwidth);
   }, []);
   const handleColumnDelete = (deletecolumn) => {
     let NewState = {
       ...state,
-      columnOrder: state.columnOrder.filter(
-        (column) => column !== deletecolumn
-      ),
+      columnOrder: state.columnOrder.filter((column) => column !== deletecolumn),
       columns: { ...state.columns, [deletecolumn]: undefined },
     };
     setState(NewState);
@@ -105,10 +95,7 @@ const Dnd = ({
     if (!destination) {
       return;
     }
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
     if (type === "column") {
@@ -131,8 +118,7 @@ const Dnd = ({
       newTaskIds.splice(newTaskIds.indexOf(draggableId), 1);
       newTaskIds.splice(
         destination.index +
-          (start.taskIds.length -
-            mod_state.columns[source.droppableId].taskIds.length),
+          (start.taskIds.length - mod_state.columns[source.droppableId].taskIds.length),
         0,
         draggableId
       );
@@ -231,8 +217,7 @@ const Dnd = ({
     e.preventDefault();
     if (!mouseDown) return;
     if (
-      e.pageX - startX + miniMap.current.clientWidth <
-        mod_state.columnOrder.length * 24 &&
+      e.pageX - startX + miniMap.current.clientWidth < mod_state.columnOrder.length * 24 &&
       offsetLeft <= e.pageX - startX
     ) {
       miniMap.current.style.left = e.pageX - startX + "px";
@@ -246,16 +231,13 @@ const Dnd = ({
       <DragDropContext
         onDragEnd={onDragEnd}
         onDragStart={(e) => onDragStart(e)}
-        onDragUpdate={onDragUpdate}
-      >
+        onDragUpdate={onDragUpdate}>
         <Droppable droppableId="sfdaf" direction="horizantal" type="column">
           {(provided) => (
             <Container {...provided.droppableProps} ref={provided.innerRef}>
               {mod_state.columnOrder.map((columnId, index) => {
                 const column = mod_state.columns[columnId];
-                const tasks = column.taskIds.map(
-                  (taskId) => mod_state.tasks[taskId]
-                );
+                const tasks = column.taskIds.map((taskId) => mod_state.tasks[taskId]);
                 return (
                   <Column
                     handleColumnDelete={handleColumnDelete}
@@ -264,6 +246,7 @@ const Dnd = ({
                     column={column}
                     index={index}
                     tasks={tasks}
+                    state={state.tasks}
                   />
                 );
               })}
@@ -271,8 +254,7 @@ const Dnd = ({
                 <button
                   onClick={handleToggleNew}
                   id="createColumn"
-                  className="border-2 border-gray-300 w-8 rounded-md"
-                >
+                  className="border-2 border-gray-300 w-8 rounded-md">
                   <img src="https://img.icons8.com/ios-glyphs/30/000000/plus-math.png" />
                 </button>
                 <div id="createColumnDiv" className="hidden ">
@@ -282,14 +264,12 @@ const Dnd = ({
                   />
                   <button
                     onClick={handleCancelEdit}
-                    className="ml-2 p-2 text-red-600 hover:text-red-700 focus:outline-none bg-white"
-                  >
+                    className="ml-2 p-2 text-red-600 hover:text-red-700 focus:outline-none bg-white">
                     <XIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={handleSaveChanges}
-                    className="ml-2 p-2 text-green-600 hover:text-green-700 focus:outline-none bg-white"
-                  >
+                    className="ml-2 p-2 text-green-600 hover:text-green-700 focus:outline-none bg-white">
                     <CheckIcon className="h-5 w-5" />
                   </button>
                 </div>
@@ -300,16 +280,13 @@ const Dnd = ({
       </DragDropContext>
       <div className="fixed bottom-10 right-20 flex bg-white p-2 shadow-2xl rounded">
         {mod_state.columnOrder.map((columnId, index) => {
-          return (
-            <div className=" my-1  mx-[2px] bg-gray-300 w-5 h-10 rounded"></div>
-          );
+          return <div className=" my-1  mx-[2px] bg-gray-300 w-5 h-10 rounded"></div>;
         })}
         <div
           ref={miniMap}
           className="border-2 border-blue-800 h-12 rounded  absolute hover:cursor-move"
           style={{ width: 24 * mod_state.columnOrder.length * minimapwidth }}
-          onMouseDown={handleStartDrag}
-        ></div>
+          onMouseDown={handleStartDrag}></div>
       </div>
     </>
   );

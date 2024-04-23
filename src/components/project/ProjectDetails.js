@@ -53,8 +53,7 @@ export default function ProjectDetails(props) {
   const Parentref = useRef(null);
   const id = useParams();
   const navigate = useNavigate();
-  document.body.style.backgroundColor =
-    colorPallete[navItems.indexOf(defaultTab)];
+  document.body.style.backgroundColor = colorPallete[navItems.indexOf(defaultTab)];
   if (!id.tab) {
     console.log("Navigating to default Tab");
     navigate(`/projects/${id.pid}/${defaultTab}`);
@@ -71,8 +70,7 @@ export default function ProjectDetails(props) {
           // Get Project Details
           const response = await customAxios.get(`/projects/${id.pid}`);
           setTodos(response.data);
-          if (response.data.projectissues.tasks)
-            setState(response.data.projectissues);
+          if (response.data.projectissues.tasks) setState(response.data.projectissues);
           if (!ready) setReady(true);
           //
         } catch (error) {
@@ -85,6 +83,8 @@ export default function ProjectDetails(props) {
     if (mainDiv)
       mainDiv.style.backgroundImage = `linear-gradient(to bottom right, ${gradientColorsHexCodes[4].start},${gradientColorsHexCodes[4].middle}, ${gradientColorsHexCodes[4].end})`;
   }, [currentUser, issuecreated, id.pid]);
+
+  //
 
   const Board = (
     <div className="p-3">
@@ -100,8 +100,7 @@ export default function ProjectDetails(props) {
         id="DnDParent"
         ref={Parentref}
         style={{ maxHeight: window.innerHeight - 200 }}
-        className={` overflow-y-auto  dark:border-gray-700 `}
-      >
+        className={` overflow-y-auto  dark:border-gray-700 `}>
         <Dnd
           parent={Parentref}
           state={state}
@@ -116,21 +115,12 @@ export default function ProjectDetails(props) {
   );
   const List = (
     <div id="ListParent" className="p-3">
-      <ListIssues
-        state={state}
-        setState={setState}
-        project_id={id}
-        info={todos}
-      />
+      <ListIssues state={state} setState={setState} project_id={id} info={todos} />
     </div>
   );
   const Timeline = (
     <div className=" p-3">
-      <Gnatt_Chart
-        data={state}
-        user={currentUser}
-        projectmembers={todos.projectmembers}
-      />
+      <Gnatt_Chart data={state} user={currentUser} projectmembers={todos.projectmembers} />
     </div>
   );
   const Summary = (
@@ -144,24 +134,7 @@ export default function ProjectDetails(props) {
       />
     </div>
   );
-  const Approvals = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
-  const Forms = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
-  const Pages = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
-  const Issues = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
-  const Reports = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
-  const ProjectSettings = (
-    <h2 className="text-center text-slate-500">Not yet implemented</h2>
-  );
+
   const Calendar = (
     <div className="p-3">
       <CalendarComponent
@@ -186,17 +159,13 @@ export default function ProjectDetails(props) {
       <svg width="30" height="30" viewBox="0 0 24 24" role="presentation">
         <path
           d="M7.818 12.56l4.243 4.243 4.242-4.242-4.242-4.243-4.243 4.243zm-1.414 1.415a1.995 1.995 0 010-2.828l4.243-4.243a1.995 1.995 0 012.828 0l4.243 4.243c.78.78.786 2.041 0 2.828l-4.243 4.243a1.996 1.996 0 01-2.828 0l-4.243-4.243zM6.5 13h11l-5.44 5.218L6.5 13zm2.732-8.925a1 1 0 011.414 0l3.536 3.536-1.414 1.414L9.232 5.49a1 1 0 010-1.415zM18 16s1.5 2 1.5 3.5c0 1-1 1.5-1.5 1.5s-1.5-.4-1.5-1.5C16.5 18 18 16 18 16z"
-          fill="purple"
-        ></path>
+          fill="purple"></path>
       </svg>
     </span>
   );
   const handleColorChange = (e) => {
     if (e.target.closest(".colorPalle")) {
-      const color = e.target
-        .closest(".colorPalle")
-        .getAttribute("for")
-        .split("-");
+      const color = e.target.closest(".colorPalle").getAttribute("for").split("-");
 
       document.getElementById("main").style.backgroundImage = "none";
 
@@ -204,9 +173,7 @@ export default function ProjectDetails(props) {
         document.getElementById("main").style.backgroundColor =
           solidColorsHexCodes[parseInt(color[1])];
       } else if (color[0] === "gradientColors") {
-        document.getElementById(
-          "main"
-        ).style.backgroundImage = `linear-gradient(to bottom right, ${
+        document.getElementById("main").style.backgroundImage = `linear-gradient(to bottom right, ${
           gradientColorsHexCodes[color[1]].start
         }, ${
           gradientColorsHexCodes[color[1]].middle !== undefined
@@ -216,34 +183,27 @@ export default function ProjectDetails(props) {
       } else document.getElementById("main").style.backgroundColor = "white";
     }
   };
+
   return (
     <div className="pt-[60px] bg-white-800">
       <aside
         id="default-sidebar"
         className="fixed left-0  w-64 h-screen  delay-75 transition-transform -translate-x-full "
-        aria-label="Sidebar"
-      >
+        aria-label="Sidebar">
         <Sidebar />
       </aside>
-      <div
-        id="main"
-        className=" h-[100%] min-h-[91.6vh] p-4  bg-[#EAE6FF] dark:bg-gray-900"
-      >
+      <div id="main" className=" h-[100%] min-h-[91.6vh] p-4  bg-[#EAE6FF] dark:bg-gray-900">
         <div className="flow-root">
           <ol>
             <li className="inline-block">
               <a
                 href="/projects"
-                className="after:content-['/'] after:px-2 text-black dark:text-white"
-              >
+                className="after:content-['/'] after:px-2 text-black dark:text-white">
                 <span>Projects</span>
               </a>
             </li>
             <li className="inline-block">
-              <a
-                href={`/projects/${id.pid}`}
-                className="text-black dark:text-white"
-              >
+              <a href={`/projects/${id.pid}`} className="text-black dark:text-white">
                 <span>{todos.projectname}</span>
               </a>
             </li>
@@ -255,9 +215,7 @@ export default function ProjectDetails(props) {
             <Popover label={colorPalletehtml} plain width="w-[350px]">
               <div>
                 <div className="px-2 justify-between flex items-center">
-                  <p className="font-semibold text-base px-1">
-                    Project background
-                  </p>
+                  <p className="font-semibold text-base px-1">Project background</p>
                   <span className="closePopover">{closeIcon}</span>
                 </div>
                 <div className="px-2 text-sm font-medium">
@@ -266,15 +224,10 @@ export default function ProjectDetails(props) {
                   <div className="flex flex-wrap p-1">
                     {gradientColors.map((color, index) => (
                       <div className="flex" onClick={handleColorChange}>
-                        <input
-                          id={"gradientColors-" + index}
-                          type="radio"
-                          className="hidden "
-                        />
+                        <input id={"gradientColors-" + index} type="radio" className="hidden " />
                         <label
                           htmlFor={"gradientColors-" + index}
-                          className={`w-6 h-6 colorPalle bg-gradient-to-br ${color.start} ${color.middle} ${color.end} border-[1px] rounded border-gray-300 flex justify-center items-center cursor-pointer mr-2`}
-                        ></label>
+                          className={`w-6 h-6 colorPalle bg-gradient-to-br ${color.start} ${color.middle} ${color.end} border-[1px] rounded border-gray-300 flex justify-center items-center cursor-pointer mr-2`}></label>
                       </div>
                     ))}
                   </div>
@@ -284,34 +237,22 @@ export default function ProjectDetails(props) {
                   <p className="px-1">COLORS</p>
                   <div className="flex flex-wrap p-1">
                     {solidColors.map((color, index) => (
-                      <div
-                        className="flex py-1 items-center "
-                        onClick={handleColorChange}
-                      >
-                        <input
-                          id={"solidColors-" + index}
-                          type="radio"
-                          className="hidden "
-                        />
+                      <div className="flex py-1 items-center " onClick={handleColorChange}>
+                        <input id={"solidColors-" + index} type="radio" className="hidden " />
                         <label
                           htmlFor={"solidColors-" + index}
-                          className={`w-6 h-6 colorPalle ${color} border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}
-                        ></label>
+                          className={`w-6 h-6 colorPalle ${color} border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}></label>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="px-2 text-sm font-medium mb-5">
                   <div className="flex flex-wrap">
-                    <div
-                      className="flex p-1 items-center"
-                      onClick={handleColorChange}
-                    >
+                    <div className="flex p-1 items-center" onClick={handleColorChange}>
                       <input id={"nocolor"} type="radio" className="hidden " />
                       <label
                         htmlFor={"nocolor"}
-                        className={`w-6 h-6 colorPalle bg-white border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}
-                      ></label>
+                        className={`w-6 h-6 colorPalle bg-white border-[1px] rounded border-gray-300  flex justify-center items-center cursor-pointer mr-2`}></label>
                       <p className="font-medium text-xs">No background</p>
                     </div>
                   </div>
@@ -323,8 +264,7 @@ export default function ProjectDetails(props) {
               className="text-white bg-blue-700   hover:bg-blue-800 ml-auto focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               onClick={() => {
                 setModal(true);
-              }}
-            >
+              }}>
               Create Issue
             </button>
           </div>
@@ -352,8 +292,7 @@ export default function ProjectDetails(props) {
                 onClick={() => {
                   document.body.style.backgroundColor = colorPallete[index];
                   navigate(`/projects/${id.pid}/${item}`);
-                }}
-              >
+                }}>
                 {item}
               </button>
             ))}
@@ -363,8 +302,7 @@ export default function ProjectDetails(props) {
             style={{
               height: window.innerHeight - 192,
               ...(defaultTab === "Summary" && { overflowY: "scroll" }),
-            }}
-          >
+            }}>
             {eval(defaultTab)}
           </div>
         </div>

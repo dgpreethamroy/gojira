@@ -46,9 +46,7 @@ const Column = (props) => {
   const randomColor = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
     Math.random() * 256
   )},${Math.floor(Math.random() * 256)})`;
-  const lightrandomColor = randomColor
-    .replace(")", ", 0.25)")
-    .replace("b", "ba");
+  const lightrandomColor = randomColor.replace(")", ", 0.25)").replace("b", "ba");
   return (
     <Draggable draggableId={props.column.id} index={props.index}>
       {(provided) => (
@@ -56,53 +54,39 @@ const Column = (props) => {
           className={`hover-crap ${props.index === 0 ? "mr-2" : "mx-2"}`}
           {...provided.draggableProps}
           ref={provided.innerRef}
-          {...provided.dragHandleProps}
-        >
+          {...provided.dragHandleProps}>
           <Title className="flex justify-between items-center border-b-2 border-gray-400  rounded-t-lg  sticky top-0  z-10">
             <div
               className={`inline-flex px-2 rounded whitespace-pre-wrap 
             ${
-              (props.column.title === "To Do" &&
-                "text-[#42526E]  bg-[#EAE6FF]") ||
-              (props.column.title === "In Progress" &&
-                "text-[#0052CC] bg-[#e3efff]") ||
-              (props.column.title === "In Review" &&
-                "text-[#A22E24] bg-[#f4d1ce]") ||
-              (props.column.title === "Done" &&
-                "text-[#006644] bg-[#d2fbd0]") ||
+              (props.column.title === "To Do" && "text-[#42526E]  bg-[#EAE6FF]") ||
+              (props.column.title === "In Progress" && "text-[#0052CC] bg-[#e3efff]") ||
+              (props.column.title === "In Review" && "text-[#A22E24] bg-[#f4d1ce]") ||
+              (props.column.title === "Done" && "text-[#006644] bg-[#d2fbd0]") ||
               `text-[#006644]`
             }`}
               style={
-                !["To Do", "In Progress", "In Review", "Done"].includes(
-                  props.column.title
-                )
+                !["To Do", "In Progress", "In Review", "Done"].includes(props.column.title)
                   ? { backgroundColor: lightrandomColor, color: randomColor }
                   : null
-              }
-            >
-              <p id={props.column.id}>
-                {props.tasks.length ? ` ${props.tasks.length} - ` : ""}
-              </p>
+              }>
+              <p id={props.column.id}>{props.tasks.length ? ` ${props.tasks.length} - ` : ""}</p>
               <span
                 onFocus={(e) => {
-                  document.getElementById(props.column.id).style.display =
-                    "none";
+                  document.getElementById(props.column.id).style.display = "none";
                   e.target.children[0].style.width =
-                    e.target.parentElement.parentElement.offsetWidth * 0.65 +
-                    "px";
+                    e.target.parentElement.parentElement.offsetWidth * 0.65 + "px";
                   e.target.children[0].style.paddingLeft = "8px";
                   e.target.children[0].style.paddingRight = "8px";
                   e.target.children[0].style.paddingTop = "5px";
                   e.target.children[0].style.paddingBottom = "5px";
                 }}
                 onBlur={(e) => {
-                  document.getElementById(props.column.id).style.display =
-                    "block";
+                  document.getElementById(props.column.id).style.display = "block";
                   e.target.children[0].style.width = "auto";
                   e.target.children[0].style.padding = "0px";
                 }}
-                contenteditable="true"
-              >
+                contenteditable="true">
                 <p className="hover:cursor-pointer">{props.column.title}</p>
               </span>
             </div>
@@ -128,8 +112,7 @@ const Column = (props) => {
               <TaskList
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                isDraggingOver={snapshot.isDraggingOver}
-              >
+                isDraggingOver={snapshot.isDraggingOver}>
                 {props.tasks.map((task, index) => (
                   <Task
                     key={task.id}
@@ -137,6 +120,7 @@ const Column = (props) => {
                     index={index}
                     parenttitle={props.column.title}
                     projectmembers={props.projectmembers}
+                    state={props.state}
                   />
                 ))}
                 {provided.placeholder}

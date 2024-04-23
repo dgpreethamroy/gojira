@@ -55,8 +55,7 @@ const renderDays = () => {
         key={i}
         className={`text-center p-2  border-[.5px] border-t-0 border-gray-300 text-gray-600 bg-gray-100  font-semibold ${
           i === 1 ? "border-l-0" : i === 7 ? "border-r-0" : null
-        }`}
-      >
+        }`}>
         {dayjs()
           .day(i % 7)
           .format("ddd")}
@@ -92,9 +91,7 @@ function getNextMonday(date = new Date()) {
   const dateCopy = new Date(date.getTime());
 
   const nextMonday = new Date(
-    dateCopy.setDate(
-      dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7 || 7)
-    )
+    dateCopy.setDate(dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7 || 7))
   );
 
   return nextMonday;
@@ -190,8 +187,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
     let Doneresult = taskEndDate_dayjs.$d - new Date() < 0 ? true : false;
     let Assigneresult = task.assignee === user ? true : false;
     let Duethisweekresult =
-      taskEndDate_dayjs.$d - getPreviousMonday() >= 0 &&
-      taskEndDate_dayjs.$d - getNextMonday() < 0;
+      taskEndDate_dayjs.$d - getPreviousMonday() >= 0 && taskEndDate_dayjs.$d - getNextMonday() < 0;
 
     let filterResult =
       (filterOptions[0] ? Assigneresult : true) &&
@@ -217,16 +213,12 @@ const Calendar = ({ tasks, user, projectmembers }) => {
           <div
             className={`border-[.5px] border-gray-300 bg-gray-100 ${
               i === 0 ? "border-l-0" : i == 6 ? "border-r-0" : null
-            } `}
-          >
+            } `}>
             <div
               key={day}
               className={`px-8  text-center ${
-                day.month() === currentMonth.month()
-                  ? "text-gray-900"
-                  : "text-gray-400"
-              }  `}
-            >
+                day.month() === currentMonth.month() ? "text-gray-900" : "text-gray-400"
+              }  `}>
               {day.format("D")}
             </div>
             <div className="days-event relative min-h-6 "></div>
@@ -245,12 +237,11 @@ const Calendar = ({ tasks, user, projectmembers }) => {
               let taskStartDate = dayjs(task.createdAt).format("YYYY-MM-DD");
               let taskEndDate = dayjs(task.DueDate).format("YYYY-MM-DD");
               let Thisweek = day.subtract(1, "days").format("YYYY-MM-DD");
-              let { daysInRange, startingDateInRange } =
-                startingDateAndDaysInRange(
-                  taskStartDate,
-                  taskEndDate,
-                  Thisweek
-                );
+              let { daysInRange, startingDateInRange } = startingDateAndDaysInRange(
+                taskStartDate,
+                taskEndDate,
+                Thisweek
+              );
               return (
                 <button
                   key={task.id}
@@ -261,9 +252,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
                     width: `${(daysInRange * 100) / 7}%`,
                     display: daysInRange == 0 ? "none" : "block",
                     left:
-                      Math.abs(
-                        day.subtract(7, "day").$d - startingDateInRange
-                      ) /
+                      Math.abs(day.subtract(7, "day").$d - startingDateInRange) /
                         ((1000 * 3600 * 24 * 7) / 100) +
                       "%",
                   }}
@@ -274,21 +263,14 @@ const Calendar = ({ tasks, user, projectmembers }) => {
                       return newParams;
                     });
                     setSelectedTask(task);
-                  }}
-                >
+                  }}>
                   <span className="py-2 ">
                     {Issuedata.map((data) => {
                       if (data.label === task.issuetype) {
-                        return (
-                          <span className=" px-2 py-2 text-white">
-                            {data.icon}
-                          </span>
-                        );
+                        return <span className=" px-2 py-2 text-white">{data.icon}</span>;
                       }
                     })}
-                    <span className="px-1 text-sm">
-                      {task.id.toUpperCase()}
-                    </span>
+                    <span className="px-1 text-sm">{task.id.toUpperCase()}</span>
                     <span className="text-sm"> {task.summary}</span>
                   </span>
                 </button>
@@ -306,13 +288,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
   };
   const selectedIssue = searchParams.get("selectedIssue");
   useEffect(() => {
-    debugger;
-    if (
-      selectedIssue !== null &&
-      selectedIssue !== "null" &&
-      !showIssue &&
-      projectmembers
-    ) {
+    if (selectedIssue !== null && selectedIssue !== "null" && !showIssue && projectmembers) {
       if (selectedIssue === "false") {
         setSearchParams((prev) => {
           const newParams = new URLSearchParams(prev);
@@ -342,22 +318,15 @@ const Calendar = ({ tasks, user, projectmembers }) => {
           <span className="px-2">
             <p className="text-black font-semibold dark:text-white">{year}</p>
           </span>
-          <button
-            className="hover:bg-slate-300 rounded px-2 py-2 "
-            onClick={handleprevMonth}
-          >
+          <button className="hover:bg-slate-300 rounded px-2 py-2 " onClick={handleprevMonth}>
             <span>{Leftarrow_Icon}</span>
           </button>
-          <button
-            className="hover:bg-slate-300 rounded px-2 py-2"
-            onClick={handlenextMonth}
-          >
+          <button className="hover:bg-slate-300 rounded px-2 py-2" onClick={handlenextMonth}>
             <span>{Rightarrow_Icon}</span>
           </button>
           <button
             className="p-2  bg-blue-300 hover:bg-blue-500 rounded "
-            onClick={handleTodayButton}
-          >
+            onClick={handleTodayButton}>
             <span className="text-black font-semibold">TODAY</span>
           </button>
           <Popover label={Filter_IconWithText} dir="right">
@@ -375,22 +344,18 @@ const Calendar = ({ tasks, user, projectmembers }) => {
                   className="px-5 py-3 w-full flex justify-between text-start"
                   onClick={() => {
                     handleFilteroption(0);
-                  }}
-                >
+                  }}>
                   <span className="flex">
                     {Profile_Icon}
                     <span className="pl-2"> Assign to me</span>
                   </span>
-                  {filterOptions[0] && (
-                    <span className="">{blueCheck_Icon}</span>
-                  )}
+                  {filterOptions[0] && <span className="">{blueCheck_Icon}</span>}
                 </button>
               </div>
               <div className="w-full hover:bg-slate-200">
                 <button
                   className="px-5 py-3 w-full flex justify-between text-start"
-                  onClick={() => handleFilteroption(1)}
-                >
+                  onClick={() => handleFilteroption(1)}>
                   <span className="flex">
                     {Calendar_Icon}
                     <span className="pl-2">Due this week</span>
@@ -401,8 +366,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
               <div className="w-full hover:bg-slate-200">
                 <button
                   className="px-5 py-3 w-full text-start flex justify-between"
-                  onClick={() => handleFilteroption(2)}
-                >
+                  onClick={() => handleFilteroption(2)}>
                   <span className="flex">
                     {checkwithCircle_Icon}
                     <span className="pl-2">Done items</span>
@@ -447,8 +411,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
             const { elementRef, ...restProps } = newprops;
             return <span {...restProps} ref={elementRef} className="trackY" />;
           },
-        }}
-      >
+        }}>
         <div className="bg-gray-100 rounded-lg">
           <div className="px-2  overflow-y-auto overflow-x-hidden">
             {renderDays()}
@@ -466,6 +429,7 @@ const Calendar = ({ tasks, user, projectmembers }) => {
           showIssue={showIssue}
           setShowIssue={setShowIssue}
           setSelectIssue={setSearchParams}
+          state={tasks}
         />
       )}
     </>
