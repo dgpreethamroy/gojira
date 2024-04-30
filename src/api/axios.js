@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const customAxios = axios.create({
-  baseURL: "http://localhost:3500",
+  baseURL: "https://gojira-server.onrender.com",
 });
 let cancelToken = {};
 

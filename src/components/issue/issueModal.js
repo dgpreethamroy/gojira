@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import Modal from "../ui/modal/Modal";
 import { Issuedata, status_data, checkIcon, closeIcon } from "../../assets/CommonData";
 import { useState } from "react";
@@ -23,6 +23,8 @@ const IssueModal = ({ details, showIssue, setShowIssue, setSelectIssue = null, s
 
   const issueRef = useRef(null);
   const quillRef = useRef(null);
+  const summaryRef = useRef(null);
+  const descriptionRef = useRef(null);
   const handleClickDescription = () => {
     setIsOpen(true);
   };
@@ -65,6 +67,16 @@ const IssueModal = ({ details, showIssue, setShowIssue, setSelectIssue = null, s
     return bidirectionalTasks;
   };
   const linkedtasksMap = makeBidirectionalLinks(state);
+
+  const handleUpdateIssue = (props) => {
+    console.log({ ...props });
+  };
+
+  useEffect(() => {
+    if (details?.task?.summary) {
+      summaryRef.current.value = details?.task?.summary;
+    }
+  }, []);
   return (
     <Modal
       isOpen={showIssue}
@@ -97,18 +109,31 @@ const IssueModal = ({ details, showIssue, setShowIssue, setSelectIssue = null, s
             <p className=" text-gray-500 ">Summary </p>
             <input
               className="w-full p-2 h-10 font-medium text-xl  outline-none bg-white hover:bg-slate-200 rounded border-2 border-gray-200 focus:border-blue-500 focus:border-2"
-              onBlur={() => {
-                issueRef.current.style.display = "none";
+              ref={summaryRef}
+              onBlur={(e) => {
+                issueRef.current.style.opacity = 0;
+                handleUpdateIssue({ summary: e.target.value });
+                setSummary(e.target.value);
               }}
               onFocus={(e) => {
                 issueRef.current.style.marginLeft = e.currentTarget.offsetWidth - 70 + "px";
-                issueRef.current.style.display = "flex";
+                issueRef.current.style.opacity = 1;
               }}
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
             />
-            <div className="items-center float-right h-0 absolute hidden  mt-6" ref={issueRef}>
-              {checkIcon} {closeIcon}
+            <div
+              className="items-center float-right h-0 flex opacity-0 mt-6"
+              ref={issueRef}
+              onMouseDown={() => {
+                issueRef.current.addEventListener("mouseup", (e) => {
+                  if (e.target.closest(".closeIcon")) {
+                    summaryRef.current.value = summary;
+                    setSummary(summary);
+                    handleUpdateIssue({ summary: summary });
+                  }
+                });
+              }}>
+              <button>{checkIcon}</button>
+              <button>{closeIcon}</button>
             </div>
           </div>
           <div id="IssueDescription" className="">
@@ -119,8 +144,18 @@ const IssueModal = ({ details, showIssue, setShowIssue, setSelectIssue = null, s
                   <ReactQuill
                     ref={quillRef}
                     theme="snow"
-                    value={description}
-                    className=" bg-gray-200 h-40 overflow-y-scroll border-red-700 "
+                    value={
+                      <ol>
+                        <li>
+                          <strong>
+                            <em>
+                              <u>Changes in both issues and projectmeta controller</u>
+                            </em>
+                          </strong>
+                        </li>
+                      </ol>
+                    }
+                    className=" bg-gray-50 h-40 overflow-y-scroll border-red-700 "
                   />
                 </div>
                 <div className=" ">
@@ -137,11 +172,22 @@ const IssueModal = ({ details, showIssue, setShowIssue, setSelectIssue = null, s
                 </div>
               </div>
             ) : (
-              <p
-                className="px-2 py-2  border-2 border-gray-200  rounded hover:bg-slate-200"
-                onClick={handleClickDescription}>
-                {description}
-              </p>
+              // <p
+              //   className="px-2 py-2  border-2 border-gray-200  rounded hover:bg-slate-200"
+              //   onClick={handleClickDescription}>
+              //   {description}
+              // </p>
+              <div onClick={handleClickDescription}>
+                <ol>
+                  <li>
+                    <strong>
+                      <em>
+                        <u>Changes in both issues and projectmeta controller</u>
+                      </em>
+                    </strong>
+                  </li>
+                </ol>
+              </div>
             )}
           </div>
           <div id="IssueLinks">
