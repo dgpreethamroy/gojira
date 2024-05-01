@@ -10,10 +10,9 @@ import {
 import Avatar from "react-avatar";
 import ReactECharts from "echarts-for-react";
 import customAxios from "../../api/axios";
-
 import dayjs from "dayjs";
+import { Loader } from "../loader/Loader";
 dayjs.locale("en");
-
 export const TestSummary = ({ data, user, project_id, username, projectmembers }) => {
   const [pdetails, setPdetails] = useState(false);
   const [recentData, setRecentData] = useState(null);
@@ -80,6 +79,7 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
       onScrollEnd();
     }
   };
+  if (!recentData) return <Loader />;
   return (
     <div className=" mx-20  rounded  ">
       <div className="py-2 my-2 flex flex-col items-center   ">
