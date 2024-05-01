@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     }
     loaderRef.current.style.display = "none";
   }, []);
+  if (!currentUser) return <h1>Loading</h1>;
   return (
     <AuthContext.Provider value={{ auth, setAuth, login, logout, currentUser, setCurrentUser }}>
       <NetworkHandler isOpen={isOpen} setIsOpen={setIsOpen} error={error} />
