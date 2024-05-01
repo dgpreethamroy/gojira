@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const customAxios = axios.create({
-  baseURL: "https://gojira-server.onrender.com",
+  // baseURL: "https://gojira-server.onrender.com",
+  baseURL: "http://localhost:10000",
 });
 let cancelToken = {};
 
@@ -22,9 +23,7 @@ customAxios.interceptors.response.use((response, error) => {
 customAxios.interceptors.request.use((request) => {
   const local_auth = localStorage.getItem("auth");
   if (local_auth) {
-    request.headers.Authorization = `Bearer ${
-      JSON.parse(local_auth).accessToken
-    }`;
+    request.headers.Authorization = `Bearer ${JSON.parse(local_auth).accessToken}`;
   }
   if (cancelToken[request.url]) {
     cancelToken[request.url].cancel("Request canceled due to new request.");

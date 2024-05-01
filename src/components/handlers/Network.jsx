@@ -20,7 +20,7 @@ export const NetworkHandler = ({ isOpen, setIsOpen, error }) => {
                 setIsOpen(false);
                 window.location.reload();
               }}>
-              {(error.node === "Client" || "Server") && "Reload"}
+              {(error.node === "Client" || error.node === "Server") && "Reload"}
               {error.node === "Credentials" && "Close"}
             </button>
           </div>

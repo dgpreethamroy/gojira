@@ -20,11 +20,11 @@ import {
 } from "../../assets/CommonData";
 import Popover from "../ui/popover/Popover";
 const navItems = [
+  "Summary",
   "Board",
   "List",
   "Timeline",
   "Calendar",
-  "Summary",
   "Approvals",
   "Forms",
   "Pages",
@@ -40,7 +40,7 @@ export default function ProjectDetails(props) {
   const [ready, setReady] = useState(false);
   const [issuecreated, setIssuecreated] = useState(false);
   const [inputSearch, setSearchinput] = useState("");
-  const [defaultTab, setDefaultTab] = useState("Board");
+  const [defaultTab, setDefaultTab] = useState("Summary");
   const [state, setState] = useState({
     tasks: {},
     columns: {
@@ -144,6 +144,12 @@ export default function ProjectDetails(props) {
       />
     </div>
   );
+  const Approvals = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
+  const Forms = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
+  const Pages = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
+  const Issues = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
+  const Reports = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
+  const ProjectSettings = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
   if (!currentUser)
     return (
       <div>

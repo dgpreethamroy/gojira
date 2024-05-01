@@ -23,9 +23,10 @@ export default function Login() {
 
   async function handleFormSubmit(e) {
     e.preventDefault();
+    const Guest = e.target.closest(".guest") ? true : false;
 
-    const response = await login(email, password);
-    debugger;
+    const response = !Guest ? await login(email, password) : await login("Guest", "guest");
+
     if (response?.isAxiosError) {
       setIsOpen(true);
       if (response.code === "ERR_NETWORK") {
@@ -59,7 +60,7 @@ export default function Login() {
   return (
     <>
       {success ? (
-        navigate("/dashboard")
+        navigate("/projects")
       ) : (
         <>
           <NetworkHandler isOpen={isOpen} setIsOpen={setIsOpen} error={error} />
@@ -114,6 +115,11 @@ export default function Login() {
                   </div>
                 </div>
               </form>
+              <div
+                className="bg-sky-800 guest hover:bg-sky-900 text-center text-sm text-white p-2 rounded-md font-medium hover:cursor-pointer"
+                onClick={handleFormSubmit}>
+                Login as Guest
+              </div>
             </div>
           </div>
         </>

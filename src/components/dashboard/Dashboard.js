@@ -9,8 +9,6 @@ export const Dashboard = () => {
       Dashboard not yet implemented
       <br />
       <Link to="/projects">Click here to go to projects</Link>
-      <br />
-      <Link to="/stocks">Click here to go to Stocks</Link>
     </div>
   ) : (
     <div>

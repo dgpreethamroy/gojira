@@ -84,7 +84,7 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
     <div className=" mx-20  rounded  ">
       <div className="py-2 my-2 flex flex-col items-center   ">
         <p className="text-center text-xl font-semibold font-myfont skeleton ">
-          శుభోదయం, {username.toLowerCase()} ☕️
+          Welcome, {username.toLowerCase()} ☕️
         </p>
         <br />
         <p className="text-center text-base skeleton ">
