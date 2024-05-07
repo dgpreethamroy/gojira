@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const customAxios = axios.create({
-  baseURL: "https://gojira-server.onrender.com",
-  // baseURL: "http://localhost:10000",
+  // baseURL: "https://gojira-server.onrender.com",
+  baseURL: "http://localhost:10000",
 });
 let cancelToken = {};
 
@@ -19,7 +19,24 @@ customAxios.interceptors.response.use((response, error) => {
     }
   }
 });
+customAxios.interceptors.response.use(null, async (error) => {
+  debugger;
+  // Handle error globally
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error("Response error:", error.response.data);
+  } else if (error.request) {
+    // The request was made but no response was received
+    console.error("Request error:", error.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error:", error.message);
+  }
 
+  // Return a rejected promise
+  return Promise.reject(error);
+});
 customAxios.interceptors.request.use((request) => {
   const local_auth = localStorage.getItem("auth");
   if (local_auth) {

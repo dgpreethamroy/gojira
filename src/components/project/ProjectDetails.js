@@ -150,16 +150,22 @@ export default function ProjectDetails(props) {
   const Issues = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
   const Reports = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
   const ProjectSettings = <h2 className="text-center text-slate-500">Not yet implemented</h2>;
-  if (!currentUser)
-    return (
-      <div>
-        <Link to="/">
-          <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
-            Please Login
-          </h2>
-        </Link>
-      </div>
+  if (!currentUser) {
+    setTimeout(
+      () => (
+        <div>
+          <Link to="/">
+            <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
+              Please LoginDe
+            </h2>
+          </Link>
+        </div>
+      ),
+      1000
     );
+    return <h1 className="pt-40">Loading</h1>;
+  }
+
   const colorPalletehtml = (
     <span className="rounded-full p-1 hover:bg-gray-400  ">
       <svg width="30" height="30" viewBox="0 0 24 24" role="presentation">

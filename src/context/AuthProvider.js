@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState({});
   const loaderRef = useRef(null);
-
   useEffect(() => {
     console.log("AuthProvider useEffect");
     const local_auth = localStorage.getItem("auth");
@@ -28,14 +27,13 @@ export const AuthProvider = ({ children }) => {
           setAuth(JSON.parse(local_auth));
           setCurrentUser(JSON.parse(local_auth).info.id);
         } catch (err) {
-          debugger;
           if (err.response) {
             if (err.response.status === 401) {
               logout();
             }
           }
           setIsOpen(true);
-          if (err.code === "ERR_NETWORK" || "ECONNABORTED") {
+          if (err.code === "ERR_NETWORK" || err.code === "ECONNABORTED") {
             if (!navigator.onLine)
               setError({
                 node: "Client",
@@ -50,15 +48,27 @@ export const AuthProvider = ({ children }) => {
               });
 
             console.error("Ping ", err);
+          } else {
+            setError({
+              node: "Timeout",
+              msg: ` Session Timedout. Please Login again `,
+            });
           }
         }
       }
 
       verifytoken();
     }
+    if (!local_auth) {
+      if (window.location.pathname != "/") {
+        localStorage.setItem("QueuedUrl", window.location.href);
+        console.log("Redirecting lo Login");
+        window.location.href = window.location.origin;
+      }
+    }
     loaderRef.current.style.display = "none";
   }, []);
-  if (!currentUser) return <h1>Loading Now</h1>;
+
   return (
     <AuthContext.Provider value={{ auth, setAuth, login, logout, currentUser, setCurrentUser }}>
       <NetworkHandler isOpen={isOpen} setIsOpen={setIsOpen} error={error} />

@@ -25,18 +25,30 @@ export const TestSummary = ({ data, user, project_id, username, projectmembers }
   useEffect(() => {
     console.log("Summary useEffect");
 
-    if (user && !recentData) fetchRecords().then((res) => setRecentData(res.data));
+    if (user && !recentData)
+      fetchRecords()
+        .then((res) => {
+          setRecentData(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
 
     if (user && !issueStats) {
       async function loadStats() {
-        await customAxios.get(`/issues/stats`).then((res, err) => {
-          if (res.status === 200 && !err) {
-            setIssueStats(res.data);
-          } else {
-            alert("Error fetching data");
-            console.log(err);
-          }
-        });
+        await customAxios
+          .get(`/issues/stats`)
+          .then((res, err) => {
+            if (res.status === 200 && !err) {
+              setIssueStats(res.data);
+            } else {
+              alert("Error fetching data");
+              console.log(err);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
       loadStats();
     }

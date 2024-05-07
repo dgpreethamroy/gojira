@@ -23,9 +23,7 @@ export default function ProjectTable() {
     const fetchData = async () => {
       if (currentUser) {
         try {
-          const result = await customAxios.get(
-            PROJECT_URL + "/" + auth.info.id
-          );
+          const result = await customAxios.get(PROJECT_URL + "/" + auth.info.id);
           setProjects(...projects, result.data.projects);
         } catch (e) {
           console.log(e);
@@ -36,15 +34,18 @@ export default function ProjectTable() {
   }, [currentUser]);
 
   if (!currentUser)
-    return (
-      <div>
-        <Link to="/">
-          <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
-            Please Login
-          </h2>
-        </Link>
-      </div>
-    );
+    setTimeout(() => {
+      return (
+        <div>
+          <Link to="/">
+            <h2 className="mt-24 text-3xl text-center tracking-tight font-light dark:text-white">
+              Please LogingTa
+            </h2>
+          </Link>
+        </div>
+      );
+    }, 50);
+
   return (
     <div className=" pt-20 bg-white-800">
       <div id="main" className="px-4">
@@ -56,7 +57,6 @@ export default function ProjectTable() {
             Create New Project
           </button> */}
           <div className=" w-15 h-5">
-
             <CreateProject />
           </div>
         </div>

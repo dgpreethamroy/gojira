@@ -5,7 +5,8 @@ export const NetworkHandler = ({ isOpen, setIsOpen, error }) => {
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} small>
       <Modal.Header>
         <p className="text-medium font-semibold">
-          {error.node === "Client" ? "Network" : error.node === "Server" ? "Connection" : ""} Error
+          {error.node === "Client" ? "Network" : error.node === "Server" ? "Connection" : "Timeout"}
+          Error
         </p>
       </Modal.Header>
       <Modal.Footer>
@@ -22,6 +23,7 @@ export const NetworkHandler = ({ isOpen, setIsOpen, error }) => {
               }}>
               {(error.node === "Client" || error.node === "Server") && "Reload"}
               {error.node === "Credentials" && "Close"}
+              {error.node === "Timeout" && "Login"}
             </button>
           </div>
         </div>

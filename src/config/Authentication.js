@@ -12,6 +12,11 @@ const login = async (user, pwd) => {
       }
     );
     localStorage.setItem("auth", JSON.stringify(response.data));
+    const QueuedUrl = localStorage.getItem("QueuedUrl");
+    if (QueuedUrl) {
+      localStorage.removeItem("QueuedUrl");
+      window.location.href = QueuedUrl;
+    }
     return response;
   } catch (e) {
     console.log("Failed to login");
